@@ -16,10 +16,10 @@ __Problem__
 
 > This introduces an argument of effectiveness between human pilots and software. Human effectiveness is measured in the skill of the operator with a remote control. However in software the effectiveness is measurable by how well it can mimic the skill of a human pilot. .  
 
-> For a human to adapt to a drone’s weight he or she must observe it's behavior and build a skill at mastering the drone's controls. Likewise, the effect of the drone’s weight can be compensated for by collecting common potentials of past flights, creating a model using that data and the current flight plan, applying that model to the rotor response, and correlating the application of that model back into the composite model of past flights. Through this, learning algorithms can be applied to create maneuvers that adapt to the environment and mimic human skill.
+> For a human to adapt to a drone’s weight he or she must observe it's behavior and build a skill at operating the drone's controls. Likewise, the effect of the drone’s weight can be compensated for by collecting common potentials of past flights, creating a model using that data, comparing that model with a composite model of all past flights to generate another model, applying that model to the rotor response, and correlating the application of that model back into the composite model of past flights. Through this, learning algorithms can be applied to create maneuvers that adapt to the environment and mimic human skill.
 
 __Solution__  
-> Machine learning is used to improve speed and stability of a drone. Correlating data collected during flight plans will be used to create a better composite model. The model is used to alter future maneuvers and even change the flight plan if an obstruction is detected. 
+> Machine learning is used to improve speed and stability of a drone. Correlating data collected during flight will be used to create a better composite model. The model is used to alter future maneuvers and even change the flight plan if an obstruction is detected. 
 The goal is to develop control software that mimics the abilities of skilled drone pilots. 
 
 __Similar Systems__
