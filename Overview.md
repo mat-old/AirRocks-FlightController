@@ -7,7 +7,7 @@ ____________________________
 
 Introduction  
 --------------------
-> AirRocks-FlightController, herin known as ARF, is a multirotor flight controller suite that uses machine learning to autonomous aerial maneuvers.   
+> AirRocks-FlightController, herin known as ARF, is a multirotor flight controller suite that uses machine learning to achieve autonomous aerial maneuvers.   
 
 > ARF offers an alternative approach to pre-programed flight patterns. Many drones use GPS coordinates to set way points in a flight plan. ARF seeks to leverage range-based stimuli combined with iterative machine learning to complete flight patterns in an efficient way. Essentially ARF learns to fly better.  
 
