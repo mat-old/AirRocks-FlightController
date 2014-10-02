@@ -9,7 +9,7 @@ Introduction
 --------------------
 > AirRocks-FlightController, herin known as ARF, is a multirotor flight controller suite that uses machine learning to achieve autonomous aerial maneuvers.   
 
-> ARF offers an alternative approach to pre-programed flight patterns. Many drones use GPS coordinates to set way points in a flight plan. ARF seeks to leverage range-based stimuli combined with iterative machine learning to complete flight patterns in an efficient way. Essentially ARF learns to fly better.  
+> ARF offers an alternative approach to pre-programed flight patterns. Many drones use GPS coordinates to set way points in a flight plan. ARF seeks to leverage range-based stimuli combined with machine learning techniques to complete flight patterns in an efficient way. Essentially ARF learns to fly better.  
 
 __Problem__   
 > The platform and control systems of drones are extremely appealing paradigms. The hardware platform may be configured for various flight styles. The style of flight is meant to accommodate a drone's purpose such as acrobatic, transport, visual surveillance, and signal surveillance. Flight control systems may be developed in such a way that their influence on the ability of the platform can transcend the designed purpose. Flight controllers provide the highest influence on the quality of drone flight becuase all drone's need a pilot and software is the superior pilot.   
