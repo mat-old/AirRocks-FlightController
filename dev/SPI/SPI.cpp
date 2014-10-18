@@ -11,6 +11,11 @@
 		  create a debug mode / flag
 */
 
+#define MOTOR_ZERO_LEVEL  125
+#define MOTOR_ARM_START  140
+#define MOTOR_MAX_LEVEL  254
+
+
 #include <stdint.h>				// extra types
 #include <unistd.h>				// std linux stuff
 #include <stdio.h>				// printf and such 			** try omit 
@@ -26,7 +31,7 @@
 using namespace std;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-#define BAUD_RATE 200000
+#define BAUD_RATE 10000
 
 static void pabort(const char *s)
 {
@@ -53,28 +58,55 @@ void copy(uint32_t n, uint8_t * r, int i)
 	while(n > 0);
 }
 
-static void transfer(int fd)
+string toS(uint8_t n)
+{
+	string s = "   ";
+	int i = 2;
+	do
+	{
+		s[i] = n % 10 + '0';
+		n /= 10;
+		i--;
+	}
+	while(n > 0);
+
+	return s;
+}
+
+string decode(uint8_t * msg)
+{
+	string s = "";
+	s += "[" + toS(msg[1]) + "]";
+	s += "[" + toS(msg[2]) + "]";
+	s += "[" + toS(msg[3]) + "]";
+	s += "[" + toS(msg[4]) + "]";
+
+	return s;
+}
+
+
+static void transfer(int fd, int a, int b, int c, int d)
 {
 	int ret;
+	int size = 7;
 	cycle++;
-	uint8_t tx[] = {
-        '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', 
-        '_', '_', '_', '_', '_', '_', '_', '_', '_', '_',
-        '_', '_', '_', '_', '_', '_', 0xFF, 0xFF, 0x0, 0x0, 0x0, 0x0
-	};
+	uint8_t tx[size];
 
-	copy(cycle,tx,10);
-
-    //string s = boost::lexical_cast<std::string>(cycle++);
-	uint8_t rx[ ARRAY_SIZE(tx) ] = {0, }; 
-
+	tx[0] = 'S';	
+	tx[1] = a;
+	tx[2] = b;
+	tx[3] = c;
+	tx[4] = d;
+	tx[5] = 'E';
+	tx[6] = '\0';
 
 
+	uint8_t rx[7];
 
 	struct spi_ioc_transfer tr;
 		tr.tx_buf 			= (unsigned long)tx;
 		tr.rx_buf 			= (unsigned long)rx;
-		tr.len 				= ARRAY_SIZE(tx);
+		tr.len 				= size;//ARRAY_SIZE(tx);
 		tr.delay_usecs 		= delay;
 		tr.speed_hz 		= speed;
 		tr.bits_per_word 	= bits;
@@ -84,111 +116,26 @@ static void transfer(int fd)
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 
+	//cout << '"' <<decode(rx)<< "\"   (" <<decode(tx)<< ") "<<ret;
+	cout << decode( tx ) ;
 	if (ret < 1)
 		pabort("can't send spi message");
 
-    cout << ARRAY_SIZE(tx) << endl;
-	for (ret = 0; ret < ARRAY_SIZE(tx); ret++) {
-		//if (!(ret % 6))
-			//puts("");
-		//printf("%.2X ", rx[ret]);
+    //cout << "(" << ARRAY_SIZE(tx) << ")" << tx << endl;
+	/*for (ret = 0; ret < ARRAY_SIZE(tx); ret++) {
 		cout << rx[ret];
-	}
-	cout << endl;
-    
+	}*/
+	//cout << endl;
+    //
 }
 
-static void print_usage(const char *prog)
-{
-	printf("Usage: %s [-DsbdlHOLC3]\n", prog);
-	puts("  -D --device   device to use (default /dev/spidev1.1)\n"
-	     "  -s --speed    max speed (Hz)\n"
-	     "  -d --delay    delay (usec)\n"
-	     "  -b --bpw      bits per word \n"
-	     "  -l --loop     loopback\n"
-	     "  -H --cpha     clock phase\n"
-	     "  -O --cpol     clock polarity\n"
-	     "  -L --lsb      least significant bit first\n"
-	     "  -C --cs-high  chip select active high\n"
-	     "  -3 --3wire    SI/SO signals shared\n");
-	exit(1);
-}
-
-static void parse_opts(int argc, char *argv[])
-{
-	while (1) {
-		static const struct option lopts[] = {
-			{ "device",  1, 0, 'D' },
-			{ "speed",   1, 0, 's' },
-			{ "delay",   1, 0, 'd' },
-			{ "bpw",     1, 0, 'b' },
-			{ "loop",    0, 0, 'l' },
-			{ "cpha",    0, 0, 'H' },
-			{ "cpol",    0, 0, 'O' },
-			{ "lsb",     0, 0, 'L' },
-			{ "cs-high", 0, 0, 'C' },
-			{ "3wire",   0, 0, '3' },
-			{ "no-cs",   0, 0, 'N' },
-			{ "ready",   0, 0, 'R' },
-			{ NULL, 0, 0, 0 },
-		};
-		int c;
-
-		c = getopt_long(argc, argv, "D:s:d:b:lHOLC3NR", lopts, NULL);
-
-		if (c == -1)
-			break;
-
-		switch (c) {
-		case 'D':
-			device = optarg;
-			break;
-		case 's':
-			speed = atoi(optarg);
-			break;
-		case 'd':
-			delay = atoi(optarg);
-			break;
-		case 'b':
-			bits = atoi(optarg);
-			break;
-		case 'l':
-			mode |= SPI_LOOP;
-			break;
-		case 'H':
-			mode |= SPI_CPHA;
-			break;
-		case 'O':
-			mode |= SPI_CPOL;
-			break;
-		case 'L':
-			mode |= SPI_LSB_FIRST;
-			break;
-		case 'C':
-			mode |= SPI_CS_HIGH;
-			break;
-		case '3':
-			mode |= SPI_3WIRE;
-			break;
-		case 'N':
-			mode |= SPI_NO_CS;
-			break;
-		case 'R':
-			mode |= SPI_READY;
-			break;
-		default:
-			print_usage(argv[0]);
-			break;
-		}
-	}
-}
 
 int main(int argc, char *argv[])
 {
 	int ret = 0;
 	int fd;
 
-	parse_opts(argc, argv);
+	//parse_opts(argc, argv);
 
 	fd = open(device, O_RDWR);
 	if (fd < 0)
@@ -231,12 +178,64 @@ int main(int argc, char *argv[])
 	printf("bits per word: %d\n", bits);
 	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
 
-	for( int i = 0; i < 100000; i++ )
+	for (int i = 10; i >= 0; --i)
 	{
-		transfer(fd);		
-		usleep(BAUD_RATE);
+		cout << "starting in " << i << "  \r" << flush;
+		if( i != 0 ) usleep(50000);
 	}
+	cout << endl;
 
+	//for( int i = 0; i < 100000; i++ )
+	//{
+
+		int rs = MOTOR_ARM_START + 70;
+		int rz = MOTOR_ZERO_LEVEL;
+
+		cout << "::INIT::"  << "\t: ";
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rz, rz, rz, rz );
+			usleep(BAUD_RATE);
+			cout << endl;
+		}
+		cout << endl << flush;	
+
+		cout << 1  << "\t: ";
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rs, rz, rz, rz );		
+			usleep(BAUD_RATE);
+			cout << endl;
+		}
+		cout << endl << flush;	
+
+		cout << 2  << "\t: ";
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rz, rs, rz, rz );		
+			usleep(BAUD_RATE);
+			cout << endl;
+		}
+		cout << endl << flush;	
+
+		cout << 3  << "\t: ";
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rz, rz, rs, rz );		
+			usleep(BAUD_RATE);
+			cout << endl;
+		}
+		cout << endl << flush;	
+
+
+		cout << "::HALT::"  << "\t: ";
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rz, rz, rz, rz );		
+			usleep(BAUD_RATE);
+			cout << endl;
+		}
+		cout << endl << flush;	
 
 
 	close(fd);

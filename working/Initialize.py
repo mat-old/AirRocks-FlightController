@@ -24,20 +24,22 @@ def main(argv = 0):
 	GADDRESS 	= dlib.GADDRESS
 	US_READ  	= dlib.uRead_cmd
 	US_DELAY 	= dlib.uDelay_32bit
-	rl,rr,fl,fr = dlib.US_sensor_pins()
+	XYZ_READ 	= dlib.acc_xyz_cmd
+	rl,rr,fl,fr     = dlib.US_sensor_pins()
+
 
 	while not setup.ERR_FLAG_:
 		setup.TEST( lambda: setup.US_TEST( TIME, US_DELAY, BUS, GADDRESS, US_READ, dlib.US_Sensors ) ) 
-		print setup.ERR_FLAG_
-
-
+	 	if setup.ERR_FLAG_:
+			print '\n'
+	 		break
 
 
 
 
 def signal_handler(signal, frame):
 	#GPIO.cleanup() #for SPI bus only
-	print '...'
+	print '\n...'
 	sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
 main()

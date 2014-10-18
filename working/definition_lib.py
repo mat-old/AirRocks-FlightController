@@ -18,8 +18,8 @@ def US_sensor_pins():
 US_Sensors = {
 	'rL': 8,
 	'rR': 7,
-	'fL': 5,
-	'fR': 6
+	'fL': 2,
+	'fR': 3
 	}
 
 US_Reading = {

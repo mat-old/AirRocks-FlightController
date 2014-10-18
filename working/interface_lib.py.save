@@ -12,7 +12,7 @@ def write_i2c_block( bus, address, block ):
 	try:
 		return bus.write_i2c_block_data( address, 1, block)
 	except IOError:
-		print "IOError 0x1",
+		print "IOError 0x1"
 		#ERR_FLAG_ = True
 		return [-1,-1,-1]
 
@@ -21,7 +21,7 @@ def read_i2c_byte( bus, address ):
 	try:
 		return bus.read_byte( address )
 	except IOError:
-		print "IOError 0x2",
+		print "IOError 0x2"
 		#ERR_FLAG_ = True
 		return [-1,-1,-1]
 
@@ -31,6 +31,6 @@ def read_i2c_block( bus, address ):
 	try:
 		return bus.read_i2c_block_data( address, 1)
 	except IOError:
-		print "IOError 0x3",
+		#print "IOError 0x3"
 		#ERR_FLAG_ = True
 		return [-1,-1,-1]
