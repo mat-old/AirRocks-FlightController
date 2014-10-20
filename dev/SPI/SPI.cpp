@@ -31,7 +31,7 @@
 using namespace std;
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-#define BAUD_RATE 10000
+#define BAUD_RATE 500000 // .5 MHZ transmission
 
 static void pabort(const char *s)
 {
@@ -92,13 +92,12 @@ static void transfer(int fd, int a, int b, int c, int d)
 	cycle++;
 	uint8_t tx[size];
 
-	tx[0] = 'S';	
+	tx[0] = 0x1;	
 	tx[1] = a;
 	tx[2] = b;
 	tx[3] = c;
 	tx[4] = d;
-	tx[5] = 'E';
-	tx[6] = '\0';
+	tx[5] = '\0';
 
 
 	uint8_t rx[7];
@@ -115,9 +114,9 @@ static void transfer(int fd, int a, int b, int c, int d)
 	//printf("%s\n",tx );
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-
+	cout << "sent" << endl;
 	//cout << '"' <<decode(rx)<< "\"   (" <<decode(tx)<< ") "<<ret;
-	cout << decode( tx ) ;
+	//cout << decode( tx ) ;
 	if (ret < 1)
 		pabort("can't send spi message");
 
@@ -127,6 +126,7 @@ static void transfer(int fd, int a, int b, int c, int d)
 	}*/
 	//cout << endl;
     //
+	cout << rx << endl;
 }
 
 
@@ -191,51 +191,58 @@ int main(int argc, char *argv[])
 		int rs = MOTOR_ARM_START + 70;
 		int rz = MOTOR_ZERO_LEVEL;
 
-		cout << "::INIT::"  << "\t: ";
+		//cout << "::INIT::"  << "\t: ";
 		for (int i = 0; i < 10; ++i)
 		{
 			transfer(fd, rz, rz, rz, rz );
 			usleep(BAUD_RATE);
-			cout << endl;
+			//cout << endl;
 		}
-		cout << endl << flush;	
+		//cout << endl << flush;	
 
-		cout << 1  << "\t: ";
+		//cout << 1  << "\t: ";
 		for (int i = 0; i < 10; ++i)
 		{
 			transfer(fd, rs, rz, rz, rz );		
 			usleep(BAUD_RATE);
-			cout << endl;
+			//cout << endl;
 		}
-		cout << endl << flush;	
+		//cout << endl << flush;	
 
-		cout << 2  << "\t: ";
+		//cout << 2  << "\t: ";
 		for (int i = 0; i < 10; ++i)
 		{
 			transfer(fd, rz, rs, rz, rz );		
 			usleep(BAUD_RATE);
-			cout << endl;
+			//cout << endl;
 		}
-		cout << endl << flush;	
+		//cout << endl << flush;	
 
-		cout << 3  << "\t: ";
+		//cout << 3  << "\t: ";
 		for (int i = 0; i < 10; ++i)
 		{
 			transfer(fd, rz, rz, rs, rz );		
 			usleep(BAUD_RATE);
-			cout << endl;
+			//cout << endl;
 		}
-		cout << endl << flush;	
+
+		for (int i = 0; i < 10; ++i)
+		{
+			transfer(fd, rz, rz, rz, rs );		
+			usleep(BAUD_RATE);
+			//cout << endl;
+		}
+		//cout << endl << flush;	
 
 
-		cout << "::HALT::"  << "\t: ";
+		//cout << "::HALT::"  << "\t: ";
 		for (int i = 0; i < 10; ++i)
 		{
 			transfer(fd, rz, rz, rz, rz );		
 			usleep(BAUD_RATE);
-			cout << endl;
+			//cout << endl;
 		}
-		cout << endl << flush;	
+		//cout << endl << flush;	
 
 
 	close(fd);
