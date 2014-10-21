@@ -20,16 +20,12 @@ private:
 	uint8_t   iobits_per_word
 			, iomode
 			, mode;
-	bool      fail_flag;
 	/* SPIworker daemon members */
-	volatile bool dispose;
 	volatile uint8_t Tx[Def::ioLength];
 	pthread_t daemon;
 
 public:
 	SPIworker() : SubSystem() {
-		dispose          = false;
-		fail_flag        = false;
 		iospeed_hz       = Def::ioBAUD_RATE;
 		iobits_per_word  = Def::ioBits;
 		iomode           = 0x0;
@@ -37,7 +33,7 @@ public:
 		updateTx(Tx, Def::InitialMotorState);
 	}
 	~SPIworker() {
-		dispose = true;
+		Dispose();
 		/* wait and catch thread */
 		usleep(iospeed_hz*0x2);
 		close(dev);
@@ -80,10 +76,6 @@ public:
 		pthread_detach(daemon);
 		return *this;
 	}
-	SPIworker& Dispose() {
-		dispose = true;
-		return *this;
-	}
 	SPIworker& Update(uint8_t speeds[Def::ioMsg_Length]) {
 		Tx[0] = Def::ioFlag_Start;
 		Tx[1] = speeds[0];
@@ -115,10 +107,11 @@ private:
 
 	void *transmit_SPId() {
 		int fd  = dup(dev);
-		std::cout << "spi mode      " << (int)mode << "\n"
-				  << "bits per word " << (int)iobits_per_word << "\n"
-				  << "max speed     " << iospeed_hz << "Hz\n" << std::flush; 
-
+		#ifdef DEBUG
+			std::cout << "spi mode      " << (int)mode << "\n"
+					  << "bits per word " << (int)iobits_per_word << "\n"
+					  << "max speed     " << iospeed_hz << "Hz\n" << std::flush; 
+		#endif
 		while(true) {
 			struct spi_ioc_transfer ioc;
 			uint8_t tx[Def::ioLength] = {0,};

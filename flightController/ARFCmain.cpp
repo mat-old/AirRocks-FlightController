@@ -11,6 +11,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 	SPIworker *spi = new SPIworker();
+	PIDctrl   *pid = new PIDctrl();
 
 	cout << endl;
 	try {
@@ -28,6 +29,7 @@ int main(int argc, char const *argv[])
 		cout << e.what() << " occured disposing objects and exiting..." << endl;
 	}
 	delete spi;
+	delete pid;
 	exit(1);
 	return 0;
 }

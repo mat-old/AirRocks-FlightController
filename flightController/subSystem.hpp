@@ -3,12 +3,22 @@
 #include <stdint.h>
 #ifndef SUBSYSTEM
 #define SUBSYSTEM
+
 class SubSystem {
 protected:
 ErrorMap err;
+bool      fail_flag;
+volatile bool dispose;
 public:
-	SubSystem() {}
+	SubSystem() {
+		dispose          = false;
+		fail_flag        = false;
+	}
 	~SubSystem(){}
 
+	SubSystem& Dispose() {
+		dispose = true;
+		return *this;
+	}
 };
 #endif
