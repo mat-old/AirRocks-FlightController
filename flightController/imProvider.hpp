@@ -5,7 +5,7 @@
 #include "arfcDefines.hpp"
 #include "imuInterface.hpp"
 #ifndef IMPROVIDER
-#define IMPROVIDER
+#define IMPROVIDER 
 class IMprovider : public IMUinterface {
 private:
 public:

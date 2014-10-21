@@ -3,7 +3,7 @@
 
 #include "vector.h"
 
-class IMU {
+class IMU { 
 public:
     // Scaled readings
     virtual vector readMag() = 0;  // In body coords, scaled to -1..1 range

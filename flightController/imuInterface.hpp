@@ -41,7 +41,7 @@ public:
 		delete gyro;
 	}
 	/* load calibration & enable */
-	IMUinterface& Open() {
+	IMUinterface& Open() { 
 		try {
 			compass = new LSM303(Def::i2c_device);
 			gyro    = new L3G(Def::i2c_device);

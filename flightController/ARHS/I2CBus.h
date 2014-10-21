@@ -27,7 +27,7 @@ public:
 	void addressSet(uint8_t address) {
 		int result = ioctl(fd, I2C_SLAVE, address);
 		if (result == -1)
-			throw FAIL_I2C_DEV;
+			throw FAIL_I2C_DEV; 
 			//throw posix_error("Failed to set address.");
 	}
 

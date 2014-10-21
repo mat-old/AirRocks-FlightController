@@ -2,6 +2,12 @@
 #ifndef ARFDEF
 #define ARFDEF
 namespace Def {
+	/* IMU Interface */
+	const float field_width        = 6.0f;
+	const char *imu_calibration    = "~/.minimu9-ahrs-cal";
+	const char *i2c_device         = "/dev/i2c-1";
+
+	/* SPI Worker */ 
 	const uint8_t MOTOR_ZERO_LEVEL = 125u;
 	const uint8_t MOTOR_ARM_START  = 140u;
 	const uint8_t MOTOR_MAX_LEVEL  = 254u;
@@ -13,8 +19,7 @@ namespace Def {
 	const uint8_t ioFlag_End       = 0xB;
 	const uint8_t ioMsg_Length     = 4u;
 	const uint8_t ioMsg_Offset     = 1u;
-	const char *spi_device = "/dev/spidev0.1";
-
+	const char *spi_device         = "/dev/spidev0.1";
 
 	inline uint8_t MOTOR_SAFE_SPEED(uint8_t s) {
 		if( s > MOTOR_MAX_LEVEL  ) return MOTOR_MAX_LEVEL;

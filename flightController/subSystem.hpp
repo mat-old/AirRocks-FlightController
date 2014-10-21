@@ -4,7 +4,7 @@
 #ifndef SUBSYSTEM
 #define SUBSYSTEM
 
-class SubSystem {
+class SubSystem { 
 protected:
 ErrorMap err;
 bool      fail_flag;
