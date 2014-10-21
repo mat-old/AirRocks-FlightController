@@ -1,6 +1,7 @@
-#include <iostream>
 #include <sys/time.h>
 #include <time.h>
+#include <iostream>
+#include <ncurses.h>
 
 #include "IMUStablizer.hpp"
 #include "include/vector.h"
@@ -17,17 +18,14 @@
 
 void read9DOF(quaternion& , float , const vector& , const vector& , const vector& );
 matrix rotationFromCompass(const vector&, const vector&);
-void Irotate(quaternion&, const vector&, float);
 void output_euler(quaternion &, vector&, vector&);
-void loop6DOF();
 void loop9DOF();
 int millis();
 
 int main(int argc, char const *argv[])
 {
 	
-	loop6DOF();
-	//loop9DOF();
+	loop9DOF();
 
 	return 0;
 }
@@ -40,7 +38,24 @@ void rotate(quaternion& rotation, const vector& w, float dt)
 	rotation.normalize();
 }
 
-void loop6DOF() {
+void vectorLine(vector & v)
+{
+	float  a = v(0)
+		 , b = v(1)
+		 , c = v(2);
+
+	printw("%s%0.3f%s%0.3f%s%0.3f      ",(a<0?" ":"  "),a,(b<0?" ":"  "),b,(c<0?" ":"  "),c); 
+}
+void vectorLineCompass(vector & v)
+{
+	float  a = v(0)
+		 , b = v(1)
+		 , c = v(2);
+
+	printw("%0.2lf\t%0.2lf\t%0.2lf\n  ",a,b,c);
+}
+
+void loop9DOF() {
 	int time_next, time_last;
 
 	MinIMU9 imu(I2CDEVICE);
@@ -49,6 +64,8 @@ void loop6DOF() {
 
 	quaternion rotation = quaternion::Identity();
 
+	/* start session */
+	initscr();
 	time_next = millis();
 	while(true) {
 		time_last = time_next;
@@ -71,52 +88,35 @@ void loop6DOF() {
 				+ rc.row(1).cross(rm.row(1))
 				+ rc.row(2).cross(rm.row(2))
 			) * 1.0f;
-
-
 		}
 
 		/* rotate */
 		rotate( rotation, gyro + correction, time_derivative );
-		std::cout << "\rGyro[" << gyro << "]\tAccel[" << accel << "]" << std::flush;
+
+		vector euler = rotation.toRotationMatrix().eulerAngles(2, 1, 0) * (180 / M_PI);
+
+		move(5,4);
+		printw("Gyroscope");
+		move(5,15);		
+		vectorLine(gyro);
+		move(6,4);
+		printw("Accel");
+		move(6,15);
+		vectorLine(accel);
+		move(8,4);
+		printw("Compass");
+		move(8,15);
+		printw("NORTH\tEAST\tDOWN\n");		
+		move(9,15);
+		vectorLineCompass(euler);
+		//std::cout << "\rGyro[" << gyro << "]\tAccel[" << accel << "]" << std::flush;
+		refresh();
+
 
 		/* original is better, though this is fine */
 		usleep(20*1000);
 	}
-
-}
-
-
-void loop9DOF() {
-	MinIMU9 imu(I2CDEVICE);
-
-	imu.loadCalibration();
-	imu.enable();
-	imu.measureOffsets();
-
-	quaternion rotation = quaternion::Identity();
-	int start = millis();
-	while(1)
-	{
-		int last_start = start;
-		start = millis();
-		float dt = (start-last_start)/1000.0;
-		if (dt < 0){ throw std::runtime_error("Time went backwards."); }
-
-		vector angular_velocity = imu.readGyro();
-		vector acceleration     = imu.readAcc();
-		vector magnetic_field   = imu.readMag();
-
-		read9DOF(rotation, dt, angular_velocity, acceleration, magnetic_field);
-
-		output_euler(rotation, acceleration, magnetic_field);
-		//std::cout << "  " << acceleration << "  " << magnetic_field << std::endl << std::flush;
-
-		// Ensure that each iteration of the loop takes at least 20 ms.
-		while(millis() - start < 20)
-		{
-			usleep(1000);
-		}
-	}
+	endwin(); /* end session */
 }
 
 void output_euler(quaternion & rot, vector& accel, vector& magf)
@@ -132,42 +132,6 @@ int millis()
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return (tv.tv_sec) * 1000 + (tv.tv_usec)/1000;
-}
-
-void read9DOF(
-	  quaternion& rotation
-	, float dt
-	, const vector& angular_velocity
-	, const vector& acceleration
-	, const vector& magnetic_field
-) {
-	vector correction = vector(0, 0, 0);
-
-	if (abs(acceleration.norm() - 1) <= 0.3)
-	{
-		// The magnetidude of acceleration is close to 1 g, so
-		// it might be pointing up and we can do drift correction.
-		const float correction_strength = 1;
-
-		matrix rotationCompass = rotationFromCompass(acceleration, magnetic_field);
-		matrix rotationMatrix = rotation.toRotationMatrix();
-
-		correction = (
-			rotationCompass.row(0).cross(rotationMatrix.row(0)) +
-			rotationCompass.row(1).cross(rotationMatrix.row(1)) +
-			rotationCompass.row(2).cross(rotationMatrix.row(2))
-		  ) * correction_strength;
-
-	}
-
-	Irotate(rotation, angular_velocity + correction, dt);
-}
-void Irotate(quaternion& rotation, const vector& w, float dt)
-{
-	// Multiply by first order approximation of the
-	// quaternion representing this rotation.
-	rotation *= quaternion(1, w(0)*dt/2, w(1)*dt/2, w(2)*dt/2);
-	rotation.normalize();
 }
 matrix rotationFromCompass(const vector& acceleration, const vector& magnetic_field)
 {

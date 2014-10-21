@@ -22,6 +22,9 @@
 float field_width = 6;
 
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(field_width)
+
+
+
 std::ostream & operator << (std::ostream & os, const vector & vector)
 {
     return os << FLOAT_FORMAT << vector(0) << ' '
