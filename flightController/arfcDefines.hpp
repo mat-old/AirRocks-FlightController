@@ -1,13 +1,20 @@
+#include <sys/time.h>
 #include <stdint.h>
+#include <iomanip>
+#include <time.h>
 #ifndef ARFDEF
 #define ARFDEF
+#define ATOMIC volatile bool
+#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
+
 namespace Def {
 	/* IMU Interface */
 	const useconds_t imuBAUD_RATE  = 20000u;
 	const float field_width        = 6.0f;
+	const float imuCorrection      = 1.0f;
 	const float imuSample_Count    = 32.0f;
 	const float imuAccel_Scale     = 0.000244;
-	const float imuGyro_Scale      = 0.00122173; //0.07*Pi/180.0
+	const float imuGyro_Scale      = 0.07 * 3.14159265 / 180;//0.00122173; //0.07*Pi/180.0
 	const char *imu_calibration    = "~/.minimu9-ahrs-cal";
 	const char *i2c_device         = "/dev/i2c-1";
 
@@ -42,5 +49,12 @@ namespace Def {
 		0x0,	/* optional flag */
 		ioFlag_End
 	};
+
+
+	int millis() {
+		struct timeval tv;
+		gettimeofday(&tv, NULL);
+		return (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+	}
 }
 #endif

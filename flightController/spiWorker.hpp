@@ -20,9 +20,9 @@ private:
 	uint8_t   iobits_per_word
 			, iomode
 			, mode;
-	/* SPIworker daemon members */
+	/* SPIworker worker members */
 	volatile uint8_t Tx[Def::ioLength];
-	pthread_t daemon;
+	pthread_t worker;
 
 public:
 	SPIworker() : SubSystem() {
@@ -58,22 +58,22 @@ public:
 			if( ret == -1)										throw 6;
 			if( iospeed_hz != Def::ioBAUD_RATE )				throw 6;
 		} catch( int e ) {
-			fail_flag = true;
+			Set_Fail(true);
 			err.Response(e);
 		}
 		return *this;
 	}
 	/* start thread */
 	SPIworker& Start() {
-		if( !fail_flag ) {
-			int ret = pthread_create(&daemon, NULL, &SPIworker::daemon_helper, this);
-			if( ret != 0 ) throw 7;
-		} else throw 8;
+		if( !Fail() ) {
+			int ret = pthread_create(&worker, NULL, &SPIworker::worker_helper, this);
+			if( ret != 0 ) throw FAIL_START_WORKER;
+		} else throw FAIL_FLAG_SET;
 		return *this;
 	}
-	/* make daemon, "just saves resources, dont do if switch has too much over head" */
+	/* make worker, "just saves resources, dont do if switch has too much over head" */
 	SPIworker& Detach() {
-		pthread_detach(daemon);
+		pthread_detach(worker);
 		return *this;
 	}
 	SPIworker& Update(uint8_t speeds[Def::ioMsg_Length]) {
@@ -101,11 +101,11 @@ private:
 		destination[i] = Def::ioFlag_End;
 	}
 
-	static void *daemon_helper(void *context) {
-		return ((SPIworker *)context)->transmit_SPId();
+	static void *worker_helper(void *context) {
+		return ((SPIworker *)context)->worker_run();
 	}
 
-	void *transmit_SPId() {
+	void *worker_run() {
 		int fd  = dup(dev);
 		#ifdef DEBUG
 			std::cout << "spi mode      " << (int)mode << "\n"
@@ -139,7 +139,7 @@ private:
 			}
 			
 			usleep(Def::ioBAUD_RATE);
-			if( dispose ) return 0;
+			if( Disposed() ) return 0;
 		}
 		return 0;
 	}

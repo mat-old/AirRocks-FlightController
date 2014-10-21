@@ -14,7 +14,7 @@ typedef enum {
 	, FAIL_GET_BIT
 	, FAIL_SET_SPEED
 	, FAIL_GET_SPEED
-	, FAIL_START_DAEMON
+	, FAIL_START_WORKER
 	, FAIL_FLAG_SET
 	, FAIL_I2C_PERM
 	, FAIL_I2C_DEV
@@ -23,6 +23,7 @@ typedef enum {
 	, FAIL_I2C_BLOCK
 	, FAIL_I2C_CAL_OPEN
 	, FAIL_I2C_CAL_READ
+	, UNREACHABLE
 	, ERR_ANY = 0xFFFF  /* catch all code */
 } errCodes;
 
@@ -50,7 +51,7 @@ public:
 		code[FAIL_GET_BIT]   = "Failed to get bits per word";
 		code[FAIL_SET_SPEED] = "Failed to set Max Speed hz";
 		code[FAIL_GET_SPEED] = "Failed to get Max Speed hz";
-		code[FAIL_START_DAEMON]  = "Could not start SPIdaemon thread";
+		code[FAIL_START_WORKER]  = "Could not start SPIdaemon thread";
 		code[FAIL_FLAG_SET]  = "Error flag was set early";
 		/* IMU interface subsystem */
 		code[FAIL_I2C_DEV]   = "Invalid I2C device";
@@ -60,6 +61,7 @@ public:
 		code[FAIL_I2C_BLOCK] = "Failed to read block from I2C";
 		code[FAIL_I2C_CAL_OPEN] = "Failed to open IMU calibration";
 		code[FAIL_I2C_CAL_READ] = "Failed to read IMU calibration";
+		code[UNREACHABLE]    = "Unreachable state was detected";
 	}
 	void Response(int r) {
 		std::cout << code[r] << std::endl;
@@ -94,9 +96,14 @@ public:
 				return;
 			/* SPIworker daemon */
 			case FAIL_FLAG_SET:
-			case FAIL_START_DAEMON:
+			case FAIL_START_WORKER:
 				std::cout << "Cannot control motors" << std::endl;
 				sleepThrowWhere(3,sysEx,r);
+				return;
+			/* FATAL */
+			case UNREACHABLE:
+				std::cout << "FATAL ERROR" << std::endl;
+				sleepThrowWhere(10,sysEx,r);
 				return;
 			default:
 			std::cout << "Unknown ErrorMap.Response" << r << std::endl;
