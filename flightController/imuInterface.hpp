@@ -32,8 +32,12 @@ private:
 	LSM303 * compass;
 	L3G    * gyro;
 
-	int_vector    mag_min
-				, mag_max;
+	int_vector    min_magn
+				, max_magn
+				, raw_magn
+				, raw_accl
+				, raw_gyro;
+	vector        gyro_offset;
 public:
 	IMUinterface() : SubSystem() {}
 	~IMUinterface() {
@@ -58,12 +62,12 @@ public:
 		if( dev.bad() )
 			throw FAIL_I2C_CAL_OPEN;
 
-		dev >> mag_min(0)
-			>> mag_max(0)
-			>> mag_min(1)
-			>> mag_max(1)
-			>> mag_min(2)
-			>> mag_max(2);
+		dev >> min_magn(0)
+			>> max_magn(0)
+			>> min_magn(1)
+			>> max_magn(1)
+			>> min_magn(2)
+			>> max_magn(2);
 
 		if( dev.fail() || dev.bad() )
 			throw FAIL_I2C_CAL_READ;
@@ -75,6 +79,36 @@ public:
 		compass->enable();
 		gyro->enable();
 		return *this;
+	}
+	IMUinterface& MeasureOffsets() {
+		gyro_offset = vector::Zero();
+		for (int i = 0; i < Def::imuSample_Count; ++i) {
+			gyro->read();
+			gyro_offset += vector_from_ints(&gyro->g);
+			usleep(Def::imuBAUD_RATE);
+		}
+		gyro_offset /= Def::imuSample_Count;
+		return *this;
+	}
+	vector ReadMagn() {
+		compass->readMag();
+		raw_magn = int_vector_from_ints(&compass->m);
+
+		vector v;
+		v(0) = (float)(compass->m[0] - min_magn(0)) / (max_magn(0) - min_magn(0)) * 2 - 1;
+		v(1) = (float)(compass->m[1] - min_magn(1)) / (max_magn(1) - min_magn(1)) * 2 - 1;
+		v(2) = (float)(compass->m[2] - min_magn(2)) / (max_magn(2) - min_magn(2)) * 2 - 1;
+		return v;
+	}
+	vector ReadAccl() {
+		compass->read();
+		raw_accl = int_vector_from_ints(&compass->a);
+		return ( vector_from_ints(&compass->a) ) * Def::imuAccel_Scale;
+	}
+	vector ReadGyro() {
+		gyro->read();
+		raw_gyro = int_vector_from_ints(&gyro->g);
+		return ( vector_from_ints(&gyro->g) - gyro_offset ) * Def::imuGyro_Scale;
 	}
 
 };

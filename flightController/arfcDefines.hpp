@@ -3,14 +3,19 @@
 #define ARFDEF
 namespace Def {
 	/* IMU Interface */
+	const useconds_t imuBAUD_RATE  = 20000u;
 	const float field_width        = 6.0f;
+	const float imuSample_Count    = 32.0f;
+	const float imuAccel_Scale     = 0.000244;
+	const float imuGyro_Scale      = 0.00122173; //0.07*Pi/180.0
 	const char *imu_calibration    = "~/.minimu9-ahrs-cal";
 	const char *i2c_device         = "/dev/i2c-1";
 
-	/* SPI Worker */ 
+	/* Motor Const */ 
 	const uint8_t MOTOR_ZERO_LEVEL = 125u;
 	const uint8_t MOTOR_ARM_START  = 140u;
 	const uint8_t MOTOR_MAX_LEVEL  = 254u;
+	/* SPI Worker */
 	const useconds_t ioBAUD_RATE   = 500000; // .5 MHZ transmission
 	const uint8_t ioDelay          = 0u;
 	const uint8_t ioLength         = 8u;
