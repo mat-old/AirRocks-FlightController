@@ -29,8 +29,11 @@ public:
 		code[4] = "Failed to get bits per word";
 		code[5] = "Failed to set Max Speed hz";
 		code[6] = "Failed to get Max Speed hz";
+		code[7] = "Could not start SPIdaemon thread";
+		code[8] = "Error flag was set early";
 	}
 	void Response(int r) {
+		std::cout << code[r] << std::endl;
 		switch(r) {
 			/* AnyError */
 			case 0xFFFF:
@@ -45,13 +48,17 @@ public:
 			case 4:
 			case 5:
 			case 6:
-				std::cout << code[r] << std::endl;
-				std::cout << "No permission." << std::endl;
+				std::cout << "No permission" << std::endl;
 				sleepThrowWhere(3,sysEx,r);
 				return;
-
+			/* SPIworker daemon */
+			case 7:
+			case 8:
+				std::cout << "Cannot control motors" << std::endl;
+				sleepThrowWhere(3,sysEx,r);
+				return;
 			default:
-			std::cout << "Unknown ErrorMap.doResponse " << r << std::endl;
+			std::cout << "Unknown ErrorMap.Response" << r << std::endl;
 		}
 	}
 
