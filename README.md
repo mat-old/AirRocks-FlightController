@@ -10,12 +10,12 @@ __Subsystems__
 _Defined as hardware and the basic software needed to use it._
   1. PID - 1%    
 2. Started (IMUStabilizer)   
-  2. SPI - 50%     
-3. Arduino interface complete   
-4. Rpi driver under developement     
+  2. SPI - 99%     
+3. All interfaces complete   
+4. Waiting for "failsafe landing procedure"     
   3. SCA - 50%    
 4. Waiting on larger battery  
-5. Needs bettery wiring / not enough space  
+5. Needs bettery wiring / not enough physical space in SCA module space  
   4. DHCP interface - 0%    
 5. Waiting on aditional Rpi to test P2P posibilities  
 
