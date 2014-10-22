@@ -3,6 +3,7 @@ Packages
 Package | /bin/* | note  
 --------------|-----|------------  
  i2c-tools  |  i2cdetect -y 1 | run with ``-y 1`` or you can mess up clock  
+ python-smbus | none | i2c selection driver
 
 GrovePi
 -----------------
