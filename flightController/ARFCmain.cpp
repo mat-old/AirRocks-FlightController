@@ -19,31 +19,41 @@ int main(int argc, char const *argv[]) {
 	cout << endl;
 	SPIworker *spi = new SPIworker();
 	IMUworker *imu = new IMUworker();
-	//PIDctrl   *pid = new PIDctrl();
+	PIDctrl   *pid = new PIDctrl();
 
 	try {
 		#ifdef MAIN_DEBUG
 			cout << "> Initializing..." << endl;
 		#endif
-		uint8_t speedBuf[Def::ioMsg_Length] = {Def::MOTOR_ZERO_LEVEL,};
-		Potential gyro, accel;
+
+		Potential gyro
+				, accel
+				, steering;
+		uint8_t   speedBuf[Def::ioMsg_Length] = {Def::MOTOR_ZERO_LEVEL,}
+				, throttle = Def::MOTOR_ZERO_LEVEL;
+
 		spi->Open().Start().Detach();
 		imu->Prepare().Start().Detach();
+		pid->Use(speedBuf);
 		#ifdef MAIN_DEBUG
 			cout << "> Entering open control" << endl;
 		#endif
 		/* wait for all threads to run */
 		sleep(1);
 		while(imu->Active()) {
-			spi->Update(speedBuf);
-			imu->Update(gyro, accel);
+
+			unsigned long loop = Def::millis();
+
+			imu->Update     (gyro, accel);
+			pid->Calculate  (throttle, steering, gyro, accel);
+			//spi->Update     (speedBuf);
 
 
-			cout <<'\r'<<accel<<"          "<<flush;
+				// << "  " << (Def::millis() - loop) << endl;
+				// the loop is roughly an entire milli second WOO!
 
-			//sleep(1);
-			//char i;
-			//cin >> i;
+
+
 		}
 		throw UNREACHABLE;
 	}
@@ -52,7 +62,7 @@ int main(int argc, char const *argv[]) {
 	}
 	delete imu;
 	delete spi;
-	//delete pid;
+	delete pid;
 	cout << "> Exit(1)::\n" << endl;
 	exit(1);
 	return 0;

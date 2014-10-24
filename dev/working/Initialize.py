@@ -28,13 +28,15 @@ def main(argv = 0):
 	rl,rr,fl,fr     = dlib.US_sensor_pins()
 
 
-	while not setup.ERR_FLAG_:
-		setup.TEST( lambda: setup.US_TEST( TIME, US_DELAY, BUS, GADDRESS, US_READ, dlib.US_Sensors ) ) 
-	 	if setup.ERR_FLAG_:
-			print '\n'
-	 		break
-
-
+	#while not setup.ERR_FLAG_:
+	#	setup.TEST( lambda: setup.US_TEST( TIME, US_DELAY, BUS, GADDRESS, US_READ, dlib.US_Sensors ) ) 
+	# 	if setup.ERR_FLAG_:
+	#		print '\n'
+	# 		break
+	while True:
+		pin = 5;
+		x = SensorRead( TIME, US_DELAY, BUS, GADDRESS, US_READ, pin )
+		print "WORKS!", x
 
 
 def signal_handler(signal, frame):

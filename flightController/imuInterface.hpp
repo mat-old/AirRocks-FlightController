@@ -46,7 +46,7 @@ public:
 				, data_a
 				, data_g
 				, data_e;
-	int 		  time_next
+	int64_t       time_next
 				, time_last;
 
 	IMUinterface() : AsyncWorker() {
@@ -90,6 +90,7 @@ public:
 
 			this->fopened = true;
 		}
+		Set_Active(true);
 		return *this;
 	}
 
