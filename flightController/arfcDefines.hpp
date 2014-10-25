@@ -7,11 +7,24 @@
 #define ATOMIC volatile bool
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 /* i knew it was a reserved type when i used it */
-#define pid_t double
+#define pid_t float
 #define angel_t pid_t
 const bool IMU_ENABLED = true;
 const bool SPI_ENABLED = true;
 const bool PID_ENABLED = true;
+
+/* blades
+*	A  CW    -x axis
+*	B  CCW   -y axis
+*	C  CW    +x axis
+*	D  CCW   +y axis
+*	-yaw     turn right
+*   +yaw     turn left
+*   +roll    roll right (if looking at back)
+*   -roll    roll left  (if looking at back)
+*   +pitch   tilt forward
+*   -pitch   tilt backward
+ */
 
 
 namespace Def {
@@ -41,27 +54,28 @@ namespace Def {
 	const char *spi_device         = "/dev/spidev0.1";
 
 	/* PIDctrl */
-	const pid_t norm_P     = 0.002;
-	const pid_t norm_I     = 0.004;
-	const pid_t norm_D     = 0.001;
+	const pid_t pitch_zero = 0.035f;
+	const pid_t roll_zero  = 0.022f;
+	const pid_t yaw_zero   = 1.020f;
 
-	const pid_t roll_P     = norm_P;
-	const pid_t roll_I     = norm_I;
-	const pid_t roll_D     = norm_D;
-	const pid_t roll_MIN   = 0.0f;
-	const pid_t roll_MAX   = 0.0f;
-
-	const pid_t pitch_P    = norm_P;
-	const pid_t pitch_I    = norm_I;
-	const pid_t pitch_D    = norm_D;
-	const pid_t pitch_MIN  = 0.0f;
-	const pid_t pitch_MAX  = 0.0f;
-
-	const pid_t yaw_P      = norm_P;
-	const pid_t yaw_I      = norm_I;
-	const pid_t yaw_D      = norm_D;
-	const pid_t yaw_MIN    = 0.0f;
-	const pid_t yaw_MAX    = 0.0f;
+	/* X */
+	const pid_t pitch_P    = 1.0f;
+	const pid_t pitch_I    = 0.0f;
+	const pid_t pitch_D    = 0.0f;
+	const pid_t pitch_MIN  = -1.0f; /* roughly 45degrees forward*/
+	const pid_t pitch_MAX  = +1.0f; /* roughly 45degrees backward*/  
+	/* Y */
+	const pid_t roll_P     = 0;
+	const pid_t roll_I     = 0;
+	const pid_t roll_D     = 0;
+	const pid_t roll_MIN   = -1.0f; /* tilt right */
+	const pid_t roll_MAX   = +1.0f; /* tilt left */
+	/* Z */
+	const pid_t yaw_P      = 0;
+	const pid_t yaw_I      = 0;
+	const pid_t yaw_D      = 0;
+	const pid_t yaw_MIN    = 0; /* tilt and axis */
+	const pid_t yaw_MAX    = 1.030f; /* level */
 
 	/* angel values from resting IMU accel */
 	const pid_t x_P        = 0.043;
@@ -95,12 +109,11 @@ namespace Def {
 		0x0,	/* optional flag */
 		ioFlag_End
 	};
+}
 
-
-	unsigned long millis() {
-		struct timeval tv;
-		gettimeofday(&tv, NULL);
-		return (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
-	}
+unsigned long millis() {
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
 }
 #endif

@@ -11,7 +11,7 @@ using namespace Def;
 #define PIDCONTROLLER
 class PIDctrl : public SubSystem {
 private:
-	pid_ctrl_t 	  Proll
+	pid_alt 	  Proll
 				, Ppitch
 				, Pyaw
 				, Px
@@ -22,34 +22,46 @@ private:
 			, x
 			, y;
 
+	int time_next;
+
 	uint8_t *a, *b, *c, *d;
 public:
 	PIDctrl() : SubSystem() {
-		Proll.Use  (&roll);
-		Ppitch.Use (&pitch);
-		Pyaw.Use   (&yaw);
-		Px.Use     (&x);
-		Py.Use     (&y);
+		time_next = millis();
+		Ppitch.Attach (&pitch).name= "pitch";
+		Proll.Attach  (&roll).name = "roll ";
+		Pyaw.Attach   (&yaw).name  = "yaw  ";
+		//Px.Use     (&x).name    = "x    ";
+		//Py.Use     (&y).name    = "y    ";
 		//p  i, pid_t d, min, max
-		Proll.Set(
+
+		Ppitch.SetTime(20);  /*  20 ms for each */
+		Proll.SetTime(20);
+		Pyaw.SetTime(20);
+
+		Ppitch.set_point = Def::pitch_zero;
+		Proll.set_point  = Def::roll_zero;
+		Pyaw.set_point   = Def::yaw_zero;
+
+		Proll.SetPID(
 			  roll_P
 			, roll_I
-			, roll_D
-			, roll_MIN
-			, roll_MAX);
-		Ppitch.Set(
+			, roll_D);
+			//, roll_MIN
+			//, roll_MAX);
+		Ppitch.SetPID(
 			  pitch_P
 			, pitch_I
-			, pitch_D
-			, pitch_MIN
-			, pitch_MAX);
-		Pyaw.Set(
+			, pitch_D);
+			//, pitch_MIN
+			//, pitch_MAX);
+		Pyaw.SetPID(
 			  yaw_P
 			, yaw_I
-			, yaw_D
-			, yaw_MIN
-			, yaw_MAX);
-		Px.Set(
+			, yaw_D);
+			//, yaw_MIN
+			//, yaw_MAX);
+/*		Px.Set(
 			  x_P
 			, x_I 
 			, x_D 
@@ -61,7 +73,7 @@ public:
 			, y_D
 			, y_MIN
 			, y_MAX);
-
+*/
 		if( !PID_ENABLED ) Disable();
 	}
 	~PIDctrl() {
@@ -69,30 +81,38 @@ public:
 	}
 
 
-	PIDctrl& Calculate(uint8_t throttle, const Potential& steering, const Potential& gyro, const Potential& accel) {
+	PIDctrl& Calculate( uint8_t throttle,
+						const Potential& steering,
+						const Potential& gyro,
+						const Potential& accel ) {
 
-		Proll.Compute  ( steering.x - accel.y );
-		Ppitch.Compute ( steering.y - accel.x ); 
-		Pyaw.Compute   ( steering.z - accel.z );  
+		Ppitch.Compute (  accel.x ); 
+		Proll.Compute  (  accel.y );
+		Pyaw.Compute   (  accel.z );  
 
-		*a = throttle + roll + pitch + yaw;
-		*b = throttle - roll + pitch - yaw;
-		*c = throttle + roll - pitch - yaw;
-		*d = throttle - roll - pitch + yaw;
+		/*1*/*c = throttle - roll + pitch + yaw;
+		/*3*/*d = throttle + roll + pitch - yaw;
+		/*2*/*b = throttle - roll - pitch - yaw;
+		/*4*/*a = throttle + roll - pitch + yaw;
 
+		if( (millis() - time_next) > 200 ) {
+			std::cout
+				/*<< "  " << Proll
+				<< "  " << (int)*a
+				<< "  " << (int)*b
+				<< "  " << (int)*c
+				<< "  " << (int)*d*/
 
+				<< " P " << FLOAT_FORMAT << pitch
+				//<< "  " << FLOAT_FORMAT << roll
+				//<< "  " << FLOAT_FORMAT << yaw
 
-
-	std::cout << "  " << (int)*a
-			 << "  " << (int)*b
-			 << "  " << (int)*c
-			 << "  " << (int)*d
-			 << "  " << FLOAT_FORMAT << accel.x
-			 << "  " << FLOAT_FORMAT << accel.y
-			 << "  " << FLOAT_FORMAT << accel.z
-			 << std::endl;
-
-
+				<< " A " << FLOAT_FORMAT << accel.x // PITCH
+				//<< "  " << FLOAT_FORMAT << accel.y // ROLL
+				//<< "  " << FLOAT_FORMAT << accel.z // YAW
+			<< std::endl;
+			time_next = millis();
+		}
 	}
 	PIDctrl& Use(uint8_t *motors) {
 		a = motors+0;

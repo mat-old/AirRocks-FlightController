@@ -37,76 +37,62 @@ public:
 	}
 };
 
-/* leverage floats for speed */
-class pid_ctrl_t {
+/*  this is my version of a PID based on the formula found on Wikipedia */
+class pid_alt {
 public:
-	pid_t p_gain;
-	pid_t i_gain;
-	pid_t d_gain;
-	pid_t pError;
-	pid_t last_i_gain;
-	pid_t low_v;
-	pid_t high_v;
-	int64_t       time_next
-				, time_last;
-	pid_t * out;
+	int16_t   sample_time;
+	uint64_t  last_time;
+	pid_t    *output
+			, error_last
+			, set_point
+			, error_sum
+			, kp
+			, ki
+			, kd;
+	std::string name;
 
-	pid_ctrl_t() {
-		p_gain       = 0.0f;
-		i_gain       = 0.0f;
-		d_gain       = 0.0f;
-		pError       = 0.0f;
-		last_i_gain  = 0.0f;
-		low_v        = 0.0f;
-		high_v       = 0.0f;
-		time_next    = Def::millis();
-		time_last    = 0;
+	pid_alt() {
+		sample_time = 1000; 
+		last_time = millis();
 	}
 
-	void Use(pid_t * o) {
-		out = o;
+	pid_t Compute(pid_t input) {
+		uint64_t now = millis();
+		if( ( now - last_time ) >= sample_time ) {
+			pid_t error      = set_point - input;
+			error_sum        += error;
+			pid_t d_error    = error - error_last;
+
+			*output = kp * error + ki * error_sum + kd * d_error;
+
+			error_last = error;
+			last_time  = now;
+		}
 	}
 
-	void Set( pid_t p_gain, pid_t i_gain, pid_t d_gain, pid_t low_v, pid_t high_v ) {
-		this->p_gain = p_gain;
-		this->i_gain = i_gain;
-		this->d_gain = d_gain;
-		this->low_v = low_v;
-		this->high_v = high_v;
+	pid_alt& Attach(pid_t *output) {
+		this->output = output;
+		return *this;
 	}
 
-	void Compute( pid_t mError, pid_t dError, pid_t setP ) {
-		time_next = Def::millis();
-		pid_t time_derivative = time_next - time_last;
-		pid_t P               = p_gain * mError;
-		pid_t D               = d_gain * ( (setP*1000.0f/time_derivative) - dError );
-		pError                = mError;
-		pid_t I               = last_i_gain + (i_gain * mError * time_derivative/1000.0f);
-		pid_t U               = P + I + D;
-		last_i_gain           = I;
-		time_last             = time_next;
-
-		*out = U>high_v?high_v:U<low_v?low_v:U;
+	pid_alt& SetPID(pid_t kp, pid_t ki, pid_t kd) {
+		pid_t sample = sample_time / 1000.0f;
+		this->kp = kp;
+		this->ki = ki * sample;
+		this->kd = kd / sample;
+		return *this;
 	}
 
-	void Compute( pid_t mError ) {
-		time_next = Def::millis();
-		pid_t time_derivative = time_next - time_last;
-		pid_t P               = p_gain * mError;
-		// below... (1000/time_der) first?
-		pid_t D               = d_gain * (mError - pError) * 1000.0f / time_derivative;
-		pError                = mError;
-		pid_t I               = last_i_gain + i_gain * mError * time_derivative / 1000.0f;
-		pid_t U               = P + I + D;
-		last_i_gain           = I;
-		time_last             = time_next;
-
-		*out = (pid_t)U>high_v?high_v:U<low_v?low_v:U;
+	pid_alt& SetTime(int16_t newsample) {
+		if( newsample > 0 ) {
+			pid_t ratio = (pid_t)newsample / (pid_t)sample_time;
+			ki *= ratio;
+			kd /= ratio;
+			sample_time = newsample;
+		}
 	}
 
-	void Reset() {
-		last_i_gain = 0.0f;
-		time_last   = Def::millis();
-	}
 };
+
+
 #endif

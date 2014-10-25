@@ -120,7 +120,7 @@ public:
 		if(  !this->fprepared ) {
 			this->Open().Enable().MeasureOffsets();
 			rotation = quaternion::Identity();
-			this->time_next = Def::millis();
+			this->time_next = millis();
 			this->fprepared = true;
 		}
 		return *this;
@@ -131,7 +131,7 @@ public:
 		float time_derivative;
 
 		time_last = time_next;
-		time_next = Def::millis();
+		time_next = millis();
 
 		time_derivative = ( time_next - time_last ) / 1000.0f;
 

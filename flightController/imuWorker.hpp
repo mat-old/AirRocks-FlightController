@@ -26,8 +26,8 @@ public:
 	~IMUworker() {}
 	IMUworker& Update(Potential& gyroPot, Potential& accelPot) {
 		if( Data_Valid() && access.try_lock() ) {
-			gyroPot.copy(gpot);
 			accelPot.copy(apot);
+			gyroPot.copy(gpot);
 			access.unlock();
 			Set_Data_Valid(false);
 		}
@@ -38,7 +38,7 @@ private:
 		#ifdef IMUW_DEBUG
 			std::cout << "\n> IMUworker about to start...\n" << std::flush;
 		#endif
-		time_next = Def::millis();
+		time_next = millis();
 		while(true) {
 			IMUinterface::Read();
 			/* Critical *//* Critical */
@@ -48,7 +48,7 @@ private:
 				access.unlock();
 			/* Critical *//* Critical */
 			Set_Data_Valid(true);
-	        while(Def::millis() - time_next < 20) {
+	        while(millis() - time_next < 20) {
 	        	if( Disposed() ) return 0;
 	            usleep(1000);
 	        }

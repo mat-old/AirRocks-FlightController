@@ -42,7 +42,9 @@ int main(int argc, char const *argv[]) {
 		sleep(1);
 		while(imu->Active()) {
 
-			unsigned long loop = Def::millis();
+			steering.x = 0.025f;
+			steering.y = 0.025f;
+			steering.z = 1.022f;
 
 			imu->Update     (gyro, accel);
 			pid->Calculate  (throttle, steering, gyro, accel);
