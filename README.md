@@ -1,7 +1,7 @@
 AirRocks-FlightController
 =========================
 
-ARFC is a quad-copter flight controller which uses machine learning to fly better, faster, and smarter. 
+ARFC is a quad-copter flight controller which uses concepts from SCA and iterative learning to achieve awesome drone actions.
 
 ___________________
 Progress 
