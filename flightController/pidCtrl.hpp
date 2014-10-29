@@ -18,8 +18,6 @@ private:
 		, y;
 
 	int time_next;
-
-	uint8_t *a, *b, *c, *d;
 public:
 	PIDctrl() : SubSystem() {
 		time_next = millis();
@@ -79,28 +77,28 @@ public:
 	}
 
 
-	PIDctrl& Calculate( uint8_t throttle,
+	PIDctrl& Calculate( Motorgroup& motors,
 						const Potential_t& steering,
 						const Potential_t& gyro,
 						const Potential_t& accel ) {
 
-		Ppitch.Compute (  accel.x ); 
-		Proll.Compute  (  accel.y );
-		Pyaw.Compute   (  accel.z );  
+		pitch.Compute (  accel.x ); 
+		roll.Compute  (  accel.y );
+		yaw.Compute   (  accel.z );  
 
-		/*1*/*c = throttle - roll  - yaw;
-		/*3*/*d = throttle - pitch + yaw;
-		/*2*/*b = throttle + pitch + yaw;
-		/*4*/*a = throttle + roll  - yaw;
+		/*4*/motors[0].setReserve(   roll  - yaw );
+		/*2*/motors[1].setReserve(   pitch + yaw );
+		/*1*/motors[2].setReserve( - roll  - yaw );
+		/*3*/motors[3].setReserve( - pitch + yaw );
 
-		int change = (int)(100.0f*pitch);
-		if( (millis() - time_next) > 20 ) {
+		//int change = (int)(100.0f*pitch);
+		/*if( (millis() - time_next) > 20 ) {
 			std::cout
-				/*<< "  " << Proll
+				<< "  " << Proll
 				<< "  " << (int)*a
 				<< "  " << (int)*b
 				<< "  " << (int)*c
-				<< "  " << (int)*d*/
+				<< "  " << (int)*d
 
 				<< " P " << FLOAT_FORMAT << pitch
 				//<< "  " << FLOAT_FORMAT << roll
@@ -114,13 +112,7 @@ public:
 				<< " -> " << throttle + change
 			<< std::endl;
 			time_next = millis();
-		}
-	}
-	PIDctrl& Use(uint8_t *motors) {
-		a = motors+0;
-		b = motors+1;
-		c = motors+2;
-		d = motors+3;
+		}*/
 	}
 };
 #endif

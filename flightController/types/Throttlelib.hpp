@@ -1,20 +1,35 @@
+#ifndef THROTTLE_T
+#define THROTTLE_T
+#include "../arfcDefines.hpp"
+using namespace Def;
 class Throttle_t {
 public:
-	uint8_t control_amount
-		  , desired_amount
-		  , final_limit;
+	uint8_t reserved
+		  , power;
 
-	Throttle_t(uint8_t climit, uint8_t dlimit) {
-		control_amount = climit;
-		desired_amount = dlimit;
-		final_limit    = climit + dlimit;
+	pid_t set_p
+		, set_r;
+
+	Throttle_t()  {}
+	~Throttle_t() {}
+
+	void setReserveRatio( pid_t res ) {
+		pid_t r  = (pid_t)THROTTLE_MAX * res;
+		power    = (uint8_t)((pid_t)THROTTLE_MAX - r);
+		reserved = (uint8_t)r;
 	}
-
-	void Control( pid_t ratio ) {
-		pid_t throttle = control_amount * 
-
-
+	void setReserve( pid_t in ) {
+		set_r = reserved * in;
 	}
-
-
+	void setPower( pid_t in ) {
+		set_p = power * in;
+	}
+	uint8_t SPI_data() {
+		return Throttle() + MOTOR_ZERO_LEVEL;
+	}
+	uint8_t Throttle() {
+		uint8_t ret = (set_p + set_r);
+		return ret>THROTTLE_MAX?THROTTLE_MAX:ret<0?0:ret;
+	}
 };
+#endif

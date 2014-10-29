@@ -8,6 +8,7 @@
 	#include "types/Potentiallib.hpp"
 	#include "types/PIDlib.hpp"
 	#include "types/Throttlelib.hpp"
+	#include "types/Motorgrouplib.hpp"
 
 
 	

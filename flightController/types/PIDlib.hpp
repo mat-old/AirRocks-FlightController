@@ -1,6 +1,7 @@
 /*  this is my version of a PID based on the formula found on Wikipedia */
-#define pid_t float
-
+#ifndef PID_T_LIB
+#define PID_T_LIB
+#include "../arfcDefines.hpp"
 class PID_t {
 public:
 	int16_t   sample_time;
@@ -54,14 +55,23 @@ public:
 	friend pid_t operator+(const PID_t &p, const pid_t &o) {
 		return p.output + o;
 	}
+	friend pid_t operator+(const PID_t &p, const PID_t &o) {
+		return p.output + o.output;
+	}
 	friend pid_t operator+(const pid_t &o, const PID_t &p) {
 		return o + p.output;
 	}
 	friend pid_t operator-(const PID_t &p, const pid_t &o) {
 		return p.output - o;
 	}
+	friend pid_t operator-(const PID_t &p, const PID_t &o) {
+		return p.output - o.output;
+	}
 	friend pid_t operator-(const pid_t &o, const PID_t &p) {
 		return o - p.output;
+	}
+	friend pid_t operator-(const PID_t &p) {
+		return - p.output;
 	}
 	friend pid_t operator*(const PID_t &p, const pid_t &o) {
 		return p.output * o;
@@ -85,5 +95,4 @@ public:
 	}*/
 
 };
-
-
+#endif

@@ -6,8 +6,9 @@
 #include "subSystem.hpp"
 #include "spiWorker.hpp"
 #include "arfcDefines.hpp"
-#include "pidCtrl.hpp"
 #include "imuWorker.hpp"
+#include "pidCtrl.hpp"
+#include "relay.hpp"
 #include "dataTypes.hpp"
 
 #define MAIN_DEBUG
@@ -20,6 +21,8 @@ int main(int argc, char const *argv[]) {
 	SPIworker *spi = new SPIworker();
 	IMUworker *imu = new IMUworker();
 	PIDctrl   *pid = new PIDctrl();
+	Relay     *relay = new Relay();
+	Motorgroup motors;
 
 	try {
 		#ifdef MAIN_DEBUG
@@ -29,32 +32,20 @@ int main(int argc, char const *argv[]) {
 		Potential_t   gyro
 					, accel
 					, steering;
-		uint8_t   speedBuf[Def::ioMsg_Length] = {Def::MOTOR_ZERO_LEVEL,}
-				, throttle = Def::MOTOR_ZERO_LEVEL;
 
 		spi->Open().Start().Detach();
 		imu->Prepare().Start().Detach();
-		pid->Use(speedBuf);
+		motors.PID_ratio(Def::PID_RATIO).Zero();
 		#ifdef MAIN_DEBUG
 			cout << "> Entering open control" << endl;
 		#endif
 		/* wait for all threads to run */
 		sleep(1);
 		while(imu->Active()) {
-
-			steering.x = 0.025f;
-			steering.y = 0.025f;
-			steering.z = 1.022f;
-
 			imu->Update     (gyro, accel);
-			pid->Calculate  (throttle, steering, gyro, accel);
-			//spi->Update     (speedBuf);
-
-
-				// << "  " << (Def::millis() - loop) << endl;
-				// the loop is roughly an entire milli second WOO!
-
-
+			pid->Calculate  (motors, steering, gyro, accel);
+			//spi->Update     (motors);
+			relay->Update   (motors, pid);
 
 		}
 		throw UNREACHABLE;
@@ -65,6 +56,7 @@ int main(int argc, char const *argv[]) {
 	delete imu;
 	delete spi;
 	delete pid;
+	delete relay;
 	cout << "> Exit(1)::\n" << endl;
 	exit(1);
 	return 0;

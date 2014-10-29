@@ -1,5 +1,5 @@
 #include "arfcDefines.hpp"
-
+#include "dataTypes.hpp"
 #define SPIDEBUG
 #ifdef SPIDEBUG
 	#include <stdio.h>
@@ -60,12 +60,12 @@ public:
 		}
 		return *this;
 	}
-	SPIworker& Update(uint8_t speeds[Def::ioMsg_Length]) {
+	void Update( Motorgroup& m ) {
 		Tx[0] = Def::ioFlag_Start;
-		Tx[1] = speeds[0];
-		Tx[2] = speeds[1];
-		Tx[3] = speeds[2];
-		Tx[4] = speeds[3];
+		Tx[1] = m.A();
+		Tx[2] = m.B();
+		Tx[3] = m.C();
+		Tx[4] = m.D();
 		Tx[7] = Def::ioFlag_End;
 	}
 

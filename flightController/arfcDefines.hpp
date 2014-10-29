@@ -6,6 +6,7 @@
 #define ARFDEF
 #define ATOMIC volatile bool
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
+#define pid_t float
 /* i knew it was a reserved type when i used it */
 
 const bool IMU_ENABLED = true;
@@ -38,11 +39,13 @@ namespace Def {
 	const char *i2c_device         = "/dev/i2c-1";
 
 	/* Motor Const */ 
+	const size_t  MOTORS 		   = 4; 
 	const uint8_t MOTOR_ZERO_LEVEL = 125u;
 	const uint8_t MOTOR_ARM_START  = 140u;
 	const uint8_t MOTOR_MAX_LEVEL  = 254u;
 	const uint8_t THROTTLE_MAX     = MOTOR_MAX_LEVEL - MOTOR_ARM_START;
 	const uint8_t PID_RESERVED     = 20u;
+	const pid_t   PID_RATIO        = 0.2f;
 	const uint8_t USER_LIMIT       = THROTTLE_MAX - PID_RESERVED;
 
 	/* SPI Worker */
