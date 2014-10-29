@@ -7,8 +7,7 @@
 #define ATOMIC volatile bool
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 /* i knew it was a reserved type when i used it */
-#define pid_t float
-#define angel_t pid_t
+
 const bool IMU_ENABLED = true;
 const bool SPI_ENABLED = true;
 const bool PID_ENABLED = true;
@@ -42,6 +41,10 @@ namespace Def {
 	const uint8_t MOTOR_ZERO_LEVEL = 125u;
 	const uint8_t MOTOR_ARM_START  = 140u;
 	const uint8_t MOTOR_MAX_LEVEL  = 254u;
+	const uint8_t THROTTLE_MAX     = MOTOR_MAX_LEVEL - MOTOR_ARM_START;
+	const uint8_t PID_RESERVED     = 20u;
+	const uint8_t USER_LIMIT       = THROTTLE_MAX - PID_RESERVED;
+
 	/* SPI Worker */
 	const useconds_t ioBAUD_RATE   = 500000; // .5 MHZ transmission
 	const uint8_t ioDelay          = 0u;
@@ -59,11 +62,11 @@ namespace Def {
 	const pid_t yaw_zero   = 1.020f;
 
 	/* X */
-	const pid_t pitch_P    = 1.0f;
+	const pid_t pitch_P    = 0.8f;
 	const pid_t pitch_I    = 0.0f;
 	const pid_t pitch_D    = 0.0f;
-	const pid_t pitch_MIN  = -1.0f; /* roughly 45degrees forward*/
-	const pid_t pitch_MAX  = +1.0f; /* roughly 45degrees backward*/  
+	const pid_t pitch_MIN  = -1.0f; 
+	const pid_t pitch_MAX  = +1.0f;  
 	/* Y */
 	const pid_t roll_P     = 0;
 	const pid_t roll_I     = 0;

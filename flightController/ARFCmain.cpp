@@ -26,9 +26,9 @@ int main(int argc, char const *argv[]) {
 			cout << "> Initializing..." << endl;
 		#endif
 
-		Potential gyro
-				, accel
-				, steering;
+		Potential_t   gyro
+					, accel
+					, steering;
 		uint8_t   speedBuf[Def::ioMsg_Length] = {Def::MOTOR_ZERO_LEVEL,}
 				, throttle = Def::MOTOR_ZERO_LEVEL;
 

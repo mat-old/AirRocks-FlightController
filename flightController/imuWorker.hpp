@@ -15,8 +15,8 @@
 #define IMUWORKER 
 class IMUworker : public IMUinterface {
 private:
-	Potential apot;
-	Potential gpot;
+	Potential_t apot;
+	Potential_t gpot;
 public:
 	IMUworker() : IMUinterface() {
 		apot.Zero();
@@ -24,7 +24,7 @@ public:
 		if( !IMU_ENABLED ) Disable();
 	}
 	~IMUworker() {}
-	IMUworker& Update(Potential& gyroPot, Potential& accelPot) {
+	IMUworker& Update(Potential_t& gyroPot, Potential_t& accelPot) {
 		if( Data_Valid() && access.try_lock() ) {
 			accelPot.copy(apot);
 			gyroPot.copy(gpot);
