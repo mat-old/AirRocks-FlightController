@@ -1,0 +1,104 @@
+html {
+	position: absolute;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+body {
+	margin-top: 15px;
+}
+ul.nav {
+	border-bottom: 1px dashed #333;
+	height       : 60px;
+}
+
+.nav li {
+	min-width   : 200px;
+	min-height  : 40px;
+}
+
+.nav li a {
+	font-weight : bold;
+	font-size   : 1.8em;
+	cursor      : pointer;
+	text-align  : center; 
+	color       : #333;
+	box-shadow  : 1px 1px 2px rgba(0,0,0,0.3);
+	font-weight: bold;
+	font-style: italic;
+	text-transform: uppercase;
+}
+
+.NSR {
+	box-shadow  : 1px 1px 4px rgba(0,0,0,0.3); 
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	background-color: #3e3e3e;
+	color:#fff;
+	
+	margin-top: -15px;
+	padding-top: 5px;
+	height: 28px;
+	width: 80px;
+	float: right;
+
+	font-size: 12px;
+	text-align: center;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.window { 
+	padding: 20px;
+	margin : 20px 0;
+	border : 1px solid #eee;
+	border-left-width 	: 5px;
+	border-radius 		: 3px;
+}
+.window h3  { margin-top: -5px; font-weight: bold; }
+.info 		{ border-left-color: #5bc0de; }
+.info h3  	{ color: #5bc0de; }
+.row { margin-top: 5px; }
+.slider-panel {
+	font-size: 2em;
+	font-weight: bold;
+}
+.slider-panel li {
+	list-style: none;
+}
+
+.ui-slider {
+	border-color: #36a9e1;  
+	background  : #36a9e1;
+	cursor      : pointer;
+}
+
+.critical span.ui-slider-handle.ui-state-default {
+	border-color: #b01a35;
+}
+.critical .ui-slider {
+	border-color: #b01a35;
+	background:   #e13654;
+}
+.critical span.ui-slider-handle.ui-state-default:after {
+	color: #222;
+	margin-top: -30px;
+}
+span.ui-slider-handle.ui-state-default:focus { outline:0; }
+span.ui-slider-handle.ui-state-default {
+	border-color: #36a9e1; 
+	background  : #FFF;
+	width: 50px;
+	border-radius: 10px;
+	highlight:none;
+}
+span.ui-slider-handle.ui-state-default:after {
+	text-align: center;
+	width: 200%;
+	margin-left: -50%;
+	margin-top: -23px;
+	content: attr(data-content) '';
+    display: block;
+    clear: both; /* if you need to break floating elements */
+}

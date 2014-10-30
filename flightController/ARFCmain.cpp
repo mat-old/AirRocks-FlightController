@@ -36,6 +36,7 @@ int main(int argc, char const *argv[]) {
 		spi->Open().Start().Detach();
 		imu->Prepare().Start().Detach();
 		motors.PID_ratio(Def::PID_RATIO).Zero();
+		relay->Start().Detach();
 		#ifdef MAIN_DEBUG
 			cout << "> Entering open control" << endl;
 		#endif

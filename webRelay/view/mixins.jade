@@ -1,0 +1,19 @@
+mixin SLIDER(ctrl,item,max,div)
+	.row
+		label #{item}
+		div(id='#{ctrl[0]}#{item}')
+		script.
+			$(function(){
+				PidCtrls.push('#{ctrl[0]}#{item}')
+				$('##{ctrl[0]}#{item}').slider({
+					max:#{max},
+					min:0,
+					slide: function(event,ui) {
+						var num = ui.value / #{div}
+						$(this).children(0).attr('data-content', num)
+						slideUpdate( this.id, num )
+					}
+				});
+			});
+
+block content

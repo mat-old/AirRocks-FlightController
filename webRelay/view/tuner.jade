@@ -1,0 +1,47 @@
+extends mixins
+block content
+	doctype html
+	html(lang="en")
+	head
+		title Tune PIDs
+		link(href='bootstrap.min.css' rel='stylesheet')
+		link(href='jquery-ui.min.css' rel='stylesheet')
+		link(href='bootstrap-theme.min.css' rel='stylesheet')
+		link(href='tuner.css' rel='stylesheet')
+
+		script(type='text/javascript' src='socket.io.js')
+		script(type='text/javascript' src='jquery.js')
+		script(type='text/javascript' src='tuner.js')
+		script(type='text/javascript' src='jquery-ui.min.js')
+
+
+	body.container
+		ul.nav.nav-pills
+			each val in buttons
+				li
+					a(id='#{val}') #{val}
+			.NSR 
+				.signal Connecting
+			
+
+
+		.col-md-6
+			.window.info
+				ol
+					li Tuning PIDs is relatively safe. 
+					li Find a value between <strong>0.0f - 100.0f</strong>
+					li Increments of <strong> .01 </strong>
+
+			h3 <strong> Throttle </strong>
+				table.slider-panel.table
+					.critical
+						+SLIDER('T','',100,1)
+			br
+
+			each ctrl in PIDS
+				h3 <strong> #{ctrl} </strong>
+				table.slider-panel.table
+					each item in ITEMS
+						+SLIDER(ctrl,item,1000,100)
+
+

@@ -10,7 +10,7 @@ using namespace Def;
 #ifndef PIDCONTROLLER 
 #define PIDCONTROLLER
 class PIDctrl : public SubSystem {
-private:
+public:
 	PID_t roll
 		, pitch
 		, yaw
@@ -18,7 +18,6 @@ private:
 		, y;
 
 	int time_next;
-public:
 	PIDctrl() : SubSystem() {
 		time_next = millis();
 		//Ppitch.Attach (&pitch).name= "pitch";

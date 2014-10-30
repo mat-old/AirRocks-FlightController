@@ -1,25 +1,19 @@
-all: testing
+CC=g++
+CFLAGS= -std=c++0x -pthread
+LFLAGS=-lpthread
+SOURCES= ARFCmain.cpp arfcDefines.hpp dataTypes.hpp errorMap.hpp subSystem.hpp imuInterface.hpp imuWorker.hpp pidCtrl.hpp spiWorker.hpp
+OBJECTS=$(SOURCES:.hpp=.o)
+EXEC=ARFC
 
-test:
-	g++  SPIworkertest.cpp -std=c++11 -pthread
+#all: $(SOURCES) $(EXEC)
 
-testing: test.o spi.o errmap.o arfcdefines.o subsystem.o
-	g++ test.o spi.o errmap.o arfcdefines.o subsystem.o   -o run.o 
+all: ARFCmain.cpp
+	$(CC) $(CFLAGS) ARFCmain.cpp -o $(EXEC)
 
-test.o:
-	g++ -c SPIworkertest.cpp -std=c++11
+$(EXEC): $(OBJECTS)
+	$(CC) $(LFLAGS) $(OBJECTS) -o $@
 
-spi.o:
-	g++ -c spiWorker.hpp -pthread -std=c++11
+.hpp.o:
+	$(CC) $(CFLAGS) $< -o $@ 
 
-errmap.o:
-	g++ -c errorMap.hpp 
 
-arfcdefines.o:
-	g++ -c arfcDefines.hpp
-
-subsystem.o:
-	g++ -c subSystem.hpp 
-
-clean: 
-	rm -rf *.o 
