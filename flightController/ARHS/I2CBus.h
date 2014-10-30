@@ -3,8 +3,8 @@
 
 #include "includes.hpp"
 
-#include <fcntl.h>
 #include <linux/i2c-dev.h>
+#include <fcntl.h>
 #include <stdint.h>
 #include "exceptions.h"
 

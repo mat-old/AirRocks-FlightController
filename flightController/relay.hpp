@@ -29,9 +29,9 @@ public:
 		hashed = true;
 		return hash;
 	}
-	int getValue() {
+	pid_t getValue() {
 		try {
-			return std::stoi(val);
+			return std::stof(val);
 		}
 		catch( int e ) {
 			return 0;
@@ -58,35 +58,35 @@ public:
 				std::cout << ">" << (*i).name << std::endl;
 				switch( (*i).Hash() ) {
 					case 'P'^'P':
-						PID->pitch.kp = (pid_t)((*i).getValue()/100.0f);
+						PID->pitch.kp = (*i).getValue();
 					break;
 					case 'P'^'I':
-						PID->pitch.ki = (pid_t)((*i).getValue()/100.0f);
+						PID->pitch.ki = (*i).getValue();
 					break;
 					case 'P'^'D':
-						PID->pitch.kd = (pid_t)((*i).getValue()/100.0f);
+						PID->pitch.kd = (*i).getValue();
 					break;
 					case 'R'^'P':
-						PID->roll.kp = (pid_t)((*i).getValue()/100.0f);
+						PID->roll.kp = (*i).getValue();
 					break;
 					case 'R'^'I':
-						PID->roll.ki = (pid_t)((*i).getValue()/100.0f);
+						PID->roll.ki = (*i).getValue();
 					break;
 					case 'R'^'D':
-						PID->roll.kd = (pid_t)((*i).getValue()/100.0f);
+						PID->roll.kd = (*i).getValue();
 					break;
 					case 'Y'^'P':
-						PID->yaw.kp = (pid_t)((*i).getValue()/100.0f);
+						PID->yaw.kp = (*i).getValue();
 					break;
 					case 'Y'^'I':
-						PID->yaw.ki = (pid_t)((*i).getValue()/100.0f);
+						PID->yaw.ki = (*i).getValue();
 
 					break;
 					case 'Y'^'D':
-						PID->yaw.kd = (pid_t)((*i).getValue()/100.0f);
+						PID->yaw.kd = (*i).getValue();
 					break;
 					case 'T':
-						motors.All( (pid_t)((*i).getValue()/100.0f) );
+						motors.All( (*i).getValue()/100.0f );
 					break;
 				}
 			}
@@ -103,9 +103,11 @@ private:
 			std::cout << "> Processing " << buf << std::endl << std::flush;
 			if( valid(buf) ) {
 				access.lock();
-				cmds.push_back(Command(buf));
+				Command c = Command(buf);
+				cmds.push_back(c);
 				access.unlock();
 			}
+			if( Disposed() ) return 0;
 		}
 	}
 };

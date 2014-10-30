@@ -9,7 +9,7 @@ function state(s){
 			$('html').css('border','1px solid #36c7e1')
 		return
 		case 'stop':
-			$('html').css('border','1px solid #fff')
+			$('html').css('border','0px solid #fff')
 		return
 	}
 }
