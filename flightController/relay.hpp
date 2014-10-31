@@ -1,6 +1,7 @@
 /*  this is a class for testing
 	TODO: replace this with a NodeJS module
-	NOTE: to do platform restrictions this may become the main interop object
+	NOTE: do to platform restrictions this may become the main interop object
+	      i wish i had c++11
 */
 #ifndef RELAY_TEST
 #define RELAY_TEST

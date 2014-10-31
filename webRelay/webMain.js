@@ -34,7 +34,7 @@ function run() {
 		echo( 'connected' )
 		lock = true;
 		
-		var pd = new Driver("/home/arfc/arfc/flightController/a.out", function(out) {
+		var pd = new Driver("/home/arfc/arfc/flightController/ARFC", function(out) {
 			echo(out)
 		});
 
