@@ -1,17 +1,18 @@
-#include "arfcDefines.hpp"
-#include "dataTypes.hpp"
-#define SPIDEBUG
+//#define SPIDEBUG
 #ifdef SPIDEBUG
 	#include <stdio.h>
+	#include <iostream>
 #endif
-
+#ifndef SPIWORKER
+#define SPIWORKER
+#include "arfcDefines.hpp"
+#include "dataTypes.hpp"
 #include <pthread.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
-#ifndef SPIWORKER
-#define SPIWORKER
+
 class SPIworker : public AsyncWorker {
 private:
 	/* ioctrl file descriptor */
@@ -36,6 +37,7 @@ public:
 		close(dev);
 	}
 	SPIworker& Open() {
+		if( Disabled() ) return *this;
 		try {
 			dev = open(Def::spi_device,O_RDWR);
 			int ret = 0;
@@ -107,8 +109,8 @@ private:
 			ioc.bits_per_word 	= Def::ioBits;
 			if( Disposed() ) return 0;
 			if( ioctl(fd, SPI_IOC_MESSAGE(1), &ioc) < 1 ) {
-				std::cout<<"IOERROR SPI WORKER failed to transmit ";
 				#ifdef SPIDEBUG
+				std::cout<<"IOERROR SPI WORKER failed to transmit ";
 					for (int i = 0; i < Def::ioLength; ++i) 
 						printf("%x", (uint8_t)(ioc.tx_buf >> (i*8u)));
 					std::cout << "\n" << std::flush;

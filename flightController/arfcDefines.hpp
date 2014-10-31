@@ -1,16 +1,16 @@
+#ifndef ARFDEF
+#define ARFDEF
 #include <sys/time.h>
 #include <stdint.h>
 #include <iomanip>
 #include <time.h>
-#ifndef ARFDEF
-#define ARFDEF
 #define ATOMIC volatile bool
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 #define pid_t float
 /* i knew it was a reserved type when i used it */
 
 const bool IMU_ENABLED = true;
-const bool SPI_ENABLED = true;
+const bool SPI_ENABLED = false;
 const bool PID_ENABLED = true;
 
 /* blades
@@ -28,6 +28,8 @@ const bool PID_ENABLED = true;
 
 
 namespace Def {
+	/* General */
+	const int   STD_DELAY_MS       = 20;
 	/* IMU Interface */
 	const useconds_t imuBAUD_RATE  = 20000u;
 	const float field_width        = 6.0f;

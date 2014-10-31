@@ -2,17 +2,17 @@
 *  Inertia Measurement Unit Worker, does the constant gathering of IMU data 
 *  this class provides the required higher level data for the PIDctrl
 */
-#include "arfcDefines.hpp"
-#include "imuInterface.hpp"
-#include "dataTypes.hpp"
-
-#define IMUW_DEBUG
+//#define IMUW_DEBUG
 #ifdef IMUW_DEBUG
 	#include <iostream>
 #endif
 
 #ifndef IMUWORKER
 #define IMUWORKER 
+#include "arfcDefines.hpp"
+#include "imuInterface.hpp"
+#include "dataTypes.hpp"
+
 class IMUworker : public IMUinterface {
 private:
 	Potential_t apot;
@@ -48,7 +48,7 @@ private:
 				access.unlock();
 			/* Critical *//* Critical */
 			Set_Data_Valid(true);
-	        while(millis() - time_next < 20) {
+	        while( !timer->Allow() ) {
 	        	if( Disposed() ) return 0;
 	            usleep(1000);
 	        }

@@ -1,10 +1,10 @@
+#ifndef ERRORMAP
+#define ERRORMAP
 #include <map>
 #include <cstdlib>
 #include <unistd.h>
 #include <iostream>
 #include <exception>
-#ifndef ERRORMAP
-#define ERRORMAP
 
 typedef enum {
 	  BAD_IO
@@ -24,6 +24,7 @@ typedef enum {
 	, FAIL_I2C_CAL_OPEN
 	, FAIL_I2C_CAL_READ
 	, UNREACHABLE
+	, SHUTDOWN
 	, ERR_ANY = 0xFFFF  /* catch all code */
 } errCodes;
 
@@ -49,8 +50,8 @@ public:
 		code[FAIL_GET_SPI]   = "Failed to get SPI mode";
 		code[FAIL_SET_BIT]   = "Failed to set bits per word";
 		code[FAIL_GET_BIT]   = "Failed to get bits per word";
-		code[FAIL_SET_SPEED] = "Failed to set Max Speed hz";
-		code[FAIL_GET_SPEED] = "Failed to get Max Speed hz";
+		code[FAIL_SET_SPEED] = "Failed to set Max Speed Hz";
+		code[FAIL_GET_SPEED] = "Failed to get Max Speed Hz";
 		code[FAIL_START_WORKER]  = "Could not start SPIdaemon thread";
 		code[FAIL_FLAG_SET]  = "Error flag was set early";
 		/* IMU interface subsystem */
@@ -62,13 +63,14 @@ public:
 		code[FAIL_I2C_CAL_OPEN] = "Failed to open IMU calibration";
 		code[FAIL_I2C_CAL_READ] = "Failed to read IMU calibration";
 		code[UNREACHABLE]    = "Unreachable state was detected";
+		code[SHUTDOWN]       = "Shutting down";
 	}
 	void Response(int r) {
 		std::cout << code[r] << std::endl;
 		switch(r) {
 			/* AnyError */
 			case ERR_ANY:
-				std::cout << "Any error occured" << std::endl;
+				std::cout << "Any error occurred" << std::endl;
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case FAIL_I2C_WRITE:
@@ -104,6 +106,10 @@ public:
 			case UNREACHABLE:
 				std::cout << "FATAL ERROR" << std::endl;
 				sleepThrowWhere(10,sysEx,r);
+				return;
+			case SHUTDOWN:
+				std::cout << "I sure hope you're not flying... " << std::endl;
+				sleepThrowWhere(3,sysEx,r);
 				return;
 			default:
 			std::cout << "Unknown ErrorMap.Response" << r << std::endl;

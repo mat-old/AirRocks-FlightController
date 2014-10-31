@@ -1,7 +1,7 @@
 /*  this is a class for testing
-	TODO: replace this
+	TODO: replace this with a NodeJS module
+	NOTE: to do platform restrictions this may become the main interop object
 */
-
 #ifndef RELAY_TEST
 #define RELAY_TEST
 #include "arfcDefines.hpp"
@@ -10,22 +10,47 @@
 #include <iostream>	
 #include <vector>
 #include <string>
+#include <map>
+
+typedef enum { NONE=0, DOWN, RP, RI, RD, PP, PI, PD, YP, YI, YD, FORCEU, TTHROTTLE } CMD_CODES;
+std::map<std::string, CMD_CODES> CMD_CODEMAP() {
+	std::map<std::string, CMD_CODES> cm;
+	cm["DOWN"]  = DOWN;
+	cm["RP"]    = RP;
+	cm["RI"]    = RI;
+	cm["RD"]    = RD;
+	cm["PP"]    = PP;
+	cm["PI"]    = PI;
+	cm["PD"]    = PD;
+	cm["YP"]    = YP;
+	cm["YI"]    = YI;
+	cm["YD"]    = YD;
+	cm["FORCEU"]= FORCEU;
+	cm["TTHROTTLE"] = TTHROTTLE;
+	return cm;
+}
+std::map<std::string, CMD_CODES> codes_map = CMD_CODEMAP();
+
 class Command {
 public:
 	std::string name, val;
 	bool hashed;
-	int hash;
-	Command() {}
+	CMD_CODES hash;
+	Command() {
+		hashed = false;
+	}
 	Command(std::string s) {
 		int f = s.find(":");
 		val  = s.substr(f+1);
 		name = s.substr(0,f); 
+		hashed = false;
 	}
-	int Hash() {
+	CMD_CODES Hash() {
 		if( hashed ) return hash;
-		hash = name[0];
-		for (int i = 1; i < name.length(); ++i)
-			hash ^= name[i];
+		if( codes_map.find(name) == codes_map.end() )
+			hash = NONE;
+		else
+			hash = codes_map[name];
 		hashed = true;
 		return hash;
 	}
@@ -34,12 +59,13 @@ public:
 			return std::stof(val);
 		}
 		catch( int e ) {
-			return 0;
+			return -1.0f;
 		}
 	}
 };
 
 bool valid(std::string s) {
+	if( s == "DOWN" || s == "FORCEU" ) return true;
 	int f = s.find(":");
 	int l = s.length();
 	if( l < 3 ) return false;
@@ -49,48 +75,113 @@ bool valid(std::string s) {
 class Relay : public AsyncWorker {
 public:
 	std::vector<Command> cmds;
+	
+	bool new_data;
 	Relay()  {}
 	~Relay() {}
 
+	void Transact(Motorgroup & m
+				, PIDctrl    * P
+				, Potential_t& g
+				, Potential_t& a ) {
+		// process always 
+		if( !cmds.empty() )
+			Update(m, P);
+		// feedback sometimes 
+		if( !timer->Allow() ) return;
+
+		if( Data_Valid() ) {
+			Set_Data_Valid(false);
+			Emit(/* motor */
+				  m[0].Throttle()
+				, m[1].Throttle()
+				, m[2].Throttle()
+				, m[3].Throttle()
+				, P->pitch.output
+				, P->roll.output
+				, P->yaw.output
+				);
+		}
+	}
+
+	void Emit(/* motor */
+		      int A
+			, int B
+			, int C
+			, int D
+			  /* PID */
+			, pid_t pitch
+			, pid_t roll
+			, pid_t yaw 
+			) {
+
+		std::cout << ""
+		"{ \"motor\" : {"
+			"\"A\" : \"" << A << "\","
+			"\"B\" : \"" << B << "\","
+			"\"C\" : \"" << C << "\","
+			"\"D\" : \"" << D << "\""
+		"},\"PID\"   : {"
+			"\"pitch\" : \"" << pitch << "\","
+			"\"roll\" : \"" << roll << "\","
+			"\"yaw\" : \"" << yaw << "\""
+		"}, \"type\":\"relay\" }"
+		<< std::endl;
+	}
+
 	void Update(Motorgroup& motors, PIDctrl* PID ) {
-		if(  !cmds.empty() && access.try_lock() ) {
+		if( access.try_lock() ) {
+			try {
 			for (std::vector<Command>::iterator i = cmds.begin(); i != cmds.end(); ++i) {
-				std::cout << ">" << (*i).name << std::endl;
+				std::cout << "> " << (*i).name << " : " << (*i).Hash() << std::endl;
 				switch( (*i).Hash() ) {
-					case 'P'^'P':
+					case PP:
 						PID->pitch.kp = (*i).getValue();
 					break;
-					case 'P'^'I':
+					case PI:
 						PID->pitch.ki = (*i).getValue();
 					break;
-					case 'P'^'D':
+					case PD:
 						PID->pitch.kd = (*i).getValue();
 					break;
-					case 'R'^'P':
+					case RP:
 						PID->roll.kp = (*i).getValue();
 					break;
-					case 'R'^'I':
+					case RI:
 						PID->roll.ki = (*i).getValue();
 					break;
-					case 'R'^'D':
+					case RD:
 						PID->roll.kd = (*i).getValue();
 					break;
-					case 'Y'^'P':
+					case YP:
 						PID->yaw.kp = (*i).getValue();
 					break;
-					case 'Y'^'I':
+					case YI:
 						PID->yaw.ki = (*i).getValue();
-
 					break;
-					case 'Y'^'D':
+					case YD:
 						PID->yaw.kd = (*i).getValue();
 					break;
-					case 'T':
+					case TTHROTTLE:
 						motors.All( (*i).getValue()/100.0f );
+					break;
+					case FORCEU:
+						/* force update */
+						std::cout << "force update:" << std::endl;
+						Set_Data_Valid(true);
+					break;
+					case DOWN:
+					/* shut down / disarm etc... */
+					throw SHUTDOWN;
 					break;
 				}
 			}
+			} catch(errCodes e) {
+				err.Response(e);
+			}
+			cmds.clear();
 			access.unlock();
+			Set_Data_Valid(true);
 		}
 	}
 
@@ -100,13 +191,14 @@ private:
 		while(true) {
 			std::string buf;
 			std::cin >> buf;
-			std::cout << "> Processing " << buf << std::endl << std::flush;
+			//std::cout << "> Processing " << buf << std::endl << std::flush;
 			if( valid(buf) ) {
 				access.lock();
 				Command c = Command(buf);
 				cmds.push_back(c);
 				access.unlock();
 			}
+			buf.clear();
 			if( Disposed() ) return 0;
 		}
 	}

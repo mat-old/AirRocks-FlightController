@@ -6,6 +6,14 @@
 *  Note less code will be adapted as development continues. 
 *  The basic driving code for reading the Pololu-MinIMU-9 will remain the same
 */
+
+#define IMU_DEBUG
+#ifdef  IMU_DEBUG
+	#include <stdio.h>
+	#include <iostream>
+#endif
+#ifndef IMUINTERFACE
+#define IMUINTERFACE
 #include "arfcDefines.hpp"
 #include "subSystem.hpp"
 
@@ -20,13 +28,6 @@
 #include <fstream>
 #include <time.h>
 
-#define IMU_DEBUG
-#ifdef  IMU_DEBUG
-	#include <stdio.h>
-	#include <iostream>
-#endif
-#ifndef IMUINTERFACE
-#define IMUINTERFACE
 class IMUinterface : public AsyncWorker {
 private:
 	LSM303 * compass;

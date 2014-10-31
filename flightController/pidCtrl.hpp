@@ -5,10 +5,11 @@
 *  Proportional-integral-derivative controller
 *  read about http://en.wikipedia.org/wiki/PID_controller
 */
-#include "dataTypes.hpp"
-using namespace Def;
 #ifndef PIDCONTROLLER 
 #define PIDCONTROLLER
+#include "dataTypes.hpp"
+using namespace Def;
+
 class PIDctrl : public SubSystem {
 public:
 	PID_t roll

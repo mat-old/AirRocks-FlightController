@@ -43,11 +43,14 @@ int main(int argc, char const *argv[]) {
 		/* wait for all threads to run */
 		sleep(1);
 		while(imu->Active()) {
-			imu->Update     (gyro, accel);
-			pid->Calculate  (motors, steering, gyro, accel);
-			//spi->Update     (motors);
-			relay->Update   (motors, pid);
-
+			/* fetch data from IMU, transported in Potential_t gyro & accel */
+			imu->  Update     (gyro, accel);
+			/* calculate the adjustments to the motors, factor in steering from IMU data */
+			pid->  Calculate  (motors, steering, gyro, accel);
+			/* send the motor speeds over the SPI */
+			spi->  Update     (motors);
+			/* process new commands, send feedback to base station */
+			relay->Transact   (motors, pid, gyro, accel);
 		}
 		throw UNREACHABLE;
 	}
