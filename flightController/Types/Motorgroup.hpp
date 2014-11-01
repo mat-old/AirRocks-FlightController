@@ -1,17 +1,20 @@
 #ifndef MOTORGROUP
 #define MOTORGROUP
-#include "Throttlelib.hpp"
-#include "../arfcDefines.hpp"
+
+#include "../Includes.hpp"
+
+//#include "../Types/Types.hpp"
+//#include "../Defines.hpp"
 class Motorgroup {
 public:
-	Throttle_t motors[Def::MOTORS];
+	Throttle_t motors[Defines::MOTORS];
 	Motorgroup& All( pid_t percent ) {
-		for (int i = 0; i < Def::MOTORS; ++i)
+		for (int i = 0; i < Defines::MOTORS; ++i)
 			motors[i].setPower(percent);
 		return *this;
 	}
 	Motorgroup& PID_ratio( pid_t percent ) {
-		for (int i = 0; i < Def::MOTORS; ++i)
+		for (int i = 0; i < Defines::MOTORS; ++i)
 			motors[i].setReserveRatio(percent);
 		return *this;
 	}

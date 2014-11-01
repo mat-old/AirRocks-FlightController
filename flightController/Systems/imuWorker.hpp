@@ -2,16 +2,9 @@
 *  Inertia Measurement Unit Worker, does the constant gathering of IMU data 
 *  this class provides the required higher level data for the PIDctrl
 */
-//#define IMUW_DEBUG
-#ifdef IMUW_DEBUG
-	#include <iostream>
-#endif
-
 #ifndef IMUWORKER
 #define IMUWORKER 
-#include "arfcDefines.hpp"
-#include "imuInterface.hpp"
-#include "dataTypes.hpp"
+#include "../Includes.hpp"
 
 class IMUworker : public IMUinterface {
 private:
@@ -35,9 +28,7 @@ public:
 	}
 private:
 	virtual void *worker_run() {
-		#ifdef IMUW_DEBUG
-			std::cout << "\n> IMUworker about to start...\n" << std::flush;
-		#endif
+		/*TODO: produce feed back for init stage*/
 		time_next = millis();
 		while(true) {
 			IMUinterface::Read();
@@ -55,5 +46,4 @@ private:
 	    }
 	}
 };
-
 #endif

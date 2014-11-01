@@ -3,7 +3,7 @@ CFLAGS= -std=c++0x -pthread
 LFLAGS=-lpthread
 SOURCES= ARFCmain.cpp arfcDefines.hpp dataTypes.hpp errorMap.hpp subSystem.hpp imuInterface.hpp imuWorker.hpp pidCtrl.hpp spiWorker.hpp
 OBJECTS=$(SOURCES:.hpp=.o)
-EXEC=ARFC
+EXEC=ARFCapp.o
 
 #all: $(SOURCES) $(EXEC)
 

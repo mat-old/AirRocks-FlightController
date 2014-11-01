@@ -6,27 +6,9 @@
 #include <iostream>
 #include <exception>
 
-typedef enum {
-	  BAD_IO
-	, FAIL_SET_SPI
-	, FAIL_GET_SPI
-	, FAIL_SET_BIT
-	, FAIL_GET_BIT
-	, FAIL_SET_SPEED
-	, FAIL_GET_SPEED
-	, FAIL_START_WORKER
-	, FAIL_FLAG_SET
-	, FAIL_I2C_PERM
-	, FAIL_I2C_DEV
-	, FAIL_I2C_WRITE
-	, FAIL_I2C_READ
-	, FAIL_I2C_BLOCK
-	, FAIL_I2C_CAL_OPEN
-	, FAIL_I2C_CAL_READ
-	, UNREACHABLE
-	, SHUTDOWN
-	, ERR_ANY = 0xFFFF  /* catch all code */
-} errCodes;
+#include "../Defines.hpp"
+
+using namespace Defines;
 
 class ControlledException: public std::exception {
 	virtual const char* what() const throw()
@@ -109,7 +91,7 @@ public:
 				return;
 			case SHUTDOWN:
 				std::cout << "I sure hope you're not flying... " << std::endl;
-				sleepThrowWhere(3,sysEx,r);
+				sleepThrowWhere(0,sysEx,r);
 				return;
 			default:
 			std::cout << "Unknown ErrorMap.Response" << r << std::endl;

@@ -1,7 +1,7 @@
 #ifndef THROTTLE_T
 #define THROTTLE_T
-#include "../arfcDefines.hpp"
-using namespace Def;
+#include "../Includes.hpp"
+using namespace Defines;
 class Throttle_t {
 public:
 	uint8_t reserved

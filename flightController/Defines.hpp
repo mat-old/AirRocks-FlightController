@@ -1,18 +1,3 @@
-#ifndef ARFDEF
-#define ARFDEF
-#include <sys/time.h>
-#include <stdint.h>
-#include <iomanip>
-#include <time.h>
-#define ATOMIC volatile bool
-#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
-#define pid_t float
-/* i knew it was a reserved type when i used it */
-
-const bool IMU_ENABLED = true;
-const bool SPI_ENABLED = false;
-const bool PID_ENABLED = true;
-
 /* blades
 *	A  CW    -x axis
 *	B  CCW   -y axis
@@ -24,10 +9,23 @@ const bool PID_ENABLED = true;
 *   -roll    roll left  (if looking at back)
 *   +pitch   tilt forward
 *   -pitch   tilt backward
- */
+*/
+/*for all constant definitions*/
+#ifndef DEFINES
+#define DEFINES
+#include <sys/time.h>
+#include <stdint.h>
+#include <iomanip>
+#include <time.h>
+#define ATOMIC volatile bool // i know its the opposite
+#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
+#define pid_t float // pid_t, i know...
 
+const bool IMU_ENABLED = true;
+const bool SPI_ENABLED = true;
+const bool PID_ENABLED = true;
 
-namespace Def {
+namespace Defines {
 	/* General */
 	const int   STD_DELAY_MS       = 20;
 	/* IMU Interface */
@@ -59,7 +57,7 @@ namespace Def {
 	const uint8_t ioFlag_End       = 0xB;
 	const uint8_t ioMsg_Length     = 4u;
 	const uint8_t ioMsg_Offset     = 1u;
-	const char *spi_device         = "/dev/spidev0.1";
+	const char   *spi_device       = "/dev/spidev0.1";
 
 	/* PIDctrl */
 	const pid_t pitch_zero = 0.035f;
@@ -98,15 +96,6 @@ namespace Def {
 	const pid_t y_MIN      = 0.0f;
 	const pid_t y_MAX      = 0.0f;
 
-
-
-
-	inline uint8_t MOTOR_SAFE_SPEED(uint8_t s) {
-		if( s > MOTOR_MAX_LEVEL  ) return MOTOR_MAX_LEVEL;
-		else if( s < MOTOR_ZERO_LEVEL ) return MOTOR_ZERO_LEVEL;
-		else return s;
-	}
-
 	const uint8_t InitialMotorState[ioLength] = {
 		ioFlag_Start,
 		MOTOR_ZERO_LEVEL,
@@ -117,11 +106,29 @@ namespace Def {
 		0x0,	/* optional flag */
 		ioFlag_End
 	};
-}
 
-unsigned long millis() {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+	/* Error Codes */
+	typedef enum {
+		  BAD_IO
+		, FAIL_SET_SPI
+		, FAIL_GET_SPI
+		, FAIL_SET_BIT
+		, FAIL_GET_BIT
+		, FAIL_SET_SPEED
+		, FAIL_GET_SPEED
+		, FAIL_START_WORKER
+		, FAIL_FLAG_SET
+		, FAIL_I2C_PERM
+		, FAIL_I2C_DEV
+		, FAIL_I2C_WRITE
+		, FAIL_I2C_READ
+		, FAIL_I2C_BLOCK
+		, FAIL_I2C_CAL_OPEN
+		, FAIL_I2C_CAL_READ
+		, UNREACHABLE
+		, SHUTDOWN
+		, ERR_ANY = 0xFFFF  /* catch all code */
+	} ERR_CODES;
+
 }
 #endif

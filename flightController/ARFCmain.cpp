@@ -1,23 +1,9 @@
-#include <iostream>
-#include <unistd.h>
-#include <stdio.h>
+#include "Includes.hpp"
 
-#include "errorMap.hpp"
-#include "subSystem.hpp"
-#include "spiWorker.hpp"
-#include "arfcDefines.hpp"
-#include "imuWorker.hpp"
-#include "pidCtrl.hpp"
-#include "relay.hpp"
-#include "dataTypes.hpp"
+using namespace Defines;
 
-#define MAIN_DEBUG
-#ifdef MAIN_DEBUG
-#endif
-using namespace std; 
+void flightController() {
 
-int main(int argc, char const *argv[]) {
-	cout << endl;
 	SPIworker *spi = new SPIworker();
 	IMUworker *imu = new IMUworker();
 	PIDctrl   *pid = new PIDctrl();
@@ -25,23 +11,28 @@ int main(int argc, char const *argv[]) {
 	Motorgroup motors;
 
 	try {
-		#ifdef MAIN_DEBUG
-			cout << "> Initializing..." << endl;
-		#endif
+		emit("initializing...");
 
 		Potential_t   gyro
 					, accel
 					, steering;
 
-		spi->Open().Start().Detach();
-		imu->Prepare().Start().Detach();
-		motors.PID_ratio(Def::PID_RATIO).Zero();
 		relay->Start().Detach();
-		#ifdef MAIN_DEBUG
-			cout << "> Entering open control" << endl;
-		#endif
+		spi->Open().Zero();
+
+		emit("awaiting motor ARM command");
+		while( relay->Disarmed() ) { 
+			relay->Transact   (motors, pid, gyro, accel);
+			sleep(1);
+		}
+
+		spi->Start().Detach();
+		imu->Prepare().Start().Detach();
+		motors.PID_ratio(Defines::PID_RATIO).Zero();
+
 		/* wait for all threads to run */
 		sleep(1);
+		emit("Flight Controller ready for use");
 		while(imu->Active()) {
 			/* fetch data from IMU, transported in Potential_t gyro & accel */
 			imu->  Update     (gyro, accel);
@@ -52,16 +43,27 @@ int main(int argc, char const *argv[]) {
 			/* process new commands, send feedback to base station */
 			relay->Transact   (motors, pid, gyro, accel);
 		}
-		throw UNREACHABLE;
 	}
-	catch(exception& e) {
-		cout << e.what() << ":: safely disposing objects and exiting..." << endl;
+	catch(std::exception& e) {
+		//cout << e.what() << ":: safely disposing objects and exiting..." << endl;
 	}
 	delete imu;
 	delete spi;
 	delete pid;
 	delete relay;
-	cout << "> Exit(1)::\n" << endl;
+	//cout << "> Exit(1)::\n" << endl;
+}
+
+int main(int argc, char const *argv[]) {
+
+	test(); /*test emit for each type, make sure it can be de-serialized*/
+
+	return 0;
+
+	while(true) {
+		flightController();
+	}
+
 	exit(1);
 	return 0;
 }

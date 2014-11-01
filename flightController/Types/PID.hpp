@@ -1,7 +1,7 @@
 /*  this is my version of a PID based on the formula found on Wikipedia */
 #ifndef PID_T_LIB
 #define PID_T_LIB
-#include "../arfcDefines.hpp"
+#include "../Defines.hpp"
 class PID_t {
 public:
 	int16_t   sample_time;
@@ -42,7 +42,20 @@ public:
 		this->kd = kd / sample;
 		return *this;
 	}
-
+	PID_t& SetP(pid_t kp) {
+		this->kp = kp;
+		return *this;
+	}
+	PID_t& SetI(pid_t ki) {
+		pid_t sample/*in seconds*/ = sample_time / 1000.0f;
+		this->ki = ki * sample;
+		return *this;
+	}
+	PID_t& SetD(pid_t kd) {
+		pid_t sample/*in seconds*/ = sample_time / 1000.0f;
+		this->kd = kd / sample;
+		return *this;
+	}
 	PID_t& SetTime(int16_t newsample) {
 		if( newsample > 0 ) {
 			pid_t ratio = (pid_t)newsample / (pid_t)sample_time;

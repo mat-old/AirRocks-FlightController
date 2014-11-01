@@ -1,6 +1,8 @@
 #ifndef _I2CBus_h
 #define _I2CBus_h
 
+#include "../Includes.hpp"
+/*below is the local one*/
 #include "includes.hpp"
 
 #include <linux/i2c-dev.h>
@@ -8,7 +10,7 @@
 #include <stdint.h>
 #include "exceptions.h"
 
-#include "../errorMap.hpp"
+/*#include "../Cores/ErrorMap.hpp"*/
 
 class I2CBus
 {

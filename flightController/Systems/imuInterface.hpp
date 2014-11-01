@@ -6,22 +6,15 @@
 *  Note less code will be adapted as development continues. 
 *  The basic driving code for reading the Pololu-MinIMU-9 will remain the same
 */
-
-#define IMU_DEBUG
-#ifdef  IMU_DEBUG
-	#include <stdio.h>
-	#include <iostream>
-#endif
 #ifndef IMUINTERFACE
 #define IMUINTERFACE
-#include "arfcDefines.hpp"
-#include "subSystem.hpp"
+#include "../Includes.hpp"
 
-#include "ARHS/exceptions.h"
-#include "ARHS/vector.h"
-#include "ARHS/LSM303.h"
-#include "ARHS/L3G.h"
-#include "ARHS/IMU.h"
+#include "../ARHS/exceptions.h"
+#include "../ARHS/vector.h"
+#include "../ARHS/LSM303.h"
+#include "../ARHS/L3G.h"
+#include "../ARHS/IMU.h"
 
 #include <sys/time.h>
 #include <wordexp.h>
@@ -62,17 +55,15 @@ public:
 	IMUinterface& Open() { 
 		if( !this->fopened ) {
 			try {
-				compass = new LSM303(Def::i2c_device);
-				gyro    = new L3G(Def::i2c_device);
-			} catch( errCodes e ) {
+				compass = new LSM303(Defines::i2c_device);
+				gyro    = new L3G(Defines::i2c_device);
+			} catch( ERR_CODES e ) {
 				err.Response(e);
 			}
 
 			wordexp_t path;
-			wordexp(Def::imu_calibration, &path, 0);
-			#ifdef  IMU_DEBUG
-				std::cout<<"> Opening Calibration "<<path.we_wordv[0]<<std::endl;
-			#endif
+			wordexp(Defines::imu_calibration, &path, 0);
+			/*TODO: report calibration success*/
 			std::ifstream dev(path.we_wordv[0]);
 			if( dev.bad() )
 				throw FAIL_I2C_CAL_OPEN;
@@ -106,12 +97,12 @@ public:
 	IMUinterface& MeasureOffsets() {
 		if( !this->foffsets ) {
 			gyro_offset = vector::Zero();
-			for (int i = 0; i < Def::imuSample_Count; ++i) {
+			for (int i = 0; i < Defines::imuSample_Count; ++i) {
 				gyro->read();
 				gyro_offset += vector_from_ints(&gyro->g);
-				usleep(Def::imuBAUD_RATE);
+				usleep(Defines::imuBAUD_RATE);
 			}
-			gyro_offset /= Def::imuSample_Count;
+			gyro_offset /= Defines::imuSample_Count;
 			this->foffsets = true;
 		}
 		return *this;
@@ -149,7 +140,7 @@ public:
 				  rc.row(0).cross(rm.row(0))
 				+ rc.row(1).cross(rm.row(1))
 				+ rc.row(2).cross(rm.row(2))
-			) * Def::imuCorrection;
+			) * Defines::imuCorrection;
 		}
 
 		Rotate( rotation, data_g + correction, time_derivative );
@@ -192,14 +183,13 @@ public:
 	vector ReadAccl() {
 		compass->read();
 		raw_accl = int_vector_from_ints(&compass->a);
-		return ( vector_from_ints(&compass->a) ) * Def::imuAccel_Scale;
+		return ( vector_from_ints(&compass->a) ) * Defines::imuAccel_Scale;
 	}
 	vector ReadGyro() {
 		gyro->read();
 		raw_gyro = int_vector_from_ints(&gyro->g);
-		return ( vector_from_ints(&gyro->g) - gyro_offset ) * Def::imuGyro_Scale;
+		return ( vector_from_ints(&gyro->g) - gyro_offset ) * Defines::imuGyro_Scale;
 	}
 
 };
-
 #endif
