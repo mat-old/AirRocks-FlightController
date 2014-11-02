@@ -27,42 +27,26 @@ public:
 	}
 
 	void Transact(Motorgroup & m
-				, PIDctrl    * P
+				, PIDctrl    * p
 				, Potential_t& g
 				, Potential_t& a ) {
 		// process always 
 		if( !cmds.empty() )
-			Update(m, P);
+			Update(m, p);
 		// feedback sometimes 
 		if( !timer->Allow() ) return;
 
 		if( Data_Valid() ) {
 			Set_Data_Valid(false);
-			Emit(/* motor */
-				  m[0].Throttle()
-				, m[1].Throttle()
-				, m[2].Throttle()
-				, m[3].Throttle()
-				, P->pitch.output
-				, P->roll.output
-				, P->yaw.output
-				);
+			emit(m);
+			emit(p->pitch);
+			emit(p->roll);
+			emit(p->yaw);
+			emit(g);
+			emit(a);
 		}
 	}
 
-	void Emit(/* motor */
-		      int A
-			, int B
-			, int C
-			, int D
-			  /* PID */
-			, pid_t pitch
-			, pid_t roll
-			, pid_t yaw 
-			) {
-
-
-	}
 
 	void Update(Motorgroup& motors, PIDctrl* PID ) {
 		if( access.try_lock() ) {
@@ -107,6 +91,7 @@ public:
 					break;
 					case DOWN:
 					/* shut down / disarm etc... */
+					SHUTDOWN_FLAG = true;
 					throw SHUTDOWN;
 					break;
 					case RESET:
@@ -114,6 +99,7 @@ public:
 					break;
 					case ARM:
 						//std::cout << "WARNING!!! NOW ARMED" << std::endl;
+						emit("WARNING!, ARMED");
 						Set_Active(true);
 					break;
 				}

@@ -6,6 +6,9 @@
 #include <map>
 
 using namespace Defines;
+
+ATOMIC SHUTDOWN_FLAG = false;
+
 typedef enum { NONE=0, DOWN, RP, RI, RD, PP, PI, PD, YP, YI, YD, FORCEU, TTHROTTLE, RESET, ARM } CMD_CODES;
 std::map<std::string, CMD_CODES> CMD_CODEMAP() {
 	std::map<std::string, CMD_CODES> cm;
@@ -50,11 +53,11 @@ inline bool valid_cmd_syntax(std::string s) {
 
 /* each should know its own precedence */
 #include "./Types/Types.hpp"
-#include "./Cores/Cores.hpp"
-#include "./Systems/Systems.hpp"
-
 /* global objects */
 JWriter        jout;
 GenericWriter  emit;
+#include "./Cores/Cores.hpp"
+#include "./Systems/Systems.hpp"
+
 
 #endif

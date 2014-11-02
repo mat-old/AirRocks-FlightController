@@ -89,11 +89,8 @@ private:
 	}
 	virtual void *worker_run() {
 		int fd  = dup(dev);
-/*		#ifdef SPIDEBUG
-			std::cout << "spi mode      " << (int)mode << "\n"
-					  << "bits per word " << (int)iobits_per_word << "\n"
-					  << "max speed     " << iospeed_hz << "Hz\n" << std::flush; 
-		#endif*/
+
+		emit("SPI is about to start");
 
 		while(true) {
 			if( Disposed() ) return 0;
@@ -117,12 +114,7 @@ private:
 		ioc.speed_hz 		= Defines::ioBAUD_RATE;
 		ioc.bits_per_word 	= Defines::ioBits;
 		if( ioctl(fd, SPI_IOC_MESSAGE(1), &ioc) < 1 ) {
-/*			#ifdef SPIDEBUG
-			std::cout<<"IOERROR SPI WORKER failed to transmit ";
-				for (int i = 0; i < Defines::ioLength; ++i) 
-					printf("%x", (uint8_t)(ioc.tx_buf >> (i*8u)));
-				std::cout << "\n" << std::flush;
-			#endif*/
+			emit.err(1,"SPI failed to transmit");
 		}
 	}
 };

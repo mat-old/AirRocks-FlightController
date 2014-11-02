@@ -63,6 +63,7 @@ public:
 
 			wordexp_t path;
 			wordexp(Defines::imu_calibration, &path, 0);
+			emit("IMU Calibration loaded");
 			/*TODO: report calibration success*/
 			std::ifstream dev(path.we_wordv[0]);
 			if( dev.bad() )

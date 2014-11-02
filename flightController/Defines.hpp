@@ -127,6 +127,7 @@ namespace Defines {
 		, FAIL_I2C_CAL_READ
 		, UNREACHABLE
 		, SHUTDOWN
+		, IMU_BAD_CONNECT
 		, ERR_ANY = 0xFFFF  /* catch all code */
 	} ERR_CODES;
 

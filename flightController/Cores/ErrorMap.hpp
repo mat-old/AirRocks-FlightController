@@ -46,13 +46,15 @@ public:
 		code[FAIL_I2C_CAL_READ] = "Failed to read IMU calibration";
 		code[UNREACHABLE]    = "Unreachable state was detected";
 		code[SHUTDOWN]       = "Shutting down";
+		code[IMU_BAD_CONNECT]= "Could not detect accelerometer";
 	}
 	void Response(int r) {
 		std::cout << code[r] << std::endl;
 		switch(r) {
 			/* AnyError */
 			case ERR_ANY:
-				std::cout << "Any error occurred" << std::endl;
+				//std::cout << "Any error occurred" << std::endl;
+				emit.err(1,"Any error occurred");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case FAIL_I2C_WRITE:
@@ -60,12 +62,15 @@ public:
 			case FAIL_I2C_BLOCK:
 			case FAIL_I2C_CAL_OPEN:
 			case FAIL_I2C_CAL_READ:
-				std::cout << "IMU threw a critical error" << std::endl;
+				//std::cout << "IMU threw a critical error" << std::endl;
+				emit.err(1,"IMU threw a critical error");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case FAIL_I2C_DEV:		// IMU
 			case FAIL_I2C_PERM:		// IMU 
-				std::cout << "Cannot start IMU" << std::endl;
+			case IMU_BAD_CONNECT:
+				//std::cout << "Cannot start IMU" << std::endl;
+				emit.err(1,"Cannot start IMU");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case BAD_IO:			// SPI
@@ -75,32 +80,34 @@ public:
 			case FAIL_GET_BIT:		// SPI
 			case FAIL_SET_SPEED:	// SPI
 			case FAIL_GET_SPEED:	// SPI
-				std::cout << "No permission" << std::endl;
+				emit.err(1,"No permission");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			/* SPIworker daemon */
 			case FAIL_FLAG_SET:
 			case FAIL_START_WORKER:
-				std::cout << "Cannot control motors" << std::endl;
+				emit.err(1,"Cannot control motors");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			/* FATAL */
 			case UNREACHABLE:
-				std::cout << "FATAL ERROR" << std::endl;
+				emit.err(1,"FATAL ERROR");
 				sleepThrowWhere(10,sysEx,r);
 				return;
 			case SHUTDOWN:
-				std::cout << "I sure hope you're not flying... " << std::endl;
+				emit.err(1,"I sure hope you're not flying... ");
 				sleepThrowWhere(0,sysEx,r);
 				return;
 			default:
-			std::cout << "Unknown ErrorMap.Response" << r << std::endl;
+			emit.err(1,"Unknown ErrorMap.Response");
 		}
 	}
 
 	void sleepThrowWhere(int s, ControlledException t, int w) {
+			emit.err(1, "Error countdown" );
 		while(s--) {
 			std::cout << "\rCaught("<<w<<")\tThrow("<<t<<") in "<<s<<"s"<<std::flush; 
+			//std::string s = "Caught(" + stoi(w) + ")";
 			sleep(1);
 		}
 		std::cout<<std::endl;

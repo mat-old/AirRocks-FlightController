@@ -4,7 +4,8 @@ var http = require('http')
   , url  = require('url')
   , fs   = require('fs')
   , mime = require('mime-types')
-  , jade = require('jade');
+  , jade = require('jade')
+  , dir  = process.argv[2]||"./";
 
 var route = {
 	"/home" :"/index.jade",
@@ -13,9 +14,21 @@ var route = {
 
 var resource = {
 	"/tuner.jade" : {
-		"buttons" : ["start","shutdown"],
+		"buttons" : ["START","ABORT","RESET","ARM"],
 		"PIDS"    : ["Roll","Pitch","Yaw"],
-		"ITEMS"   : ["P","I","D"]
+		"ITEMS"   : ["P","I","D"],
+		"GAUGES"  : [
+			{"id":"throttle","class":'width:380px ;height:301px;',"container":"gauge-med"},
+			{"id":"Motor_A","class":'width:93px ;height:75px;',"container":"gauge-small"},
+			{"id":"Motor_B","class":'width:93px ;height:75px;',"container":"gauge-small"},
+			{"id":"Motor_C","class":'width:93px ;height:75px;',"container":"gauge-small"},
+			{"id":"Motor_D","class":'width:93px ;height:75px;',"container":"gauge-small"}		
+		],
+		"GROUP2"  : [
+			{"id":"pitch","class":'width:170px ;height:130px;',"container":"gauge-small"},
+			{"id":"roll","class":'width:170px ;height:130px;',"container":"gauge-small"},
+			{"id":"yaw","class":'width:170px ;height:130px;',"container":"gauge-small"}
+		]
 	}	
 };
 
@@ -48,7 +61,7 @@ send         = function( req, res ) {
 }
 
 jadeRender   = function(res,p) {
-	var s = './view'+p
+	var s = dir+'view'+p
 	jade.renderFile(s, resource[p] , function(err,html){
 		if( err ) {
 			echo( 'cannot find', s , err )
@@ -64,7 +77,7 @@ jadeRender   = function(res,p) {
 }
 
 fsRender     = function(res,p) {	
-	var s = './view'+p
+	var s = dir+'view'+p
 	fs.readFile( s, function(err, file) {
 		if( err ) {
 			echo( 'cannot find', s )

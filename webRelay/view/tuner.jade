@@ -11,37 +11,58 @@ block content
 
 		script(type='text/javascript' src='socket.io.js')
 		script(type='text/javascript' src='jquery.js')
+		script(type='text/javascript' src='bootstrap.min.js')
 		script(type='text/javascript' src='tuner.js')
 		script(type='text/javascript' src='jquery-ui.min.js')
+		script(type='text/javascript' src='raphael.2.1.0.min.js')
+		script(type='text/javascript' src='justgage.1.0.1.min.js')
 
 
 	body.container
-		ul.nav.nav-pills
-			each val in buttons
-				li
-					a(id='#{val}') #{val}
-			.NSR 
-				.signal Connecting
 			
 
+		
+		.col-md-7
+			.panel.panel-default
+				.panel-heading
+					ul.nav.nav-pills
+						each val in buttons
+							li
+								a(id='#{val}') #{val}
 
-		.col-md-6
-			.window.info
-				ol
-					li Tuning PIDs is relatively safe. 
-					li Find a value between <strong>0.0f - 100.0f</strong>
-					li Increments of <strong> .01 </strong>
+				.panel-body
+					.col-sm-8
+						each g in GAUGES
+							+MAKEGAUGE(g.id,g.class,g.container)
+					.col-sm-4
+						each g in GROUP2
+							+MAKEGAUGE(g.id,g.class,g.container)
 
-			h3 <strong> Throttle </strong>
-				table.slider-panel.table
-					.critical
-						+SLIDER('T','THROTTLE',100,1)
-			br
 
-			each ctrl in PIDS
-				h3 <strong> #{ctrl} </strong>
-				table.slider-panel.table
-					each item in ITEMS
-						+SLIDER(ctrl,item,1000,100)
+			.msg-target
+					
+
+
+		.col-md-5
+			.NSR 
+				.signal Connecting
+			.panel.panel-default
+				.panel-heading.slider-box
+					h3 
+						strong Throttle
+					table.slider-panel.table
+						.critical
+							+SLIDER('TTHROTTLE','',100,1)
+					br
+
+					each ctrl in PIDS
+						h3
+							strong #{ctrl}
+						table.slider-panel.table
+							each item in ITEMS
+								+SLIDER(ctrl,item,1000,100)
+
+
+			
 
 

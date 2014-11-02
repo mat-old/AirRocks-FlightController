@@ -1,8 +1,10 @@
+#include "../Includes.hpp"
 class Potential_t {
 public:
-	float x, y, z;
-
+	pid_t x, y, z;
+	std::string name;
 	Potential_t()  {}
+	Potential_t(std::string n)  { name = n; }
 
 	Potential_t(vector v)  {
 		this->Gather(v);

@@ -4,6 +4,7 @@
 using namespace Defines;
 class Throttle_t {
 public:
+	std::string name;
 	uint8_t reserved
 		  , power;
 
@@ -11,6 +12,7 @@ public:
 		, set_r;
 
 	Throttle_t()  {}
+	Throttle_t(const std::string n)  { name = n; }
 	~Throttle_t() {}
 
 	void setReserveRatio( pid_t res ) {

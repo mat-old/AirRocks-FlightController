@@ -29,6 +29,7 @@ public:
 private:
 	virtual void *worker_run() {
 		/*TODO: produce feed back for init stage*/
+		emit("IMU about to start");
 		time_next = millis();
 		while(true) {
 			IMUinterface::Read();

@@ -1,6 +1,8 @@
+script.
+	var global_hash = {};
+
 mixin SLIDER(ctrl,item,max,div)
-	.row
-		label #{item}
+		label.left #{item}
 		div(id='#{ctrl[0]}#{item}')
 		script.
 			$(function(){
@@ -15,5 +17,23 @@ mixin SLIDER(ctrl,item,max,div)
 					}
 				});
 			});
+
+
+mixin MAKEGAUGE(id,gclass,cont)
+	div(class="#{cont}")
+		div(id="#{id}" style="#{gclass}")
+		script.
+			global_hash[ #{id} ] = {}
+			$(function(){
+				global_hash[ #{id} ] = new JustGage({
+					id:"#{id}",
+					value:0,
+					min:0,
+					max:100,
+					title:"#{id}",
+					label:"% Total"
+				});
+			});
+
 
 block content

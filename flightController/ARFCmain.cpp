@@ -11,11 +11,11 @@ void flightController() {
 	Motorgroup motors;
 
 	try {
-		emit("initializing...");
+		emit("initializing... (1)");
 
-		Potential_t   gyro
-					, accel
-					, steering;
+		Potential_t   gyro("gyro")
+					, accel("accel")
+					, steering("steering");
 
 		relay->Start().Detach();
 		spi->Open().Zero();
@@ -46,6 +46,7 @@ void flightController() {
 	}
 	catch(std::exception& e) {
 		//cout << e.what() << ":: safely disposing objects and exiting..." << endl;
+		emit.err(2,e.what(),":: safely disposing objects and exiting...");
 	}
 	delete imu;
 	delete spi;
@@ -56,11 +57,9 @@ void flightController() {
 
 int main(int argc, char const *argv[]) {
 
-	test(); /*test emit for each type, make sure it can be de-serialized*/
+	//test(); /*test emit for each type, make sure it can be de-serialized*/
 
-	return 0;
-
-	while(true) {
+	while(!SHUTDOWN_FLAG) {
 		flightController();
 	}
 

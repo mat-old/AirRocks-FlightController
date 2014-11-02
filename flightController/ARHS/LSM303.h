@@ -1,6 +1,6 @@
 #ifndef LSM303_h
 #define LSM303_h
-
+#include "../Includes.hpp"
 #include "includes.hpp"
 #include <stdint.h>
 #include "I2CBus.h"
@@ -219,7 +219,9 @@ class LSM303
 		}
 		else
 		{
-			throw std::runtime_error("Could not detect accelerometer.");
+			/*i get thrown when?*/
+			//throw std::runtime_error("Could not detect accelerometer.");
+			throw IMU_BAD_CONNECT;
 		}
 
 		// Set the I2C addresses.

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
 *	this is a nodejs server for testing and tuning ARFC PID values
 *	:requires
@@ -34,29 +35,29 @@ function run() {
 		echo( 'connected' )
 		lock = true;
 		
-		var pd = new Driver("/home/arfc/arfc/flightController/ARFC", function(out) {
-			echo(out)
+		var pd = new Driver("/home/arfc/arfc/flightController/","ARFCapp.o", function(out) {
+			echo(out);
+			socket.emit("msg",out);
+		}, function() {
+			pd.clear();
+			pd.start();
 		});
 
 		setInterval(function(){
 			socket.emit('heartbeat',cycle)
 		}, cycle); // 5s 
 
-		socket.on('start', function() {
-			if( pd.running() ) {
-				return;
-			}
-			echo('start request')
-			if(!pd.start()) {
-				echo('failed to start')
-			}
+		socket.on('start', function(cmd) {
+			pd.start();
 		});
 
-		socket.on('shutdown', function() {
-			pd.kill()
+		socket.on('cmd', function(cmd) {
+			echo( cmd )
+			pd.send(cmd)
 		});
 
 		socket.on('update', function(msg) {
+			echo( msg )
 			pd.send(msg.data)
 		});
 
