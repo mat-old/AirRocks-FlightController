@@ -49,6 +49,11 @@ echo         = function() {
 	console.log( args )
 };
 
+
+shortpath    = function(req) {
+	return  url.parse(req.url).pathname.replace(/\//,'')
+}
+
 path         = function(req) {
 	var s = url.parse(req.url).pathname 
 	return route[s] || s
@@ -100,8 +105,26 @@ notFound     = function(res) {
 	res.end('Not found.')
 }
 
+sendJSON     = function(res,cb,PATH,EXEC,ARGS) {
+	try {
+		cb(PATH,EXEC,ARGS,function(result){
+			res.end( result );
+		})
+	} catch(e) {
+		var obj = {}
+		obj.result = false;
+		res.end(JSON.stringify(obj));
+	}
+}
+
+
 exports.CreateServer = CreateServer
 exports.CreateIO     = CreateIO
 exports.notFound     = notFound
 exports.echo         = echo
 exports.send         = send
+exports.path         = path
+exports.shortpath    = shortpath 
+exports.sendJSON     = sendJSON
+
+

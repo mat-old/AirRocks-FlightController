@@ -7,7 +7,11 @@ bool Exists(char** begin, char** end, const std::string& option) {
     return std::find(begin, end, option) != end;
 }
 
-int main(int argc, char const *argv[]) {
+bool systemsTest() {
+	return true;
+}
+
+int main(int argc, char *argv[]) {
 
 	if( Exists( argv, argv+argc, "-test" ) ) {
 		Drone_mode = TEST_MODE;
@@ -22,20 +26,13 @@ int main(int argc, char const *argv[]) {
 
 
 	if( Drone_mode == TEST_MODE ) {
-		test();
+		//test();
+		emit( systemsTest?"true":"false" );
 	} else
 	if( Drone_mode == UAV_MODE ) {
 		while(!SHUTDOWN_FLAG) {
 			UAV();
 		}
-	}
-
-
-
-	exit(1);
+	} else emit("Nothing to do...");
 	return 0;
 }
-
-
-
-

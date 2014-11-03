@@ -1,4 +1,3 @@
-
 doctype html
 html(lang="en")
 head
@@ -8,24 +7,24 @@ head
 
 	script(type='text/javascript' src='jquery.js')
 	script(type='text/javascript' src='bootstrap.min.js')
+	script(type='text/javascript' src='landing.js')
 
 body
-
 	.col-sm-12.msg-box
 		h4
 			|Selecting a flight mode. 
 
-	a.col-sm-6.mode-box
+	a.col-sm-6.mode-box#test
 		h1
 			|Test
 		.label
 			|Ensure all UAV systems are functioning properly
-	a.col-sm-6.mode-box
+	a.col-sm-6.mode-box#tuner
 		h1
 			|PID Tuning
 		.label
 			|Tune settings used to stabalize the UAV
-	a.col-sm-6.mode-box
+	a.col-sm-6.mode-box#UAV
 		h1
 			|UAV
 		.label
@@ -39,14 +38,3 @@ body
 		a(href="#") About
 		span.span2 |
 		a(href="#") Github
-
-
-script.
-	$(function(){
-		$('.footer').height(function(index, height) {
-			return window.innerHeight - $(this).offset().top;
-		});
-	});
-
-
-

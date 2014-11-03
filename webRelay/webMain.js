@@ -16,10 +16,14 @@ var app
   , sys   = require('sys')
   , utils = require('./utils.js')
   , Driver= require('./ProcessDriver.js').PD
+  , Test  = require('./ProcessDriver.js').PT
   , echo  = utils.echo
   , send  = utils.send
   , lock  = false
-  , cycle = 1000;
+  , cycle = 1000
+  ,	PATH  = "/home/arfc/arfc/flightController/"
+  , EXEC  = "ARFCapp.o"
+  ;
 
 function run() {
 	server = utils.CreateServer( requestCB );
@@ -27,7 +31,13 @@ function run() {
 
 	echo( server.address() );
 	function requestCB( req, res ) {
-		return send( req, res )
+		var p = utils.shortpath(req)
+		switch( p ) {
+			case 'test_results':
+				return sendJSON(res, Test,PATH,EXEC,"-test")
+			default:
+				return send( req, res )
+		}
 	}
 
 	io.sockets.on('connection', function (socket) {
@@ -35,7 +45,7 @@ function run() {
 		echo( 'connected' )
 		lock = true;
 		
-		var pd = new Driver("/home/arfc/arfc/flightController/","ARFCapp.o", function(out) {
+		var pd = new Driver(PATH,EXEC, function(out) {
 			echo(out);
 			socket.emit("msg",out);
 		}, function() {

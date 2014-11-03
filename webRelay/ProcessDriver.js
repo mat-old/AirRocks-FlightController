@@ -80,6 +80,21 @@ ProcessDriver = function(epath, eexec, stdoutCB, faultCB) {
 	this.running = function() {
 		return this.process.connected;
 	};
+
+	this.instance= function(){
+
+	}
 };
 
+
+ProcessTest = function(PATH,EXEC,ARGS,cb) {
+		var p = PATH+EXEC+" "+ARGS
+		exec(p, function (err , stdout, stderr){
+			if( err || stdout.length == 0 )
+				cb(false);
+			cb(stdout)
+		});
+} 
+
 exports.PD = ProcessDriver
+exports.PT = ProcessTest

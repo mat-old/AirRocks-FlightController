@@ -52,3 +52,45 @@ body, a, html {
 	margin-right: 1em;
 	margin-left: 1em;
 }
+
+.test-success {
+	background-color: rgba(0,0,0,0.3);
+	padding-top: 25px;
+	font-size: 2.0em;
+	color:#fded20;
+	top:0;
+}
+
+#loader {
+  	text-transform: uppercase;
+	text-align: center;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left:0;
+}
+
+.loader {
+	left:50% !important;
+  	color: #EFEFEF !important;
+  	font: normal 18px/1em Helvetica, Arial, sans-serif;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+
+.loader:after {
+	-webkit-animation: wormsPong cubic-bezier(0.77, 0, 0.175, 1) 0.8s infinite;
+	animation: wormsPong cubic-bezier(0.77, 0, 0.175, 1) 0.8s infinite;
+	background-color: orange;
+	border-radius: 2px;
+	position: absolute;
+	bottom: -4px;
+	height: 4px;
+	content: "";
+	width: 4px;
+	left: 0;
+}
+
+@-webkit-keyframes wormsPong {25% {width: 100%;}50% {width: 0;left: auto;right: 0;}75% {width: 100%;}100% {width: 0;right: auto;left: 0;}}
+@keyframes wormsPong {25% {width: 100%;}50% {width: 0;left: auto;right: 0;}75% {width: 100%;}100% {width: 0;right: auto;left: 0;}}
