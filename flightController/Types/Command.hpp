@@ -7,10 +7,11 @@ using namespace Defines;
 class Command {
 public:
 	std::string name, val;
-	bool hashed;
+	bool hashed, processed;
 	CMD_CODES hash;
 	Command() {
 		hashed = false;
+		processed = false;
 	}
 	Command(std::string s) {
 		int f = s.find(":");

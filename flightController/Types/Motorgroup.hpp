@@ -39,5 +39,17 @@ public:
 	uint8_t D() {
 		return motors[3].SPI_data();
 	}
+	void A(pid_t p) {
+		return motors[0].setPower(p);
+	}
+	void B(pid_t p) {
+		return motors[1].setPower(p);
+	}
+	void C(pid_t p) {
+		return motors[2].setPower(p);
+	}
+	void D(pid_t p) {
+		return motors[3].setPower(p);
+	}
 };
 #endif

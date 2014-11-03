@@ -7,6 +7,7 @@ public:
 	int16_t   sample_time;
 	uint64_t  last_time;
 	pid_t     output
+			, last_input
 			, error_last
 			, set_point
 			, error_sum
@@ -16,12 +17,13 @@ public:
 	std::string name;
 
 	PID_t() {
+		output=last_input=error_last=set_point=error_sum=kp=ki=kd = 0.0f;
 		sample_time = 1000; 
 		last_time 	= millis();
-		output 		= 0;
 	}
 
-	pid_t Compute(pid_t input) {
+	void Compute(pid_t input) {
+		last_input = input;
 		uint64_t now = millis();
 		if( ( now - last_time ) >= sample_time ) {
 			pid_t error      = set_point - input;

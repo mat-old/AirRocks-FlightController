@@ -25,6 +25,11 @@ const bool IMU_ENABLED = true;
 const bool SPI_ENABLED = true;
 const bool PID_ENABLED = true;
 
+typedef enum {
+	NO_MODE, TEST_MODE, TUNE_MODE, UAV_MODE
+} DRONE_MODES;
+DRONE_MODES Drone_mode = NO_MODE;
+
 namespace Defines {
 	/* General */
 	const int   STD_DELAY_MS       = 20;

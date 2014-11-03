@@ -17,7 +17,15 @@ block content
 		script(type='text/javascript' src='raphael.2.1.0.min.js')
 		script(type='text/javascript' src='justgage.1.0.1.min.js')
 
+		script.
+			global_hash["all"]     = true;
+			global_hash["status"]  = true;
+			global_hash["data"]    = true;
+			global_hash["warning"] = true;
+			global_hash["error"]   = true;
 
+	.NSR 
+		.signal Connecting
 	body.container
 			
 
@@ -33,19 +41,30 @@ block content
 				.panel-body
 					.col-sm-8
 						each g in GAUGES
-							+MAKEGAUGE(g.id,g.class,g.container)
+							+MAKEGAUGE(g.id,g.class,g.container,g.subtext,g.min,g.max)
 					.col-sm-4
 						each g in GROUP2
-							+MAKEGAUGE(g.id,g.class,g.container)
+							+MAKEGAUGE(g.id,g.class,g.container,g.subtext,g.min,g.max)
 
-
-			.msg-target
+			.msg-container
+				.msg-controls
+					a#all.label.label-default.msg-ctrl
+						|All
+					a#status.label.label-success.msg-ctrl
+						|Status
+					a#data.label.label-info.msg-ctrl
+						|Data
+					a#warning.label.label-warning.msg-ctrl
+						|Warnings
+					a#error.label.label-danger.msg-ctrl
+						|Errors
+					a.msg-clear.label
+						|Clear
+				.msg-target
 					
 
 
 		.col-md-5
-			.NSR 
-				.signal Connecting
 			.panel.panel-default
 				.panel-heading.slider-box
 					h3 

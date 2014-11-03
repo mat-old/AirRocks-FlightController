@@ -114,7 +114,7 @@ private:
 		ioc.speed_hz 		= Defines::ioBAUD_RATE;
 		ioc.bits_per_word 	= Defines::ioBits;
 		if( ioctl(fd, SPI_IOC_MESSAGE(1), &ioc) < 1 ) {
-			emit.err(1,"SPI failed to transmit");
+			emit.err("ARFC.SPIworker.AsyncWorker.Send",1,"SPI failed to transmit");
 		}
 	}
 };

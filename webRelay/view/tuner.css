@@ -38,6 +38,9 @@ ul.nav {
 	background-color: #3e3e3e;
 	color:#fff;
 	
+	position: fixed;
+	top: 0;
+	right: 0;
 	padding-top: 5px;
 	height: 28px;
 	width: 80px;
@@ -47,6 +50,8 @@ ul.nav {
 	text-align: center;
 	font-weight: bold;
 	font-style: italic;
+
+	z-index:999;
 }
 
 .nsr-ok {
@@ -123,20 +128,51 @@ span.ui-slider-handle.ui-state-default:after {
 	display: inline-block;
 	text-align: left;
 	padding-left: 5px;
+	padding-bottom: 3px;
 }
 
-
+.msg-controls {
+	margin-bottom: 5px;
+}
+.msg-ctrl {
+	margin-right: 2px;
+}
+.msg-off {
+	background-color: black;
+}
 
 .msg-uncategorized {
 	background-color: #f7f7f9;
 	border-color: #e1e1e8;
 }
 
-.msg-status {
+.msg-list {
+	font-size: 8px;
+	font-weight: normal;
+}
+
+.msg-other {
 	color: #31708f;
 	background-color: #d9edf7;
 	border-color: #bce8f1;
 }
+
+.msg-clear {
+	color: #333;
+	border: 1px solid rgba(0,0,0,0.1);
+}
+
+.msg-clear:hover {
+	color:#000 !important;
+}
+
+.msg-status {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+	font-weight: bold;
+}
+
 .msg-error {
 	color: #a94442;
 	background-color: #f2dede;

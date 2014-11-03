@@ -11,12 +11,13 @@
 using namespace Defines;
 
 class ControlledException: public std::exception {
-	virtual const char* what() const throw()
+public:
+	const char* what() const throw()
 	{
 		return "Controlled Exception";
 	}
 	friend std::ostream& operator<< (std::ostream& out, const ControlledException& s) {
-		out << "CtrlEx";
+		//out << "CtrlEx";
 		return out;
 	}
 } sysEx;
@@ -54,7 +55,7 @@ public:
 			/* AnyError */
 			case ERR_ANY:
 				//std::cout << "Any error occurred" << std::endl;
-				emit.err(1,"Any error occurred");
+				emit.err("Anything",1,"Any error occurred","D:");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case FAIL_I2C_WRITE:
@@ -63,14 +64,14 @@ public:
 			case FAIL_I2C_CAL_OPEN:
 			case FAIL_I2C_CAL_READ:
 				//std::cout << "IMU threw a critical error" << std::endl;
-				emit.err(1,"IMU threw a critical error");
+				emit.err("AHRS.LSM303",1,"IMU threw a critical error","Failed to start");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case FAIL_I2C_DEV:		// IMU
 			case FAIL_I2C_PERM:		// IMU 
 			case IMU_BAD_CONNECT:
 				//std::cout << "Cannot start IMU" << std::endl;
-				emit.err(1,"Cannot start IMU");
+				emit.err("ARFC.IMUWorker.IMUInterface.SMBUS",1,"Cannot start IMU");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			case BAD_IO:			// SPI
@@ -80,33 +81,33 @@ public:
 			case FAIL_GET_BIT:		// SPI
 			case FAIL_SET_SPEED:	// SPI
 			case FAIL_GET_SPEED:	// SPI
-				emit.err(1,"No permission");
+				emit.err("ARFC.SPIworker.SMBUS", 1,"No permission");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			/* SPIworker daemon */
 			case FAIL_FLAG_SET:
 			case FAIL_START_WORKER:
-				emit.err(1,"Cannot control motors");
+				emit.err("ARFC.SPIWorker",1,"Cannot control motors");
 				sleepThrowWhere(3,sysEx,r);
 				return;
 			/* FATAL */
 			case UNREACHABLE:
-				emit.err(1,"FATAL ERROR");
+				emit.err( "SYSTEM", 1,"FATAL ERROR");
 				sleepThrowWhere(10,sysEx,r);
 				return;
 			case SHUTDOWN:
-				emit.err(1,"I sure hope you're not flying... ");
+				emit.err("SYSTEM",1,"I sure hope you're not flying... ");
 				sleepThrowWhere(0,sysEx,r);
 				return;
 			default:
-			emit.err(1,"Unknown ErrorMap.Response");
+			emit.err("Unknown", 1, "Unknown ErrorMap.Response");
 		}
 	}
 
 	void sleepThrowWhere(int s, ControlledException t, int w) {
-			emit.err(1, "Error countdown" );
+			emit.err(t.what(), 1, "Error countdown" );
 		while(s--) {
-			std::cout << "\rCaught("<<w<<")\tThrow("<<t<<") in "<<s<<"s"<<std::flush; 
+			//std::cout << "\rCaught("<<w<<")\tThrow("<<t<<") in "<<s<<"s"<<std::flush; 
 			//std::string s = "Caught(" + stoi(w) + ")";
 			sleep(1);
 		}

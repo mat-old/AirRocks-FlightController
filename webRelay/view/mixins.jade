@@ -19,19 +19,19 @@ mixin SLIDER(ctrl,item,max,div)
 			});
 
 
-mixin MAKEGAUGE(id,gclass,cont)
+mixin MAKEGAUGE(id,gclass,cont,sub,min,max)
 	div(class="#{cont}")
 		div(id="#{id}" style="#{gclass}")
 		script.
-			global_hash[ #{id} ] = {}
+			global_hash[ '#{id}' ] = {}
 			$(function(){
-				global_hash[ #{id} ] = new JustGage({
+				global_hash[ '#{id}' ] = new JustGage({
 					id:"#{id}",
 					value:0,
-					min:0,
-					max:100,
+					min: #{min},
+					max: #{max},
 					title:"#{id}",
-					label:"% Total"
+					label: "#{sub}"
 				});
 			});
 

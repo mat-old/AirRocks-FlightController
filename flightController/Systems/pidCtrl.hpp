@@ -43,11 +43,11 @@ public:
 		pitch.Compute (  accel.x ); 
 		roll.Compute  (  accel.y );
 		yaw.Compute   (  accel.z );  
-
-		/*4*/motors[0].setReserve(   roll  - yaw );
+		/* Thanks to narutov6 : http://robotics.stackexchange.com/questions/5116/how-to-find-a-solution-for-quadcopter-pid-control/5120#5120 */
+		/*1*/motors[0].setReserve(   roll  - yaw ); 
 		/*2*/motors[1].setReserve(   pitch + yaw );
-		/*1*/motors[2].setReserve( - roll  - yaw );
-		/*3*/motors[3].setReserve( - pitch + yaw );
+		/*3*/motors[2].setReserve( - roll  - yaw );
+		/*4*/motors[3].setReserve( - pitch + yaw );
 	}
 };
 #endif

@@ -1,25 +1,27 @@
 #ifndef JWRITER 
 #define JWRITER
-#include <iostream>
+#include <time.h>   // rand
 #include <cstdarg>
 #include <sstream>
+#include <stdlib.h> // rand
+#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 #include "../Includes.hpp"
 
-using boost::property_tree::ptree;
 using boost::property_tree::write_json;
+using boost::property_tree::ptree;
 
 class JWriter {
 private:
-	ptree t;
 	std::ostringstream s;
 	bool pretty;
+	ptree t;
 protected:
 	void Write() {
 		write_json(s,t,pretty);
-		std::cout << s.str();
+		std::cout << s.str() << std::flush;
 		s.str("");
 		s.clear();
 		t.clear();
@@ -48,7 +50,10 @@ protected:
 		va_end(args);
 		return ary;
 	}
-
+	template <typename T>
+	void put(const std::string name, T val){
+		t.put(name,val);
+	}
 public:
 	JWriter()  {	pretty = false;	}
 	JWriter(bool p)  {	Pretty(p);	}
@@ -68,26 +73,29 @@ public:
 		pretty = p;
 	}
 };
-
+/* i name things opposites a lot... */
 class GenericWriter : public JWriter {
 public:
 	void operator()(std::string data) {
 		JWriter::operator () ("status",data);
 	}
 	void operator()(Command& cmd) {
+		this->put("processed",(cmd.processed?"true":"false"));
 		ptree p;
 		p.add("name",cmd.name);
 		p.add("val",cmd.getValue());
 		JWriter::operator () ("cmd",p);
 	}
 	void operator()(Motorgroup& mg) {
-		JWriter::operator () ("motors",array("ffff",mg.A(),mg.B(),mg.C(),mg.D()));
+		JWriter::operator () ("motors",array("dddd",mg.A(),mg.B(),mg.C(),mg.D()));
 	}
 	void operator()(PID_t& pt){
 		ptree p;
-		p.add_child("labels",array("ssss", "output", "p", "i", "d"));
-		p.add_child("values",array("ffff", pt.output, pt.kp, pt.ki, pt.kd));
-		p.add("name",pt.name);
+		this->put("name"  , pt.name);
+		this->put("input" , pt.last_input);
+		this->put("output", pt.output);
+		p.add_child("labels",array("sss", "p", "i", "d"));
+		p.add_child("values",array("fff", pt.kp, pt.ki, pt.kd));
 		JWriter::operator () ("PID",p);
 	}
 	void operator()(Potential_t& pot) {
@@ -102,9 +110,10 @@ public:
 		p.add("speed",t.Throttle());
 		JWriter::operator () ("throttle",p);
 	}
-	void err( int argc, ...) {
+	/* where, number of extra args, argv... */
+	void err(const char* what, const int argc, ...) {
 		ptree ary, ret;
-
+		this->put("what",what);
 		va_list args;
 		va_start(args,argc);
 		for (int i = 0; i < argc; ++i) {
@@ -115,50 +124,89 @@ public:
 		ret.add_child("list",ary);
 		JWriter::operator () ("error",ret);
 	}
+
+	void cmd(std::string data, bool processed) {
+		this->put("processed",(processed?"true":"false"));
+		JWriter::operator () ("cmd",data);
+	}
+
 };
 
 void test() {
+	srand(time(NULL));
 	GenericWriter writer;
-	writer.Pretty(true);
-	int start = 4;
-	for (int i = start; i < 12; ++i)
+	writer.Pretty(false);
+	int start = 0;
+	int end   = 11;
+	for( int k = 0; k<2000; k++ )
+	for (int i = start; i < end; ++i)
 	switch(i){
 		case 0:{
 			Command cmd1("magic:54444.1");
 			writer(cmd1);
-		}
+		}break;
 		case 1:{
 			Motorgroup mg;
-			mg.All(0.8);
+			mg.PID_ratio(Defines::PID_RATIO).Zero();
+			//mg.All(0.8);
+			float basev = ((float)(rand()%101) /100.0f);
+			mg.A( basev+((float)(rand()%16) /100.0f) );
+			mg.B( basev+((float)(rand()%16) /100.0f) );
+			mg.C( basev+((float)(rand()%16) /100.0f) );
+			mg.D( basev+((float)(rand()%16) /100.0f) );
 			writer(mg);
-		}
+		}break;
 		case 2:{
 			PID_t pt;
-			pt.name = "cool axis";
-			pt.set_point = 9.9;
-			pt.SetPID(11.1,8.2,2.2);
-			pt.Compute(7.6);
+			pt.name = "pitch";
+			pt.set_point = 0.024f;
+			pt.SetTime(20);
+			pt.SetPID(0.16,3.02,0.025);
+			pt.Compute(0.092f);
+			usleep(20000);
+			pt.Compute( ((float)(rand()%70+1) /100.0f) );
+
+			PID_t r;
+			r.name = "roll";
+			r.set_point = 0.024f;
+			r.SetTime(20);
+			r.SetPID(0.16,3.02,0.025);
+			r.Compute(0.092f);
+			usleep(20000);
+			r.Compute( ((float)(rand()%70+1) /100.0f) );
+
+			PID_t y;
+			y.name = "yaw";
+			y.set_point = 0.024f;
+			y.SetTime(20);
+			y.SetPID(0.16,3.02,0.025);
+			y.Compute(0.092f);
+			usleep(20000);
+			y.Compute( 1.0f - (abs(pt.last_input) + abs(r.last_input)) );
+
+			writer(r);
+			writer(y);
 			writer(pt);
-		}
+		}break;
 		case 3:{
 			Potential_t pot("gyro");
 			pot.x = 9.9;
 			pot.y = 8.8;
 			pot.z = 1.1;
 			writer(pot);
-		}
+		}break;
 		case 4: {
-			Throttle_t t("wrong wing");
+			Throttle_t t("A");
 			t.setReserveRatio(0.2);
 			t.setPower(0.5);
 			writer(t);
-		}
+		}break;
 		case 5: {
 			/* no support for timers */
-		}
+		}break;
 		case 6: {
-
-		}
+			writer.err("Global.test.JWriter",3,"super","error","OMG!");
+		}break;
 		case 7:
 		case 8:
 		case 9:

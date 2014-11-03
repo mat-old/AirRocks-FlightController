@@ -11,8 +11,8 @@ public:
 	pid_t set_p
 		, set_r;
 
-	Throttle_t()  {}
-	Throttle_t(const std::string n)  { name = n; }
+	Throttle_t()  { Zero(); }
+	Throttle_t(const std::string n)  { name = n; Zero(); }
 	~Throttle_t() {}
 
 	void setReserveRatio( pid_t res ) {
@@ -32,6 +32,9 @@ public:
 	uint8_t Throttle() {
 		uint8_t ret = (set_p + set_r);
 		return ret>THROTTLE_MAX?THROTTLE_MAX:ret<0?0:ret;
+	}
+	void Zero() {
+		this->set_p = this->set_r = 0.0f;
 	}
 };
 #endif

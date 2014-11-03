@@ -9,7 +9,9 @@ var http = require('http')
 
 var route = {
 	"/home" :"/index.jade",
-	"/tuner":"/tuner.jade"
+	"/tuner":"/tuner.jade",
+	"/"     :"/landingPad.jade",
+	""      :"/landingPad.jade"
 };
 
 var resource = {
@@ -18,16 +20,16 @@ var resource = {
 		"PIDS"    : ["Roll","Pitch","Yaw"],
 		"ITEMS"   : ["P","I","D"],
 		"GAUGES"  : [
-			{"id":"throttle","class":'width:380px ;height:301px;',"container":"gauge-med"},
-			{"id":"Motor_A","class":'width:93px ;height:75px;',"container":"gauge-small"},
-			{"id":"Motor_B","class":'width:93px ;height:75px;',"container":"gauge-small"},
-			{"id":"Motor_C","class":'width:93px ;height:75px;',"container":"gauge-small"},
-			{"id":"Motor_D","class":'width:93px ;height:75px;',"container":"gauge-small"}		
+			{"id":"throttle","class":'width:380px ;height:301px;',"container":"gauge-med","subtext":"Average","min":0,"max":100},
+			{"id":"Motor_A","class":'width:93px ;height:75px;',"container":"gauge-small","subtext":"+Roll","min":0,"max":100},
+			{"id":"Motor_B","class":'width:93px ;height:75px;',"container":"gauge-small","subtext":"+Pitch","min":0,"max":100},
+			{"id":"Motor_C","class":'width:93px ;height:75px;',"container":"gauge-small","subtext":"-Roll","min":0,"max":100},
+			{"id":"Motor_D","class":'width:93px ;height:75px;',"container":"gauge-small","subtext":"-Pitch","min":0,"max":100}		
 		],
 		"GROUP2"  : [
-			{"id":"pitch","class":'width:170px ;height:130px;',"container":"gauge-small"},
-			{"id":"roll","class":'width:170px ;height:130px;',"container":"gauge-small"},
-			{"id":"yaw","class":'width:170px ;height:130px;',"container":"gauge-small"}
+			{"id":"pitch","class":'width:170px ;height:130px;',"container":"gauge-small","subtext":"y'","min":-1,"max":1},
+			{"id":"roll","class":'width:170px ;height:130px;',"container":"gauge-small","subtext":"x'","min":-1,"max":1},
+			{"id":"yaw","class":'width:170px ;height:130px;',"container":"gauge-small","subtext":"z'","min":-1,"max":1}
 		]
 	}	
 };

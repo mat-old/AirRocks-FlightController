@@ -58,6 +58,7 @@ JWriter        jout;
 GenericWriter  emit;
 #include "./Cores/Cores.hpp"
 #include "./Systems/Systems.hpp"
+#include "./Modes/Modes.hpp"
 
 
 #endif

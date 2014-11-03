@@ -52,7 +52,8 @@ public:
 		if( access.try_lock() ) {
 			try {
 			for (std::vector<Command>::iterator i = cmds.begin(); i != cmds.end(); ++i) {
-				std::cout << "> " << (*i).name << " : " << (*i).Hash() << std::endl;
+				//std::cout << "> " << (*i).name << " : " << (*i).Hash() << std::endl;
+				//emit.cmd((*i).name,true);
 				switch( (*i).Hash() ) {
 					case PP:
 						PID->pitch.SetP( (*i).getValue() );
@@ -103,6 +104,7 @@ public:
 						Set_Active(true);
 					break;
 				}
+				emit( *i );
 			}
 			} catch(ERR_CODES e) {
 				err.Response(e);

@@ -1,0 +1,52 @@
+
+doctype html
+html(lang="en")
+head
+	title Tune PIDs
+	link(href='bootstrap.min.css' rel='stylesheet')
+	link(href='landing.css' rel='stylesheet')
+
+	script(type='text/javascript' src='jquery.js')
+	script(type='text/javascript' src='bootstrap.min.js')
+
+body
+
+	.col-sm-12.msg-box
+		h4
+			|Selecting a flight mode. 
+
+	a.col-sm-6.mode-box
+		h1
+			|Test
+		.label
+			|Ensure all UAV systems are functioning properly
+	a.col-sm-6.mode-box
+		h1
+			|PID Tuning
+		.label
+			|Tune settings used to stabalize the UAV
+	a.col-sm-6.mode-box
+		h1
+			|UAV
+		.label
+			|Main UAV program
+	a.col-sm-6.mode-box(href="http://en.wikipedia.org/wiki/Ellipsis")
+		h1
+			|...
+		.label
+			|Profit?
+	.col-sm-12.footer
+		a(href="#") About
+		span.span2 |
+		a(href="#") Github
+
+
+script.
+	$(function(){
+		$('.footer').height(function(index, height) {
+			return window.innerHeight - $(this).offset().top;
+		});
+	});
+
+
+

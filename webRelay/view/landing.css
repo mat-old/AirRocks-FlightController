@@ -1,0 +1,54 @@
+html,body {
+	height:100%;
+	overflow: hidden;
+}
+body, a, html {
+	background-color: #222;
+	color:#EEE;
+}
+.msg-box {
+	width: 100%;
+	background-color: rgba(0,0,0,0.4);
+}
+.mode-box {
+	font-weight: 900;
+	text-align      : center;
+	padding-top     : 8.0em;
+	padding-bottom  : 10.0em;
+	background-color: transparent;
+	transition      : background 0.4s ease-out, color 0.2s ease-in;
+}
+.mode-box h1 {
+	font-size: 4.0em;
+}
+.mode-box:hover {
+	color:#fdb620;
+	cursor:pointer;
+	text-decoration: none;
+	background-color: #111;
+}
+.label {
+	color: #EEE;
+	font-size: 1.0em;
+	font-style: italic;
+}
+
+
+.footer {
+	padding-top: 15px;
+	text-align: center;
+	background-color: rgba(0,0,0,0.4);
+}
+.footer a {
+	color: #fdb620;
+	background-color: transparent;
+}
+
+.footer a:hover {
+	color: #fded20;
+}
+
+.span2 {
+	margin-right: 1em;
+	margin-left: 1em;
+}
