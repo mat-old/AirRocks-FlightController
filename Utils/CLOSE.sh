@@ -1,0 +1,1 @@
+umount arfc/ -f -l

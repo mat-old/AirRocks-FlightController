@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import math as Math
-import Numpy
+import numpy as np
 
 # attitude is all IMU data
 # vector is the current physical vector, last, and future goal
@@ -51,7 +51,7 @@ class Coordinate:
 		return Math.sqrt( (a.x - b.x)**2 + (a.y - b.y)**2 )
 
 	def __str__(self):
-		return "(" + str(self.x) + "," + str(self.y) + ")"
+		return "{" + str(self.x) + "," + str(self.y) + ",0}"
 
 
 
@@ -63,6 +63,7 @@ class Path:
 
 	def append(self, x,y ):
 		self.vector.append( Coordinate(x,y) )
+		self.distance = False
 
 	def getDistance(self):
 		if self.distance != False:
@@ -73,8 +74,22 @@ class Path:
 				self.distance += self.vector[0].distanceFrom( self.vector[i+1] )
 			return self.distance
 
+	# 3 Point arc
 	def getArc(self):
-		pass
+		A = np.array([self.vector[0].x, self.vector[0].y, 0.0])
+		B = np.array([self.vector[1].x, self.vector[1].y, 0.0])
+		C = np.array([self.vector[2].x, self.vector[2].y, 0.0])
+		a = np.linalg.norm(C - B)
+		b = np.linalg.norm(C - A)
+		c = np.linalg.norm(B - A)
+		s = (a + b + c) / 2
+		R = a*b*c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c))
+		# b1 = a*a * (b*b + c*c - a*a)
+		# b2 = b*b * (a*a + c*c - b*b)
+		# b3 = c*c * (a*a + b*b - c*c)
+		# P = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
+		# P /= b1 + b2 + b3
+		return R
 
 	def __str__(self):
 		s = ""
@@ -116,3 +131,5 @@ p.append(1,3)
 
 print p
 print p.getDistance()
+
+print p.getArc()
