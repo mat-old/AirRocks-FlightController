@@ -67,14 +67,16 @@ var sb = function(name, min, max, div) {
 	};
 };
 /* setting */
-var sg = function( name, controls, scrollBars ) {
+var sg = function( name, controls, scrollBars, active ) {
 	this.name       = name;
 	this.controls   = controls;
 	this.scrollBars = scrollBars;
+	this.active     = active || false
 	return {
 		name       : this.name
 	  , controls   : this.controls
 	  , scrollBars : this.scrollBars
+	  , active     : this.active
 	};
 };
 
@@ -96,9 +98,11 @@ var Global = {
   	}
   , resource : {
 		tuner : {
-			Tuners : [
+			Throttle: [ 
 				sg('Throttle', ['arm','start','stop'], [sb('Torque',0,100,1)]),
-				sg('Pitch', ['activate','reset','save'], PIDSETTINGS),
+			],
+			Tuners : [
+				sg('Pitch', ['activate','reset','save'], PIDSETTINGS, true),
 				sg('Roll', ['activate','reset','save'], PIDSETTINGS),
 				sg('Yaw', ['activate','reset','save'], PIDSETTINGS)
 			],
@@ -122,11 +126,13 @@ var Global = {
 					gm('yaw',gc(188,150),'gauge-small','Z\'',-1,1)
 				]
 			},
-			SIDEBARS : [
+			MENU : [
 				mm('Main','selector', 'main',[
 					op('Tuner','tuner-menu',true)
 				  , op('Help','help-menu')
-				], true), 
+				], true)
+			],
+			SIDEBARS : [
 				mm('Tuner','tuner-menu', 'tuner',[
 					op('All','toggle-all',true)
 				  , op('Levels','toggle-levels')
@@ -134,7 +140,7 @@ var Global = {
 				  , op('Tuners','toggle-tuners')
 				], true),
 				mm('Help', 'help-menu', 'help',[
-					op('About','toggle-about')
+					op('About','toggle-about', true)
 				  , op('Info','toggle-info')
 				], false)
 			]

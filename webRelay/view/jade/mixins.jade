@@ -3,11 +3,11 @@ script.
 
 mixin SLIDER(ctrl,item,min,max,div)
 	.row.slider-row
-		.col-sm-1
+		.col-sm-2
 			label #{item}
-		.col-sm-1
+		.col-sm-2
 			label(class="data-#{ctrl}-#{item}")
-		.col-sm-10
+		.col-sm-8
 			div(id='#{ctrl}-#{item}')
 			script.
 				$(function(){
@@ -23,7 +23,16 @@ mixin SLIDER(ctrl,item,min,max,div)
 						}
 					});
 				});
-
+mixin MAKETUNER(tuner)
+	.panel.panel-default
+		.panel-heading
+			h1.btn-group-label #{tuner.name}
+			.btn-group.btn-group-panel
+				each cont in tuner.controls
+					button.btn.btn-default.btn-tuner(id="#{tuner.name+'-'+cont}") #{cont}
+		.panel-body
+			each sb in tuner.scrollBars
+				+SLIDER(tuner.name,sb.name,sb.min,sb.max, sb.div )
 
 mixin MAKEGAUGE(id,gclass,cont,sub,min,max)
 	div(class="#{cont}")
@@ -53,6 +62,11 @@ mixin MAKESIDEBAR( m )
 			each ITEM in m.opts
 				li(class="#{ITEM.active?'active':''}" id="#{ITEM.id}" group="#{m.id}")
 					a #{ITEM.name}
+
+mixin MAKETAB( m )
+	each ITEM in m.opts
+		li(class="#{ITEM.active?'active':''}" id="#{ITEM.id}" group="#{m.id}")
+			a #{ITEM.name}	
 
 
 block content

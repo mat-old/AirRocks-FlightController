@@ -39,8 +39,12 @@ SocketHandler  = function(socket,peers) {
 		});
 
 		socket.on('update', function(msg) {
-/*			echo( msg )
-			pd.send(msg.data)*/
+			console.log( msg )
+			/*pd.send(msg.data)*/
+		});
+
+		socket.on('signal-test', function(dt){
+			socket.emit('signal-test-res', '');
 		});
 
 		socket.on('disconnect',function() {

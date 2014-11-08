@@ -31,8 +31,8 @@ block content
 						| UAV Pid Tuner
 				#navbar
 					ul.nav.navbar-nav.navbar-left
-						li
-							a actions
+						each TAB in MENU
+							+MAKETAB(TAB)
 
 					.navbar-right
 						.signal
@@ -40,27 +40,74 @@ block content
 
 				.container-fluid
 					.row
-						.col-sm-3.col-md-2.sidebar
+						.col-sm-4.col-md-3.sidebar
 							each MENU in SIDEBARS
 								+MAKESIDEBAR(MENU)
 
+							.msg-container
+								.msg-controls
+									a#all.msg.label.msg-ctrl
+										|All
+									a#status.msg.label.msg-ctrl
+										|Status
+									a#warning.msg.label.msg-ctrl
+										|Warnings
+									a#error.msg.label.msg-ctrl
+										|Errors
+									a.msg.msg-clear.label
+										|Clear
+								.msg-target
+
 			
-		.col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main.suppressible.suppressed
-			.row.gage-groups
-				each group, name in GAUGES
-					.gages(class="#{name}")
-						each g in group
-							+MAKEGAUGE(g.id,g.class,g.container,g.subtext,g.min,g.max)
+		.col-sm-8.col-sm-offset-3.col-md-9.col-md-offset-2.main.suppressible.suppressed
+			section#tuner-menu
+				.row.gage-groups
+					each group, name in GAUGES
+						.gages(class="#{name}")
+							each g in group
+								+MAKEGAUGE(g.id,g.class,g.container,g.subtext,g.min,g.max)
 
-			br
+				br
 
-			each tuner in Tuners
-				.panel.panel-default
-					.panel-heading
-						h1.btn-group-label #{tuner.name}
-						.btn-group.btn-group-panel
-							each cont in tuner.controls
-								button.btn.btn-default #{cont}
-					.panel-body
-						each sb in tuner.scrollBars
-							+SLIDER(tuner.name,sb.name,sb.min,sb.max, sb.div )
+				each tuner in Throttle
+					+MAKETUNER(tuner)
+
+				#tuners.carousel.slide(data-ride='carousel' data-interval="false")
+					.carousel-inner(role='listbox')
+						each tuner in Tuners
+							.item(class="#{tuner.active?'active':''}")
+								+MAKETUNER(tuner)
+					ol.carousel-indicators
+						li.active(data-target='#tuners', data-slide-to='0')
+						li(data-target='#tuners', data-slide-to='1')
+						li(data-target='#tuners', data-slide-to='2')
+
+				h3.btn.btn-primary.pull-left(href='#tuners', role='button', data-slide='prev')
+					|Previous
+
+				h3.btn.btn-primary.pull-right(href='#tuners', role='button', data-slide='next')
+					|Next
+
+
+
+
+
+			section#help-menu
+				span.label.label-info.pull-right Info
+				.page-header
+					h1
+						|PID controller
+					small
+						|From Wikipedia, the free encyclopedia
+
+				p.lead
+					|A <strong>proportional-integral-derivative controller</strong> (PID controller) is a control loop feedback mechanism (controller) widely used in industrial control systems. A PID controller calculates an error value as the difference between a measured process variable and a desired setpoint. The controller attempts to minimize the error by adjusting the process through use of a manipulated variable.
+
+				p
+					|The PID controller algorithm involves three separate constant parameters, and is accordingly sometimes called three-term control: the proportional, the integral and derivative values, denoted P, I, and D. Simply put, these values can be interpreted in terms of time: P depends on the present error, I on the accumulation of past errors, and D is a prediction of future errors, based on current rate of change.[1] The weighted sum of these three actions is used to adjust the process via a control element such as the position of a control valve, a damper, or the power supplied to a heating element.
+
+				p
+					|In the absence of knowledge of the underlying process, a PID controller has historically been considered to be the best controller.[2] By tuning the three parameters in the PID controller algorithm, the controller can provide control action designed for specific process requirements. The response of the controller can be described in terms of the responsiveness of the controller to an error, the degree to which the controller overshoots the setpoint, and the degree of system oscillation. Note that the use of the PID algorithm for control does not guarantee optimal control of the system or system stability.
+
+				p
+					|Some applications may require using only one or two actions to provide the appropriate system control. This is achieved by setting the other parameters to zero. A PID controller will be called a PI, PD, P or I controller in the absence of the respective control actions. PI controllers are fairly common, since derivative action is sensitive to measurement noise, whereas the absence of an integral term may prevent the system from reaching its target value due to the control action.

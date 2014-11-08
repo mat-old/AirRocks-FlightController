@@ -2,7 +2,10 @@ body {
   padding-top: 50px;
   font-size  : 10px;
 }
-
+nav.navbar.navbar-fixed-top {
+	min-height: 52px;
+	border: 0;
+}
 .navbar {
 	background    : #26343F;
 	text-transform: uppercase;
@@ -16,9 +19,10 @@ body {
 .navbar-nav li a {
 	padding: 3px 15px;
 	margin: 12px;
+	font-size: 14px;
 }
 
-.navbar-nav li a:hover {
+.navbar-nav li a:hover, .navbar-nav li.active a {
 	border-radius: 12px;
 	background: rgba(0,0,0,0.3);
 }
@@ -28,9 +32,14 @@ body {
 }
 a { cursor: pointer; }
 .main {
+	position: absolute;
+	top:52px;
+	bottom: 0;
+	right: 0;
 	background: #FAFAFA;
 	padding: 20px;
     box-shadow: inset 2px 2px 8px rgba(0,0,0,0.293);
+    overflow-y:scroll;
 }
 .sidebar {
 	display: none;
@@ -39,10 +48,6 @@ a { cursor: pointer; }
 }
 .sidebar li a {
 	color: #333;
-}
-
-.navbar-fixed-top {
-  border: 0;
 }
 
 /* Hide for mobile, show later */
@@ -65,6 +70,14 @@ a { cursor: pointer; }
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
   }
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+@media (max-width: 768px) {
+	.main {top:200px}
+	nav.navbar.navbar-fixed-top {height: 200px}
 }
 .nav-sidebar {
   margin-right: -21px; /* 20px padding + 1px border */
@@ -80,12 +93,6 @@ a { cursor: pointer; }
 .nav-sidebar > .active > a:focus {
   color: #fff;
   background-color: #428bca;
-}
-@media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
 }
 .gauge-small {
 	display: inline-block;
@@ -156,12 +163,22 @@ span.ui-slider-handle.ui-state-default:after {
 }
 
 .signal {
+	cursor: pointer;
 	position: relative;
 	margin: 10px;
 	content: '';
 	height: 32px;
 	width: 52px;
 }
+
+.signal:hover .bar {
+	animation: dance .4s steps(5, start) infinite;
+	-webkit-animation: dance .4s steps(5, start) infinite;
+}
+.signal .bar:nth-child(2) { -webkit-animation-delay: .1s }
+.signal .bar:nth-child(3) { -webkit-animation-delay: .2s }
+.signal .bar:nth-child(4) { -webkit-animation-delay: .3s }
+.signal .bar:nth-child(5) { -webkit-animation-delay: .4s }
 
 .bar {
 	position: absolute;
@@ -170,6 +187,22 @@ span.ui-slider-handle.ui-state-default:after {
 	background: #FFF;
 	width: 5px;
 }
+@keyframes dance { to { transform: scale(1.2); } }
+@-webkit-keyframes dance { to { transform: scale(1.2); } }
+.bang {
+	color: #ec0260;
+	height: 32px;
+	width: 32px;
+	font-size: 3.4em;
+	text-align: right;
+	font-weight: bold;
+	margin-top: -10px;
+	animation: blink .5s steps(5, start) infinite;
+    -webkit-animation: blink .5s steps(5, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+@-webkit-keyframes blink { to { visibility: hidden; } }
+
 
 .suppressible {
 	transition : height 1s ease-out, padding 1s ease-out;
@@ -178,4 +211,80 @@ span.ui-slider-handle.ui-state-default:after {
 	overflow   : hidden; 
 	height     : 0px  !important;
 	padding    : 0px !important;
+}
+
+section#help-menu {
+	font-size: 2em;
+}
+
+.carousel .item .container {
+	padding: 0px;
+}
+
+.carousel-indicators {
+	bottom: -25%;
+}
+
+.carousel-indicators li {
+	border: 1px solid #555;
+}
+.carousel-indicators li.active {
+	background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+	width: 15px;
+	height: 15px;
+}
+
+.msg-controls {
+	border-bottom: 1px solid #131a1f;
+	background: #1c272f;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+
+.msg-controls a {
+	display: inline-block;
+	margin: 2px;
+}
+
+.msg {
+	background-color: rgba(0,0,0,0.5);
+	border-radius: 3px;
+	margin: 2px;
+	padding: 2px 4px;
+}
+
+.msg:hover, .msg-off {
+	background: #fff;
+	color:#333 !important;
+}
+
+.msg-off:hover {
+	color:#ddd;
+}
+
+.msg-container {
+	position: absolute;
+	bottom: 0;
+	left:0;
+	right: 0;
+	height: 50%;
+	width: 100%;
+	background:#26343F;
+	font-size: 90%;
+	font-size: 13px;
+}
+
+.msg-target li {
+	padding: 0 5px;
+	text-transform: capitalize;
+	list-style: none;
+	color: #fff;
+	display: block;
+}
+
+.msgerror {
+	display: inline-block;
+	color: #c7254e !important;
+	background-color: #f9f2f4;
+	border-radius: 4px;
 }
