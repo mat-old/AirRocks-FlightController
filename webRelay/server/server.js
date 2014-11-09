@@ -13,7 +13,7 @@ function httpserver(iom, peers, port) {
 	
 	io.sockets.on('connection', function(socket){
 		if( peers.Available() ) {
-			iom.Handler( socket, peers );
+			iom.Handler( socket, peers, router.info(socket.handshake.headers.referer ) )
 		}
 		else
 			socket.disconnect();

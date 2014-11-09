@@ -64,9 +64,14 @@ var PidCtrls = []
   , setActiveGroupItem = function( sender ) {
 		$(sender).addClass('active').siblings().removeClass('active')
 	}
+  , setActiveItem = function( sender, set ) {
+  		if( set == true )
+			$(sender).addClass('active')
+  		else
+  			$(sender).removeClass('active')
+	}
   , slideUpdate = function(id,val) {
-		var s = id+':'+val
-		socket.emit('update', {data:s});
+		socket.emit('update', {  name:id, value:val, action:'set'});
 	}
   , updateSignal = function() {
 		var num = Math.floor(signal*100)
@@ -113,6 +118,7 @@ socket.on('handshake', function() {
 	window.setTimeout(function(){
 		$('.main').removeClass('suppressed');
 		msgRouter( {type:'status', data:'Connected.'} )
+		socket.emit('ready', '');
 	}, 1000);
 
 });
@@ -126,7 +132,7 @@ window.setTimeout(function(){
 
 
 $(document).ready(function(){
-	socket.on('msg',function(obj){
+	socket.on('res',function(obj){
 		msgRouter(obj);
 	});
 	$('.menu-box li,.navbar-nav li').click(function(){
@@ -140,6 +146,7 @@ $(document).ready(function(){
 		if( id.indexOf('toggle') >= 0 ) {
 			var group = $(this).attr('group')
 			//console.log( 'Group = '+group )
+			//$('section#'+id).toggle();
 		}
 		//console.log( 'Item = '+id )
 	});
@@ -177,7 +184,10 @@ $(document).ready(function(){
 	$('.msg-clear').click(function(){
 		$('.msg-target').empty()
 	});
-	$('section#help-menu').hide();
+	$('.control').click(function(){
+		socket.emit('control', this.id)
+	});
+	$('section#help-menu, section#controls-menu').hide();
 	$('.carousel-indicators li').click(function(){
 		setActiveGroupItem( this )
 	});

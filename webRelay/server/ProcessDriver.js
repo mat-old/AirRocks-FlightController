@@ -1,100 +1,102 @@
-var echo  = require('./utils.js').echo
-  , spawn = require('child_process').spawn
-  , exec  = require('child_process').exec;
-
-ProcessDriver = function(epath, eexec, stdoutCB, faultCB) {
-	echo( 'PD', {'interface':'ready'} )
-	this.executable = eexec;
-	this.path       = epath
-	this.process    = { connected : false };
-	this.stdoutCB   = stdoutCB
-	this.stdoutCB( '{"type":"status","data":"Interface Ready"}' )
-	this.onFaultCB = faultCB
-	this.stdBuffer 	= []
-
-	this.sysKill = function() {
-		var trykill = 'pkill ' + this.executable
-		echo( 'doubletap', trykill )
-		exec(trykill, function (err , stdout, stderr){});
+var spawn_cp = require('child_process').spawn
+  , assert   = require('assert')
+  , exec_cp  = require('child_process').exec;
+/* better stack overhead */
+function Driver() {
+	this.exec 	 = '';
+	this.path    = '';
+	this.args    = [];
+	this.opts    = [];
+	this.child   = null;
+	this.out     = null;
+	this.uptime  = 0;
+	this.safety  = false;
+};
+Driver.prototype.setPath = function(path) {
+	this.path = path;
+};
+Driver.prototype.setExec = function(exec){
+	this.exec = exec;
+};
+Driver.prototype.setOpts = function( opts ){
+	this.opts = opts
+};
+Driver.prototype.setArgs = function( args ){
+	this.args = args
+};
+Driver.prototype.killAll = function() {
+	this.safety = false;
+	var trykill = 'pkill ' + this.exec
+	exec_cp(trykill, function (err , stdout, stderr){});
+};
+Driver.prototype.on      = function( e, cb ) {
+	assert.equal( typeof e, 'string' );
+	switch(e) {
+		case 'out': this.out = cb; break;
 	}
-
-	this.start   = function() {
-		var cb = this.stdoutCB
-		var of = this.onFaultCB
-		/*make sure its not already running*/
-		try {
-			this.sysKill();
-			this.process = spawn(this.path+this.executable,[/*args*/],[/*opts*/])
-			this.process.stdout.setEncoding('utf-8');
-		
-			this.process.stdout.on('data', function (data) {
-					var res = data.toString().split('\n');
-					for(var s in res)
-						if( res[s].length > 3 )
-						cb(res[s]);
-			});
-			this.process.stderr.on('data', function (data) {
-				var res = data.toString();
-				cb(res);
-			})
-			this.process.on('exit', function(code){
-				//of()
-			})
-			this.process.on('error', function(code){
-				//of()
-			})
-		}
-		catch( e ) {
-			echo( 'PD FAIL 1', e )
-			
-		}
-		return true;
+};
+/* there WILL be a context switch */
+Driver.prototype.start   = function() {
+	if( this.safety ) return;
+	console.log( this.path+this.exec,this.args )
+	var out = this.out;
+	try {
+		//this.killAll();
+		delete this.child;
+		this.child = null;
+		this.child = spawn_cp(this.path+this.exec,this.args,this.opts);
+		this.child.stdout.setEncoding('utf8');
+		this.child.stdout.on('data', function (chunk) {
+			console.log( chunk )
+			out( chunk );
+		});
+		this.child.stderr.on('data', function (chunk) {
+			console.log( '>err :: '+chunk )
+			out( chunk );
+		});
+		this.safety = true;
 	}
-	this.kill    = function() {
-		try {
-			echo('kill request ' + this.process.pid)
-			this.process.kill('SIGKILL')
-		} catch(e) {
-			echo( e )
-		}
+	catch( e ) {
+		console.log(e)		
 	}
-	this.send    = function(s) {
-		try {
-			this.process.stdin.setEncoding = 'utf-8'
-			this.process.stdin.write( s + '\n')
-		} catch(e) {
-			echo(e)
-			if( e.code == 'EPIPE' ) {
-				echo( '{"type":"error","data":{["ARFC IS CRITICAL FAILURE"]}}' )
-				this.sysKill();
-				this.start();
-			}
-		}
+};
+Driver.prototype.reset   = function( cb ) {
+	this.safety = false;
+	/* do things */
+	try{
+		this.child.kill('SIGKILL');
+		this.start();
+	} catch(e) {
+		console.log(e)
 	}
-	this.clear   = function() {
-		delete this.process
+};
+Driver.prototype.kill    = function() {
+	this.safety = false;
+	try{
+		this.child.kill('SIGKILL');
+	} catch(e) {
+		console.log(e)
 	}
-	this.stopped = function() {
-		return !this.process.connected;
-	};
-	this.running = function() {
-		return this.process.connected;
-	};
-
-	this.instance= function(){
-
+};
+Driver.prototype.send    = function( s ) {
+	//assert.equal( typeof s, 'string' );
+	//console.log( this.child.stdin )
+	//this.child.stdin.resume();
+	//if( this.child != null   )
+	//if( this.child.connected ) {
+	//	console.log( s )
+	//	this.child.stdin.write( s+'\n', 'utf8' )
+	//}
+	/*only unsafe way works... this is retarded...*/
+	try {
+		this.child.setEncoding = 'utf-8' /*this isnt even a proper enc type  utf8 vs utf-8 */
+		this.child.write( s + "\n" );
+	} catch(e) {
+		console.log( e )
 	}
 };
 
 
-ProcessTest = function(PATH,EXEC,ARGS,cb) {
-		var p = PATH+EXEC+" "+ARGS
-		exec(p, function (err , stdout, stderr){
-			if( err || stdout.length == 0 )
-				cb(false);
-			cb(stdout)
-		});
-} 
 
-exports.PD = ProcessDriver
-exports.PT = ProcessTest
+exports.Driver = Driver
+//exports.PT = childTest

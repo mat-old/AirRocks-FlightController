@@ -89,7 +89,9 @@ var Global = {
   , backupPort   : 8888
   , viewpath : './view/'
   , uavpath  : '/home/arfc/arfc/flightController/' 
-  , uavexec  : 'ARFCapp.o'
+  , uavexec  : 'UAVapp.o'
+  , uavAltEx : 'test.o'
+  , uavAltP  : '/home/arfc/arfc/dev/' 
   , uavconf  : 'config.json'
   , uavoptions : {
 	  	'test' : '-test',
@@ -130,13 +132,13 @@ var Global = {
 				mm('Main','selector', 'main',[
 					op('Tuner','tuner-menu',true)
 				  , op('Help','help-menu')
+				  , op('Controls','controls-menu')
 				], true)
 			],
 			SIDEBARS : [
 				mm('Tuner','tuner-menu', 'tuner',[
 					op('All','toggle-all',true)
 				  , op('Levels','toggle-levels')
-				  , op('Alerts','toggle-alerts')
 				  , op('Tuners','toggle-tuners')
 				], true),
 				mm('Help', 'help-menu', 'help',[

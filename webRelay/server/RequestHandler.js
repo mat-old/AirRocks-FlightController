@@ -21,7 +21,11 @@ var fs      = require('fs')
 	}
 
 	function getPath( req ) {
-		var path = url.parse(req.url).pathname.replace(/\//,'')
+		var path;
+		if( typeof req === 'string' )
+			path = url.parse(req).pathname.replace(/\//,'')
+		else
+			path = url.parse(req.url).pathname.replace(/\//,'')
 		return G.route[path] || path;				
 	}
 

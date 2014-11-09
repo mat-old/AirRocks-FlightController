@@ -40,7 +40,7 @@ block content
 
 				.container-fluid
 					.row
-						.col-sm-4.col-md-3.sidebar
+						.col-sm-3.col-md-2.sidebar
 							each MENU in SIDEBARS
 								+MAKESIDEBAR(MENU)
 
@@ -59,7 +59,7 @@ block content
 								.msg-target
 
 			
-		.col-sm-8.col-sm-offset-3.col-md-9.col-md-offset-2.main.suppressible.suppressed
+		.col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main.suppressible.suppressed
 			section#tuner-menu
 				.row.gage-groups
 					each group, name in GAUGES
@@ -89,8 +89,19 @@ block content
 					|Next
 
 
-
-
+			section#controls-menu
+				button.btn.btn-warning.control#reset
+					|Reset Tuner Process
+				button.btn.btn-danger.control#kill
+					|Kill Tuner Process
+				button.btn.btn-danger.control#killall
+					|Pkill UAV.o
+				button.btn.btn-success.control#start
+					|Start Tuner Process
+				button.btn.btn-warning.control#settest
+					|Set executable 'TEST'
+				button.btn.btn-warning.control#setuav
+					|Set executable 'UAV -tuner'
 
 			section#help-menu
 				span.label.label-info.pull-right Info
