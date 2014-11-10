@@ -1,55 +1,39 @@
 #ifndef MOTORGROUP
 #define MOTORGROUP
 
-#include "../Includes.hpp"
+#include "../Defines.hpp"
+#include "Throttle.hpp"
+#include <stdint.h>
+
 
 //#include "../Types/Types.hpp"
-//#include "../Defines.hpp"
 class Motorgroup {
 public:
-	Throttle_t motors[Defines::MOTORS];
-	Motorgroup& All( pid_t percent ) {
-		for (int i = 0; i < Defines::MOTORS; ++i)
-			motors[i].setPower(percent);
-		return *this;
-	}
-	Motorgroup& PID_ratio( pid_t percent ) {
-		for (int i = 0; i < Defines::MOTORS; ++i)
-			motors[i].setReserveRatio(percent);
-		return *this;
-	}
+	Throttle_t motors[MOTORS];
+	Motorgroup& All( var_float_t percent );
+	Motorgroup& All( bool b );
+	Motorgroup& PID_ratio( var_float_t percent );
 
-	Motorgroup& Zero() {
-		All(0.0);
-		return *this;
-	}
-	Throttle_t& operator[] (int x) {
-		return motors[x];
-	}
+	Motorgroup& Zero() ;
+	Throttle_t& operator[] (int x);
 
-	uint8_t A() {
-		return motors[0].SPI_data();
-	}
-	uint8_t B() {
-		return motors[1].SPI_data();
-	}
-	uint8_t C() {
-		return motors[2].SPI_data();
-	}
-	uint8_t D() {
-		return motors[3].SPI_data();
-	}
-	void A(pid_t p) {
-		return motors[0].setPower(p);
-	}
-	void B(pid_t p) {
-		return motors[1].setPower(p);
-	}
-	void C(pid_t p) {
-		return motors[2].setPower(p);
-	}
-	void D(pid_t p) {
-		return motors[3].setPower(p);
-	}
+	void PitchOnly();
+	void RollOnly();
+	void YawOnly();
+
+	uint8_t A();
+	uint8_t B();
+	uint8_t C();
+	uint8_t D();
+	void A(var_float_t p);
+	void B(var_float_t p);
+	void C(var_float_t p);
+	void D(var_float_t p);
+	void A(bool p);
+	void B(bool p);
+	void C(bool p);
+	void D(bool p);
 };
+
+
 #endif

@@ -12,6 +12,7 @@
 	/* no coupling */
 	#include "Potential.hpp"
 	#include "Timer.hpp"
+	#include "Arming.hpp"
 
 	/* just defines */
 	#include "Throttle.hpp"
@@ -19,7 +20,7 @@
 
 	/* requires other types */
 	#include "Motorgroup.hpp"
-	#include "Command.hpp"
+	#include "JCommand.hpp"
 	/*requires all types*/
 	#include "JWriter.hpp"	
 

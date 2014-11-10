@@ -1,5 +1,5 @@
-#ifndef ARFC_INCLUDES
-#define ARFC_INCLUDES
+#ifndef ARFC_INCLUDES_Eigen
+#define ARFC_INCLUDES_Eigen
 
 /* hardware drivers */
 #include "LSM303.h"

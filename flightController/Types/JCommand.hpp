@@ -1,40 +1,33 @@
-#ifndef COMMAND_T
-#define COMMANT_T
+/*
 
-#include "../Includes.hpp"
-using namespace Defines;
+	JCommand -
+	SHOULD be the main JSON parsing type
+	WILL be exception safe
+	boost causes hangs and weird assemlber errors, v8 embedding is worse...
+	i NEED c++11 support... next time its going to be an Intel Edison
 
-class Command {
+*/
+#ifndef JSON_COMMAND_T
+#define JSON_COMMAND_T
+
+#include "../Defines.hpp"
+#include <sstream>
+#include <exception>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+class JCommand {
 public:
-	std::string name, val;
-	bool hashed, processed;
-	CMD_CODES hash;
-	Command() {
-		hashed = false;
-		processed = false;
-	}
-	Command(std::string s) {
-		int f = s.find(":");
-		val  = s.substr(f+1);
-		name = s.substr(0,f); 
-		hashed = false;
-	}
-	CMD_CODES Hash() {
-		if( hashed ) return hash;
-		if( codes_map.find(name) == codes_map.end() )
-			hash = NONE;
-		else
-			hash = codes_map[name];
-		hashed = true;
-		return hash;
-	}
-	pid_t getValue() {
-		try {
-			return std::stof(val);
-		}
-		catch( int e ) {
-			return -1.0f;
-		}
-	}
+	boost::property_tree::ptree obj;
+	JCommand();
+
+	std::string Action();
+
+	std::string Name();
+
+	var_float_t Value();
+
+	bool tryParse(std::string s);
+
 };
 #endif

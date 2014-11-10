@@ -1,6 +1,8 @@
 #ifndef ASYNCWORKER
 #define ASYNCWORKER
 #include "../Defines.hpp"
+#include "SubSystem.hpp"
+#include "../Types/Timer.hpp"
 #include <mutex>
 #include <pthread.h>
 /* AsyncWorker   *  provide a class base when there is a need for threading a single job
@@ -17,31 +19,12 @@ protected:
 	std::mutex access;
 	TimerMS * timer;
 public:
-	AsyncWorker() : SubSystem() {
-		timer = new TimerMS(Defines::STD_DELAY_MS);
-	}
-	~AsyncWorker() {
-		/* rejoin thread, make sure it stops, init will reap guardedness */
-		/* works when called from deferred cancelable state */
-		Dispose();
-		pthread_join(worker, NULL);
-		delete timer;
-	}
+	AsyncWorker() ;
+	~AsyncWorker();
 	virtual void* worker_run() = 0;
 
-	AsyncWorker& Detach() {
-		if( Disabled() ) return *this;
-		pthread_detach(worker);
-		return *this;
-	}
-	AsyncWorker& Start() {
-		if( Disabled() ) return *this;
-		if( !Fail() ) {
-			int ret = pthread_create(&worker, NULL, &worker_helper, this);
-			if( ret != 0 ) throw FAIL_START_WORKER;
-		} else throw FAIL_FLAG_SET;
-		return *this;
-	}
+	AsyncWorker& Detach();
+	AsyncWorker& Start();
 	static void *worker_helper(void *context) {
 		return static_cast<AsyncWorker*>(context)->worker_run();
 	}

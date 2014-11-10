@@ -1,19 +1,51 @@
-CC=g++
-CFLAGS= -std=c++0x -pthread
-LFLAGS=-lpthread
-SOURCES= ARFCmain.cpp arfcDefines.hpp dataTypes.hpp errorMap.hpp subSystem.hpp imuInterface.hpp imuWorker.hpp pidCtrl.hpp spiWorker.hpp
-OBJECTS=$(SOURCES:.hpp=.o)
-EXEC=ARFCapp.o
 
-#all: $(SOURCES) $(EXEC)
+CC_FLAGS = -std=c++0x -pthread
+LI_FLAGS = 
+EXEC     = UAVapp.o
+OUT      = .object/
 
-all: ARFCmain.cpp
-	$(CC) $(CFLAGS) ARFCmain.cpp -o $(EXEC)
+#Types
+Types = $(wildcard Types/*.cpp)
+Cores = $(wildcard Cores/*.cpp)
+Sys   = $(wildcard Systems/*.cpp)
+Modes = $(wildcard Modes/*.cpp)
+Def   = Defines
+Main  = UAVmain
 
-$(EXEC): $(OBJECTS)
-	$(CC) $(LFLAGS) $(OBJECTS) -o $@
+#Extensions
+HPP   = $(OUT)$(DEF).o
+HPP  =  $(Types:Types/%.cpp=$(OUT)%.o)
+HPP  += $(Cores:Cores/%.cpp=$(OUT)%.o)
+HPP  += $(Sys:Systems/%.cpp=$(OUT)%.o)
+HPP  += $(Modes:Modes/%.cpp=$(OUT)%.o) 
 
-.hpp.o:
-	$(CC) $(CFLAGS) $< -o $@ 
+EXEC_C= $(OUT)$(Main).o
+
+# Main target
+all: $(HPP)  $(EXEC_C) 
+	$(CXX) $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
+
+.object/%.o:Modes/%.cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
+.object/%.o:Systems/%.cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
+.object/%.o:Cores/%.cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
+.object/%.o:Types/%.cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
+.object/Defines.o:Defines.cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
 
 
+.object/$(Main).o:$(Main).cpp
+	$(CXX) -c $(CC_FLAGS) $< -o $@
+
+# Do work before compilation
+PRE:
+	@mkdir -p $(OUT)
+clean:
+	rm -f ./*.o $(EXEC) ./$(OUT)*
+test: p-HPP p-TYPES
+p-%  : 
+	 @echo
+	 @echo   $* = $($*)

@@ -1,6 +1,6 @@
 #ifndef LSM303_h
 #define LSM303_h
-#include "../Includes.hpp"
+#include "../Defines.hpp"
 #include "includes.hpp"
 #include <stdint.h>
 #include "I2CBus.h"

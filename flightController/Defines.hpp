@@ -15,126 +15,150 @@
 #define DEFINES
 #include <sys/time.h>
 #include <stdint.h>
-#include <iomanip>
-#include <time.h>
-#define ATOMIC volatile bool // i know its the opposite
-#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
-#define pid_t float // pid_t, i know...
+//#include <iomanip>
+#include <ctime>
 
-const bool IMU_ENABLED = true;
-const bool SPI_ENABLED = true;
-const bool PID_ENABLED = true;
+#define ATOMIC volatile bool // i know its the opposite
+//#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
+//#define pid_t float // pid_t, i know...
+#define var_float_t float // start using this for floats
+
+
 
 typedef enum {
 	NO_MODE, TEST_MODE, TUNE_MODE, UAV_MODE
 } DRONE_MODES;
-DRONE_MODES Drone_mode = NO_MODE;
 
-namespace Defines {
-	/* General */
-	const int   STD_DELAY_MS       = 20;
-	/* IMU Interface */
-	const useconds_t imuBAUD_RATE  = 20000u;
-	const float field_width        = 6.0f;
-	const float imuCorrection      = 1.0f;
-	const float imuSample_Count    = 32.0f;
-	const float imuAccel_Scale     = 0.000244;
-	const float imuGyro_Scale      = 0.07f * 3.14159265f / 180.0f;//0.00122173; //0.07*Pi/180.0
-	const char *imu_calibration    = "~/.minimu9-ahrs-cal";
-	const char *i2c_device         = "/dev/i2c-1";
 
-	/* Motor Const */ 
-	const size_t  MOTORS 		   = 4; 
-	const uint8_t MOTOR_ZERO_LEVEL = 125u;
-	const uint8_t MOTOR_ARM_START  = 140u;
-	const uint8_t MOTOR_MAX_LEVEL  = 254u;
-	const uint8_t THROTTLE_MAX     = MOTOR_MAX_LEVEL - MOTOR_ARM_START;
-	const uint8_t PID_RESERVED     = 20u;
-	const pid_t   PID_RATIO        = 0.2f;
-	const uint8_t USER_LIMIT       = THROTTLE_MAX - PID_RESERVED;
+#ifndef GLOBALVARS
+#define GLOBALVARS
+namespace global {
 
-	/* SPI Worker */
-	const useconds_t ioBAUD_RATE   = 500000; // .5 MHZ transmission
-	const uint8_t ioDelay          = 0u;
-	const uint8_t ioLength         = 8u;
-	const uint8_t ioBits           = 8u;
-	const uint8_t ioFlag_Start     = 0xA;
-	const uint8_t ioFlag_End       = 0xB;
-	const uint8_t ioMsg_Length     = 4u;
-	const uint8_t ioMsg_Offset     = 1u;
-	const char   *spi_device       = "/dev/spidev0.1";
+	const bool IMU_ENABLED = true;
+	const bool SPI_ENABLED = true;
+	const bool PID_ENABLED = true;
+};
+#endif
 
-	/* PIDctrl */
-	const pid_t pitch_zero = 0.035f;
-	const pid_t roll_zero  = 0.022f;
-	const pid_t yaw_zero   = 1.020f;
+/* General */
+#define   STD_DELAY_MS      20
+/* IMU Interface */
+#define imuBAUD_RATE        20000u
+#define field_width         6.0f
+#define imuCorrection       1.0f
+#define imuSample_Count     32.0f
+#define imuAccel_Scale      0.000244
+#define imuGyro_Scale       0.07f * 3.14159265f / 180.0f  //0.00122173; //0.07*Pi/180.0
+#define imu_calibration     "~/.minimu9-ahrs-cal"
+#define i2c_device          "/dev/i2c-1"
 
-	/* X */
-	const pid_t pitch_P    = 0.8f;
-	const pid_t pitch_I    = 0.0f;
-	const pid_t pitch_D    = 0.0f;
-	const pid_t pitch_MIN  = -1.0f; 
-	const pid_t pitch_MAX  = +1.0f;  
-	/* Y */
-	const pid_t roll_P     = 0;
-	const pid_t roll_I     = 0;
-	const pid_t roll_D     = 0;
-	const pid_t roll_MIN   = -1.0f; /* tilt right */
-	const pid_t roll_MAX   = +1.0f; /* tilt left */
-	/* Z */
-	const pid_t yaw_P      = 0;
-	const pid_t yaw_I      = 0;
-	const pid_t yaw_D      = 0;
-	const pid_t yaw_MIN    = 0; /* tilt and axis */
-	const pid_t yaw_MAX    = 1.030f; /* level */
+/* Motor Const */
+#define MOTORS 	          4
+#define MOTOR_ZERO_LEVEL  125u
+#define MOTOR_ARM_START   140u
+#define MOTOR_MAX_LEVEL   254u
+#define THROTTLE_MAX      MOTOR_MAX_LEVEL - MOTOR_ARM_START
+#define PID_RESERVED      20u
+#define   PID_RATIO       0.2f
+#define USER_LIMIT        THROTTLE_MAX - PID_RESERVED
 
-	/* angel values from resting IMU accel */
-	const pid_t x_P        = 0.043;
-	const pid_t x_I        = 0.0f;
-	const pid_t x_D        = 0.0f;
-	const pid_t x_MIN      = 0.0f;
-	const pid_t x_MAX      = 0.0f;
+/* SPI Worker */
+#define ioBAUD_RATE    500000 // .5 MHZ transmission
+#define ioDelay        0u
+#define ioLength       8u
+#define ioBits         8u
+#define ioFlag_Start   0xA
+#define ioFlag_End     0xB
+#define ioMsg_Length   4u
+#define ioMsg_Offset   1u
+#define   spi_device   "/dev/spidev0.1"
 
-	const pid_t y_P        = 0.011;
-	const pid_t y_I        = 0.0f;
-	const pid_t y_D        = 0.0f;
-	const pid_t y_MIN      = 0.0f;
-	const pid_t y_MAX      = 0.0f;
+/* PIDctrl */
+#define pitch_zero  0.035f
+#define roll_zero   0.022f
+#define yaw_zero    1.020f
 
-	const uint8_t InitialMotorState[ioLength] = {
-		ioFlag_Start,
-		MOTOR_ZERO_LEVEL,
-		MOTOR_ZERO_LEVEL,
-		MOTOR_ZERO_LEVEL,
-		MOTOR_ZERO_LEVEL,
-		0x0,	/* optional flag */
-		0x0,	/* optional flag */
-		ioFlag_End
-	};
+/* X */
+#define pitch_P     0.8f
+#define pitch_I     0.0f
+#define pitch_D     0.0f
+#define pitch_MIN   -1.0f 
+#define pitch_MAX   +1.0f  
+/* Y */
+#define roll_P      0
+#define roll_I      0
+#define roll_D      0
+#define roll_MIN    -1.0f /* tilt right */
+#define roll_MAX    +1.0f /* tilt left */
+/* Z */
+#define yaw_P       0
+#define yaw_I       0
+#define yaw_D       0
+#define yaw_MIN     0 /* tilt and axis */
+#define yaw_MAX     1.030f /* level */
 
-	/* Error Codes */
-	typedef enum {
-		  BAD_IO
-		, FAIL_SET_SPI
-		, FAIL_GET_SPI
-		, FAIL_SET_BIT
-		, FAIL_GET_BIT
-		, FAIL_SET_SPEED
-		, FAIL_GET_SPEED
-		, FAIL_START_WORKER
-		, FAIL_FLAG_SET
-		, FAIL_I2C_PERM
-		, FAIL_I2C_DEV
-		, FAIL_I2C_WRITE
-		, FAIL_I2C_READ
-		, FAIL_I2C_BLOCK
-		, FAIL_I2C_CAL_OPEN
-		, FAIL_I2C_CAL_READ
-		, UNREACHABLE
-		, SHUTDOWN
-		, IMU_BAD_CONNECT
-		, ERR_ANY = 0xFFFF  /* catch all code */
-	} ERR_CODES;
+/* angel values from resting IMU accel */
+#define x_P         0.043
+#define x_I         0.0f
+#define x_D         0.0f
+#define x_MIN       0.0f
+#define x_MAX       0.0f
 
+#define y_P         0.011
+#define y_I         0.0f
+#define y_D         0.0f
+#define y_MIN       0.0f
+#define y_MAX       0.0f
+
+static const uint8_t InitialMotorState[ioLength] = {
+	ioFlag_Start,
+	MOTOR_ZERO_LEVEL,
+	MOTOR_ZERO_LEVEL,
+	MOTOR_ZERO_LEVEL,
+	MOTOR_ZERO_LEVEL,
+	0x0,	/* optional flag */
+	0x0,	/* optional flag */
+	ioFlag_End
+};
+
+/* Error Codes */
+typedef enum {
+	  BAD_IO
+	, FAIL_SET_SPI
+	, FAIL_GET_SPI
+	, FAIL_SET_BIT
+	, FAIL_GET_BIT
+	, FAIL_SET_SPEED
+	, FAIL_GET_SPEED
+	, FAIL_START_WORKER
+	, FAIL_FLAG_SET
+	, FAIL_I2C_PERM
+	, FAIL_I2C_DEV
+	, FAIL_I2C_WRITE
+	, FAIL_I2C_READ
+	, FAIL_I2C_BLOCK
+	, FAIL_I2C_CAL_OPEN
+	, FAIL_I2C_CAL_READ
+	, UNREACHABLE
+	, SHUTDOWN
+	, IMU_BAD_CONNECT
+	, ERR_ANY = 0xFFFF  /* catch all code */
+} ERR_CODES;
+
+
+inline char MOTOR_SAFE_SPEED(char s) {
+	if( s > MOTOR_MAX_LEVEL  )
+		return MOTOR_MAX_LEVEL;
+	else if( s < MOTOR_ZERO_LEVEL )
+		return MOTOR_ZERO_LEVEL;
+	else return s;
 }
+inline unsigned long millis() {
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+}
+
+
+
 #endif

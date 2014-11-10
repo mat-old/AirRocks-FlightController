@@ -3,6 +3,9 @@
 #ifndef SUBSYSTEM
 #define SUBSYSTEM
 #include "../Defines.hpp"
+#include "ErrorMap.hpp"
+#include "../Types/JWriter.hpp"
+
 /* SubSystem     *  basic system subclass, with multiple flags
 *  Set_Data_Valid( bool )
 *  Set_Active( bool )
@@ -14,7 +17,7 @@
 *  bool Fail
 *  Disable()     -  sets all flags, indicates inactive system
 */
-class SubSystem { 
+class SubSystem {
 protected:
 	ATOMIC    _fail
 			, _valid
@@ -22,31 +25,19 @@ protected:
 			, _dispose
 			, _disabled;
 public:
-	SubSystem() {
-		_fail             = false;
-		_valid            = false;
-		_active           = false;
-		_dispose          = false;
-		_disabled         = false;
-	}
-	~SubSystem(){
-		Dispose();
-	}
-	void Set_Data_Valid(bool tof)	{ _valid = tof; }
-	void Dispose()                  { _dispose = true; }
-	void Set_Active(bool tof) 		{ _active = tof;}
-	void Set_Fail(bool tof) 		{ _fail = tof;  }
-	bool Data_Valid() 	{ return _valid; }
-	bool Disposed()     { return _dispose; }
-	bool Active() 		{ return _active;}
-	bool Fail()			{ return _fail;  }
-	bool Disabled()     { return _disabled; }
-	void Disable() {
-		_disabled = true;
-		Set_Data_Valid(false);
-		Set_Active(false);
-		Set_Fail(true);
-		Dispose();
-	}
+	static ErrorMap err;
+	static GenericWriter emit;
+	SubSystem();
+	~SubSystem();
+	void Set_Data_Valid(bool tof);
+	void Dispose() ;
+	void Set_Active(bool tof);
+	void Set_Fail(bool tof);
+	bool Data_Valid() ;
+	bool Disposed();
+	bool Active();
+	bool Fail();
+	bool Disabled();
+	void Disable();
 };
 #endif

@@ -1,40 +1,31 @@
 #ifndef THROTTLE_T
 #define THROTTLE_T
-#include "../Includes.hpp"
-using namespace Defines;
+
+#include <string>
+#include <stdint.h>
+#include "../Defines.hpp"
+
 class Throttle_t {
 public:
 	std::string name;
 	uint8_t reserved
 		  , power;
 
-	pid_t set_p
+	var_float_t set_p
 		, set_r;
 
-	Throttle_t()  { Zero(); }
-	Throttle_t(const std::string n)  { name = n; Zero(); }
-	~Throttle_t() {}
+	bool enabled;
 
-	void setReserveRatio( pid_t res ) {
-		pid_t r  = (pid_t)THROTTLE_MAX * res;
-		power    = (uint8_t)((pid_t)THROTTLE_MAX - r);
-		reserved = (uint8_t)r;
-	}
-	void setReserve( pid_t in ) {
-		set_r = reserved * in;
-	}
-	void setPower( pid_t in ) {
-		set_p = power * in;
-	}
-	uint8_t SPI_data() {
-		return Throttle() + MOTOR_ZERO_LEVEL;
-	}
-	uint8_t Throttle() {
-		uint8_t ret = (set_p + set_r);
-		return ret>THROTTLE_MAX?THROTTLE_MAX:ret<0?0:ret;
-	}
-	void Zero() {
-		this->set_p = this->set_r = 0.0f;
-	}
+	Throttle_t();
+	Throttle_t(const std::string n);
+	~Throttle_t();
+
+	void setReserveRatio( var_float_t res );
+	void setReserve( var_float_t in );
+	void setPower( var_float_t in ) ;
+	uint8_t SPI_data();
+	uint8_t Throttle();
+	void Enable(bool b);
+	void Zero();
 };
 #endif
