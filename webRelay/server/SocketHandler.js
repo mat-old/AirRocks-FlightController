@@ -13,14 +13,14 @@ SocketHandler  = function(socket,peers,info) {
 		socket.disconnect();
 		return false
 	} else {	
-		//child = new pro.Driver();
-		//child.setPath(G.uavpath);
-		//child.setExec(G.uavexec);
-		//child.setArgs( [info.target] );
-		////child.setOpts( ['pipe','pipe','pipe'] );
-		//child.on('out', function(data){
-		//	socket.emit( 'res', data );
-		//});
+		child = new pro.Driver();
+		child.setPath(G.uavpath);
+		child.setExec(G.uavexec);
+		child.setArgs( [info.target] );
+		//child.setOpts( ['pipe','pipe','pipe'] );
+		child.on('out', function(data){
+			socket.emit( 'res', data );
+		});
 		
 
 
@@ -42,7 +42,7 @@ SocketHandler  = function(socket,peers,info) {
 				break;
 				case 'Throttle-arm':
 					console.log('attempting to arm... ' + req.action );
-					//child.send( s );
+					child.send( s );
 				break;
 				case 'Pitch-activate':
 				case 'Roll-activate':
@@ -68,26 +68,26 @@ SocketHandler  = function(socket,peers,info) {
 		socket.on('control',function(s){
 			switch(s) {
 				case 'reset':
-					//child.reset();
+					child.reset();
 				break;
 				case 'kill':
-					console.log( 'killing //child' )
-					//child.kill();
+					console.log( 'killing child' )
+					child.kill();
 				break;
 				case 'start':
-					console.log( 'killing //child' )
-					//child.start();
+					console.log( 'killing child' )
+					child.start();
 				break;
 				case 'killall':
-					//child.killAll();
+					child.killAll();
 				break;
 				case 'settest':
-					//child.setExec(G.uavAltEx);
-					//child.setPath(G.uavAltP);
+					child.setExec(G.uavAltEx);
+					child.setPath(G.uavAltP);
 				break;
 				case 'setuav':
-					//child.setExec(G.uavexec);
-					//child.setPath(G.uavpath);
+					child.setExec(G.uavexec);
+					child.setPath(G.uavpath);
 				break;
 			}	
 		});
