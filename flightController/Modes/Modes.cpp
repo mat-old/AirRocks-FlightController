@@ -78,13 +78,13 @@
 			emit("READY");
 			while(imu.Active()) {
 				/* fetch data from IMU, transported in Potential_t gyro & accel */
-				imu.  Update     (gyro, accel);
+				imu.Update     (gyro, accel);
 				/* calculate the adjustments to the motors, factor in steering from IMU data */
-				pid.   Calculate  (motors, steering, gyro, accel);
+				pid.Calculate  (motors, steering, gyro, accel);
 				/* send the motor speeds over the SPI */
-				spi.  Update     (motors);
+				spi.Update     (motors);
 				/* process new commands, send feedback to base station */
-				rel.Process    (motors, pid, gyro, accel, safety);
+				rel.Process    (motors, pid.getPitch(), pid.getRoll(), pid.getYaw(), gyro, accel, safety);
 			}
 		}
 		catch(std::exception& e) {

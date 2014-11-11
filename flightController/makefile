@@ -25,9 +25,9 @@ EXEC_C= $(OUT)$(Main).o
 
 # Main target
 all: START $(HPP)  $(EXEC_C)
-	@echo ' > linking...'	
+	@echo ' linking...'	
 	@$(CXX) $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
-	@echo ' > Build Complete'
+	@echo ' Build Complete'
 
 .object/%.o:Modes/%.cpp
 	@echo ' +' $<
@@ -55,9 +55,9 @@ new: clean PRE START all
 
 START: PRE
 	@echo 
-	@echo ' > Building' $(EXEC)	
+	@echo ' Building' $(EXEC)	
 END:
-	@echo ' > Build Complete'
+	@echo ' Build Complete'
 PRE:
 	@mkdir -p $(OUT)
 

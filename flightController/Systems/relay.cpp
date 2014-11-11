@@ -36,30 +36,32 @@
 	}
 	Relay::~Relay() {}
 
-	void Relay::Process(Motorgroup  & m
-				, PIDctrl    & p
+	void Relay::Process(Motorgroup& m
+				, PID_t& Pitch
+				, PID_t& Roll
+				, PID_t& Yaw
 				, Potential_t& g
 				, Potential_t& a 
-				, Arming     & s) {
+				, Arming& s) {
 		// process always 
 		if( !post_parse.empty() )
-			Update(m, p, s);
+			Update(m, Pitch, Roll, Yaw, s);
 		// feedback sometimes 
 		if( !timer->Allow() ) return;
 
 		if( Data_Valid() ) {
 			Set_Data_Valid(false);
 			emit(m);
-			emit(p.getPitch());
-			emit(p.getRoll());
-			emit(p.getYaw());
+			emit(Pitch);
+			emit(Roll);
+			emit(Yaw);
 			emit(g);
 			emit(a);
 		}
 	}
 
 
-	void Relay::Update(Motorgroup& motors, PIDctrl& P, Arming& safety ) {
+	void Relay::Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw, Arming& safety ) {
 		if( access.try_lock() ) {
 			/*TODO, test the reliability of this code, remove try*catch() */
 			/*TODO, test performance of .begin vs algorithm's begin(std::alloc*) */
@@ -80,15 +82,15 @@
 							if( val < 0 )
 								break;
 							switch( getActionCode( cursor->Name() ) ) {
-								case AC_pitch_p : P.getPitch().setP(val); break;
-								case AC_pitch_i : P.getPitch().setI(val); break;
-								case AC_pitch_d : P.getPitch().setD(val); break;
-								case AC_roll_p : P.getRoll().setP(val); break;
-								case AC_roll_i : P.getRoll().setI(val); break;
-								case AC_roll_d : P.getRoll().setD(val); break;
-								case AC_yaw_p : P.getYaw().setP(val); break;
-								case AC_yaw_i : P.getYaw().setI(val); break;
-								case AC_yaw_d : P.getYaw().setD(val); break;
+								case AC_pitch_p : Pitch.setP(val); break;
+								case AC_pitch_i : Pitch.setI(val); break;
+								case AC_pitch_d : Pitch.setD(val); break;
+								case AC_roll_p : Roll.setP(val); break;
+								case AC_roll_i : Roll.setI(val); break;
+								case AC_roll_d : Roll.setD(val); break;
+								case AC_yaw_p : Yaw.setP(val); break;
+								case AC_yaw_i : Yaw.setI(val); break;
+								case AC_yaw_d : Yaw.setD(val); break;
 								default:
 								break;
 							}

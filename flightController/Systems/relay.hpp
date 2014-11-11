@@ -8,12 +8,15 @@
 #ifndef RELAY_TEST
 #define RELAY_TEST
 #include "../Defines.hpp"
+
 #include "../Types/Motorgroup.hpp"
 #include "../Types/Potential.hpp"
-#include "../Types/Arming.hpp"
 #include "../Types/JCommand.hpp"
+#include "../Types/Arming.hpp"
+#include "../Types/PID.hpp"
+
 #include "dgramInterface.hpp"
-#include "pidCtrl.hpp"   /* BAD BAD BAD BAD BAD BAD BAD BAD BAD  */
+
 #include <vector>
 #include <string>
 #include <map>
@@ -42,13 +45,17 @@ public:
 	Relay();
 	~Relay();
 
-	void Process(Motorgroup  & m
-				, PIDctrl    & p /* SUBSYSTEMS CANNOT TALK LIKE THIS, get the data some other way */
+	void Process(Motorgroup& m
+				//, PIDctrl    & p /* SUBSYSTEMS CANNOT TALK LIKE THIS, get the data some other way */
+				, PID_t& Pitch
+				, PID_t& Roll
+				, PID_t& Yaw
 				, Potential_t& g
 				, Potential_t& a 
-				, Arming     & s);
+				, Arming& s);
 
-	void Update(Motorgroup& motors, PIDctrl& P, Arming& safety ) ;
+				
+	void Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw, Arming& safety ) ;
 
 	/* true IF the tuner is in a state it can move a motor */
 	bool inactive() ;
