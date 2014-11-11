@@ -79,6 +79,7 @@ Driver.prototype.kill    = function() {
 	}
 };
 Driver.prototype.send    = function( s ) {
+	//console.log( s )
 	//assert.equal( typeof s, 'string' );
 	//console.log( this.child.stdin )
 	//this.child.stdin.resume();
@@ -88,12 +89,12 @@ Driver.prototype.send    = function( s ) {
 	//	this.child.stdin.write( s+'\n', 'utf8' )
 	//}
 	/*only unsafe way works... this is retarded...*/
-	try {
-		this.child.setEncoding = 'utf-8' /*this isnt even a proper enc type  utf8 vs utf-8 */
-		this.child.write( s + "\n" );
-	} catch(e) {
-		console.log( e )
-	}
+	//try {
+	//	this.child.setEncoding = 'utf-8' /*this isnt even a proper enc type  utf8 vs utf-8 */
+	//	this.child.write( s + "\n" );
+	//} catch(e) {
+	//	console.log( e )
+	//}
 };
 
 

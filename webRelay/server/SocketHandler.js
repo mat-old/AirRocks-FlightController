@@ -36,6 +36,7 @@ SocketHandler  = function(socket,peers,info) {
 
 		socket.on('update', function(req) {
 			var s = JSON.stringify( req )
+			console.log( s )
 			switch( req.action || 'false' ) {
 				case 'set':
 					//return forwardPair(req);
