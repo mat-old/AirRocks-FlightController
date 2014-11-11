@@ -1,44 +1,51 @@
 #include "Defines.hpp"
 #include "Modes/Modes.hpp"
-#include "Types/JWriter.hpp"
-#include <algorithm>
+
+#include "Types/Arming.hpp"
+#include "Systems/relay.hpp"
+
+//#include <algorithm>
 
 
-bool Exists(char** begin, char** end, const std::string& option) {
+/*bool Exists(char** begin, char** end, const std::string& option) {
     return std::find(begin, end, option) != end;
 }
-
+*/
 
 int main(int argc, char *argv[]) {
-	GenericWriter emit;
 	Mode Drone;
 
+	Relay rel;
+	Arming safety;
 
-	if( Exists( argv, argv+argc, "test" ) ) {
-		Drone.Drone_mode = TEST_MODE;
-	} else
-	if( Exists( argv, argv+argc, "tuner" ) ) {
-		Drone.Drone_mode = TUNE_MODE;
-	} else
-	if( Exists( argv, argv+argc, "UAV" ) ) {
-		Drone.Drone_mode = UAV_MODE;
+	rel.Connect();
+	rel.Start().Detach();
+
+
+	while( true ) {
+		Drone.emit( "waiting for mode select..." );
+		Drone.setMode( rel.waitFor( AC_mode_select ) );
+
+		switch( Drone.mode ) {
+			case TEST_MODE:
+
+			break;
+			case TUNE_MODE: 
+				rel.waitForARM(safety);
+				while( safety.ARMED() )
+					Drone.Tuner(rel,safety);  /* relative safety... get it!? */
+			break;
+			case UAV_MODE: 
+
+			break;
+			case NO_MODE: 
+			default:
+			break;
+		}
+
+		if( Drone.Shutdown() ) return 0;
 	}
 
 
-
-	if( Drone.Drone_mode == TEST_MODE ) {
-		//test();
-		emit( "true" );
-	} else
-	if( Drone.Drone_mode == UAV_MODE ) {
-		while(!Drone.SHUTDOWN_FLAG) {
-			Drone.UAV();
-		}
-	} else 
-	if( Drone.Drone_mode == TUNE_MODE) {
-		while(!Drone.SHUTDOWN_FLAG) {
-			Drone.Tuner();
-		}
-	}else emit("Nothing to do...");
 	return 0;
 }

@@ -21,30 +21,50 @@ HPP  += $(Modes:Modes/%.cpp=$(OUT)%.o)
 
 EXEC_C= $(OUT)$(Main).o
 
+
+
 # Main target
-all: $(HPP)  $(EXEC_C) 
-	$(CXX) $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
+all: START $(HPP)  $(EXEC_C)
+	@echo ' > linking...'	
+	@$(CXX) $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
+	@echo ' > Build Complete'
 
 .object/%.o:Modes/%.cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
-.object/%.o:Systems/%.cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
+.object/%.o:Systems/%.cpp  
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
 .object/%.o:Cores/%.cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
 .object/%.o:Types/%.cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
 .object/Defines.o:Defines.cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
-
-
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
 .object/$(Main).o:$(Main).cpp
-	$(CXX) -c $(CC_FLAGS) $< -o $@
+	@echo ' +' $<
+	@$(CXX) -c $(CC_FLAGS) $< -o $@
 
-# Do work before compilation
+build: START $(HPP)  $(EXEC_C) END
+
+new: clean PRE START all
+
+
+START: PRE
+	@echo 
+	@echo ' > Building' $(EXEC)	
+END:
+	@echo ' > Build Complete'
 PRE:
 	@mkdir -p $(OUT)
+
+
+
 clean:
-	rm -f ./*.o $(EXEC) ./$(OUT)*
+	rm -f ./*.o $(EXEC) ./$(OUT)*.o
 test: p-HPP p-TYPES
 p-%  : 
 	 @echo

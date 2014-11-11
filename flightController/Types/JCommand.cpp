@@ -24,7 +24,7 @@
 		return (var_float_t)-1.0f;
 	}
 
-	bool JCommand::tryParse(std::string s) {
+	bool JCommand::tryParse( char * s) {
 		std::stringstream ss;
 		ss << s;
 		try {

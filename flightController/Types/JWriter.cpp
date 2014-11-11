@@ -38,6 +38,7 @@
 	JWriter::JWriter()  {	pretty = false;	}
 	JWriter::JWriter(bool p)  {	Pretty(p);	}
 	JWriter::~JWriter() {}
+
 	template <typename T>
 	void JWriter::operator()(std::string const type, T data) {
 		t.put("type",type);
@@ -59,7 +60,7 @@
 /* GENERIC WRITER */
 /* GENERIC WRITER */
 /* GENERIC WRITER */
-	void GenericWriter::operator()(std::string data) {
+	void JWriter::operator()(std::string data) {
 		JWriter::operator () ("status",data);
 	}
 	//void operator()(JCommand& cmd) {
@@ -69,10 +70,10 @@
 		//p.add("val",cmd.getValue());
 		//JWriter::operator () ("cmd",p);
 	//}
-	void GenericWriter::operator()(Motorgroup& mg) {
+	void JWriter::operator()(Motorgroup& mg) {
 		JWriter::operator () ("motors",array("dddd",mg.A(),mg.B(),mg.C(),mg.D()));
 	}
-	void GenericWriter::operator()(PID_t& pt){
+	void JWriter::operator()(PID_t& pt){
 		ptree p;
 		this->put("name"  , pt.name);
 		this->put("input" , pt.last_input);
@@ -81,20 +82,20 @@
 		p.add_child("values",array("fff", pt.kp, pt.ki, pt.kd));
 		JWriter::operator () ("PID",p);
 	}
-	void GenericWriter::operator()(Potential_t& pot) {
+	void JWriter::operator()(Potential_t& pot) {
 		ptree p;
 		p.add("name", pot.name);
 		p.add_child("values",array("fff", pot.x, pot.y, pot.z ));
 		JWriter::operator () ("potential",p);
 	}
-	void GenericWriter::operator()(Throttle_t& t) {
+	void JWriter::operator()(Throttle_t& t) {
 		ptree p;
 		p.add("name",t.name);
 		p.add("speed",t.Throttle());
 		JWriter::operator () ("throttle",p);
 	}
 	/* where, number of extra args, argv... */
-	void GenericWriter::err(const char* what, const int argc, ...) {
+	void JWriter::err(const char* what, const int argc, ...) {
 		ptree ary, ret;
 		this->put("what",what);
 		va_list args;
@@ -108,7 +109,7 @@
 		JWriter::operator () ("error",ret);
 	}
 
-	void GenericWriter::cmd(std::string data, bool processed) {
+	void JWriter::cmd(std::string data, bool processed) {
 		this->put("processed",(processed?"true":"false"));
 		JWriter::operator () ("cmd",data);
 	}

@@ -42,6 +42,10 @@ namespace global {
 
 /* General */
 #define   STD_DELAY_MS      20
+/* UDP    */
+#define UDP_BUF_SIZE  2048
+#define PORT 5000
+
 /* IMU Interface */
 #define imuBAUD_RATE        20000u
 #define field_width         6.0f
@@ -121,7 +125,7 @@ static const uint8_t InitialMotorState[ioLength] = {
 	ioFlag_End
 };
 
-/* Error Codes */
+/* Error Codes used with cores/ErrorMap */
 typedef enum {
 	  BAD_IO
 	, FAIL_SET_SPI
@@ -139,12 +143,42 @@ typedef enum {
 	, FAIL_I2C_BLOCK
 	, FAIL_I2C_CAL_OPEN
 	, FAIL_I2C_CAL_READ
+	, NOENT_SOCKET_ERR
+	, BIND_SOCKET_ERR
 	, UNREACHABLE
 	, SHUTDOWN
 	, IMU_BAD_CONNECT
 	, ERR_ANY = 0xFFFF  /* catch all code */
 } ERR_CODES;
-
+/* action codes, used with systems/relay */
+typedef enum {
+	AC_set
+  , AC_mode_select
+  , AC_inactive /*implicit*/
+  , AC_throttle_arm
+  , AC_throttle_start
+  , AC_throttle_stop
+  , AC_throttle_torque
+  , AC_pitch_activate
+  , AC_pitch_reset
+  , AC_pitch_save
+  , AC_pitch_p
+  , AC_pitch_i
+  , AC_pitch_d
+  , AC_roll_active
+  , AC_roll_reset
+  , AC_roll_save
+  , AC_roll_p
+  , AC_roll_i
+  , AC_roll_d
+  , AC_yaw_active
+  , AC_yaw_reset
+  , AC_yaw_save
+  , AC_yaw_p
+  , AC_yaw_i
+  , AC_yaw_d
+  , AC_err
+} AC_action_codes;
 
 inline char MOTOR_SAFE_SPEED(char s) {
 	if( s > MOTOR_MAX_LEVEL  )

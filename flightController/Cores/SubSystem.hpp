@@ -26,7 +26,7 @@ protected:
 			, _disabled;
 public:
 	static ErrorMap err;
-	static GenericWriter emit;
+	static JWriter emit;
 	SubSystem();
 	~SubSystem();
 	void Set_Data_Valid(bool tof);

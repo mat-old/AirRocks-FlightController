@@ -27,7 +27,7 @@ public:
 
 	var_float_t Value();
 
-	bool tryParse(std::string s);
+	bool tryParse(char * s);
 
 };
 #endif

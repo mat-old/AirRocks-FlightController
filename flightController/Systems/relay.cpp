@@ -1,6 +1,7 @@
 #include "relay.hpp"
 	Relay::Relay()  {
 		action["set"]            = AC_set;
+		action["Mode-select"]    = AC_mode_select;
 		action["Throttle-arm"]   = AC_throttle_arm;
 		action["Throttle-start"] = AC_throttle_start;
 		action["Throttle-stop"]  = AC_throttle_stop;
@@ -35,17 +36,13 @@
 	}
 	Relay::~Relay() {}
 
-	bool Relay::Disarmed() {
-		return !Active();
-	}
-
 	void Relay::Process(Motorgroup  & m
 				, PIDctrl    & p
 				, Potential_t& g
 				, Potential_t& a 
 				, Arming     & s) {
 		// process always 
-		if( !pre_parse.empty() )
+		if( !post_parse.empty() )
 			Update(m, p, s);
 		// feedback sometimes 
 		if( !timer->Allow() ) return;
@@ -66,23 +63,23 @@
 		if( access.try_lock() ) {
 			/*TODO, test the reliability of this code, remove try*catch() */
 			/*TODO, test performance of .begin vs algorithm's begin(std::alloc*) */
-			const std::vector<std::string>::iterator
-				start = pre_parse.begin()
-			  , end   = pre_parse.end();
+			const std::vector<JCommand>::iterator
+				start = post_parse.begin()
+			  , end   = post_parse.end();
 			 
-			std::vector<std::string>::iterator cursor = start;
+			std::vector<JCommand>::iterator cursor = start;
 
-			JCommand jco; 
+			
 			var_float_t val;
 			try {
 				for(;cursor != end; ++cursor) {
-					if( !jco.tryParse( *cursor ) ) continue;
-					switch( getActionCode( jco.Action() ) ) {
+					//if( !jco.tryParse( *cursor ) ) continue;
+					switch( getActionCode( cursor->Action() ) ) {
 						case AC_set :
-							val = jco.Value();
+							val = cursor->Value();
 							if( val < 0 )
 								break;
-							switch( getActionCode( jco.Name() ) ) {
+							switch( getActionCode( cursor->Name() ) ) {
 								case AC_pitch_p : P.getPitch().setP(val); break;
 								case AC_pitch_i : P.getPitch().setI(val); break;
 								case AC_pitch_d : P.getPitch().setD(val); break;
@@ -139,7 +136,7 @@
 			} catch(ERR_CODES e) {
 				err.Response(e);
 			}
-			pre_parse.erase(start,cursor);
+			post_parse.erase(start,cursor);
 			access.unlock();
 			Set_Data_Valid(true);
 		}
@@ -175,43 +172,64 @@
 		motors.All(false);
 	}
 
-	Relay::AC_action_codes Relay::getActionCode(std::string s) {
+	AC_action_codes Relay::getActionCode(std::string s) {
 		std::map<std::string, AC_action_codes>::iterator cursor = action.find( s );
 		return  cursor==AC_end?AC_err:cursor->second;
 	}
 
-	void Relay::armPending( Arming& safety ) {
-		if( access.try_lock() ) {
-			const std::vector<std::string>::iterator
-				start = pre_parse.begin()
-			  , end   = pre_parse.end();
-			 
-			std::vector<std::string>::iterator cursor = start;
-
-			JCommand jco; 
-
-			for(;cursor != end; ++cursor) {
-				if( !jco.tryParse( *cursor ) ) continue;
-				if( getActionCode( jco.Action() ) == AC_throttle_arm ) {
-					emit("'ARM' signal received");
-					safety.ARM();
-				}
-				else
-					emit("Waiting for 'ARM' signal...");
-
+	void Relay::lockIfDark() {
+		if( !good() ) {
+			while(true) {
+				sleep(2);
+				emit.err("Relay",1,"Failed to get coms...");
 			}
-			access.unlock();
+		}		
+	}
+
+	void Relay::waitForARM( Arming& safety ) {
+		lockIfDark();
+		
+		JCommand jco; 
+		/* while not armed */
+		while(!safety.ARMED()) {
+			/* listen to the socket */   
+			Listen();
+			if( !jco.tryParse( data )  ) continue;
+			/* if its the arm signal, arm the UAV's safety */
+			if( getActionCode( jco.Action() ) == AC_throttle_arm ) {
+				emit("'ARM' signal received");
+				safety.ARM();
+			}
+		}
+		emit("ARMED");
+	}
+
+	int Relay::waitFor( AC_action_codes code ) {
+		lockIfDark();
+
+		JCommand jco; 
+		/* while not armed */
+		while(true) {
+			/* listen to the socket */   
+			Listen();
+			if( !jco.tryParse( data )  ) continue;
+			/* if its the arm signal, arm the UAV's safety */
+			if( getActionCode( jco.Action() ) == code ) {
+				return jco.Value();
+			}
 		}
 	}
 
 	void *Relay::worker_run() {
+		JCommand jco; 
 		while(true) {
-			std::string s;
-			std::cin >> s;
-			access.lock();
-			emit("processing...");
-			pre_parse.push_back(s);
-			access.unlock();
+			//emit("processing...");
+			Listen();
+			if( jco.tryParse( data ) ) {
+				access.lock();
+				post_parse.push_back( jco );			
+				access.unlock();
+			}
 			if( Disposed() ) break;
 		}
 		return 0;

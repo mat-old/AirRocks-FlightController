@@ -24,7 +24,7 @@ public:
 #include "../Types/JWriter.hpp"
 
 class ErrorMap {
-	static GenericWriter emit;
+	static JWriter emit;
 	typedef std::map<int, const char *> errCode;
 public:
 	errCode code;

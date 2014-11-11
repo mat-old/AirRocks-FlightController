@@ -1,6 +1,6 @@
 #include "SubSystem.hpp"
 	ErrorMap SubSystem::err;
-	GenericWriter SubSystem::emit;
+	JWriter SubSystem::emit;
 	SubSystem::SubSystem() {
 		_fail             = false;
 		_valid            = false;

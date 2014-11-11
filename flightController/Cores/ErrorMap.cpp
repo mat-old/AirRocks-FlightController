@@ -1,5 +1,5 @@
 #include "ErrorMap.hpp"
-	GenericWriter ErrorMap::emit;
+	JWriter ErrorMap::emit;
 	ErrorMap::ErrorMap() {
 		/* SPI subsystem */
 		code[BAD_IO]         = "Error cannot read IO device";
@@ -22,6 +22,8 @@
 		code[UNREACHABLE]    = "Unreachable state was detected";
 		code[SHUTDOWN]       = "Shutting down";
 		code[IMU_BAD_CONNECT]= "Could not detect accelerometer";
+		code[NOENT_SOCKET_ERR] = "Failed to reserve socket, no permission.";
+		code[BIND_SOCKET_ERR] = "Socket is in use";
 	}
 	void ErrorMap::Response(int r) {
 		std::cout << code[r] << std::endl;
@@ -30,6 +32,11 @@
 			case ERR_ANY:
 				//std::cout << "Any error occurred" << std::endl;
 				emit.err("Anything",1,"Any error occurred","D:");
+				sleepThrowWhere(3,r);
+				return;
+			case NOENT_SOCKET_ERR:
+			case BIND_SOCKET_ERR:
+				emit.err("dgram.interface.system",1,code[r]);
 				sleepThrowWhere(3,r);
 				return;
 			case FAIL_I2C_WRITE:
