@@ -87,6 +87,8 @@ var Global = {
   , ioperiod : 2000 /* 2 sec */
   , favoritePort : process.env.PORT
   , backupPort   : 8888
+  , destport : 5000
+  , destIP   : '192.168.1.113'
   , viewpath : './view/'
   , uavpath  : '/home/arfc/arfc/flightController/' 
   , uavexec  : 'UAVapp.o'

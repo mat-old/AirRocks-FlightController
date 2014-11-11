@@ -1,5 +1,6 @@
 var io = require('socket.io')
   , pro= require('./ProcessDriver.js')
+  , dgram = require('dgram')
   , G  = require('./global.js').g;
 
 Connect = function(app) {
@@ -12,7 +13,8 @@ SocketHandler  = function(socket,peers,info) {
 	if( !peers.Available() ) { 
 		socket.disconnect();
 		return false
-	} else {	
+	} else {
+		var client = dgram.createSocket('udp4');
 		child = new pro.Driver();
 		child.setPath(G.uavpath);
 		child.setExec(G.uavexec);
@@ -28,28 +30,19 @@ SocketHandler  = function(socket,peers,info) {
 		console.log( '> peer accepted' )		
 		socket.emit('handshake', G.ioperiod);
 
-		setInterval(function(){
+		var heartbeat = setInterval(function(){
 			socket.emit('heartbeat', G.ioperiod);
 		}, G.ioperiod);
 
 
-
+		/* the switch case is used to filter */
 		socket.on('update', function(req) {
-			var s = JSON.stringify( req )
-			console.log( s )
-			switch( req.action || 'false' ) {
+			switch( req.action || '' ) {
 				case 'set':
-					//return forwardPair(req);
-				break;
 				case 'Throttle-arm':
-					console.log('attempting to arm... ' + req.action );
-					child.send( s );
-				break;
 				case 'Pitch-activate':
 				case 'Roll-activate':
 				case 'Yaw-activate':
-
-				break;
 				case 'Throttle-start':
 				case 'Throttle-stop':
 				case 'Pitch-reset':
@@ -58,9 +51,11 @@ SocketHandler  = function(socket,peers,info) {
 				case 'Roll-save':
 				case 'Yaw-reset':
 				case 'Yaw-save':
-
+					var message = new Buffer( JSON.stringify( req ) )
+					client.send(message, 0, message.length, G.destport, G.destIP, function(err, bytes){
+						console.log( message.toString('utf8') )
+					});
 				break;
-				case 'false':
 				default:
 				console.log( 'bad request' + req )
 			}
