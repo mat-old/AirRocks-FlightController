@@ -51,27 +51,20 @@
 		PIDctrl    pid;
 		Motorgroup motors;
 
+		/* start ASYNCH coms */
+		rel.Start().Detach();
+
 		try {
-			//emit("initializing... (1)");
 
 			Potential_t   gyro("gyro")
 						, accel("accel")
 						, steering("steering");
 
-			//rel.Start().Detach();
 			spi.Open().Zero(); 
-
-			//emit("awaiting motor 'ARM' command");
-			//while( !safety.ARMED() ) { 
-				//relay.armPending(safety);
-				//usleep(20000);
-			//}
-			//emit("Starting UAV");
-			//emit("Standby...");
 
 			spi.Start().Detach();
 			imu.Prepare().Start().Detach();
-			motors.PID_ratio(PID_RATIO).Zero();
+			motors.PID_ratio(PID_RATIO).All(true).Zero();
 
 			/* wait for all threads to run */
 			sleep(1);
@@ -91,8 +84,4 @@
 			//cout << e.what() << ":: safely disposing objects and exiting..." << endl;
 			emit.err("ARFC.main.flightController",2,e.what(),":: safely disposing objects and exiting...");
 		}
-		/*delete imu;
-		delete spi;
-		delete relay;*/
-		//cout << "> Exit(1)::\n" << endl;
 	}

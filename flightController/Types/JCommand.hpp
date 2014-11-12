@@ -27,6 +27,8 @@ public:
 
 	var_float_t Value();
 
+	int Value(char);
+
 	bool tryParse(char * s);
 
 };

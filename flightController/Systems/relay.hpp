@@ -9,6 +9,7 @@
 #define RELAY_TEST
 #include "../Defines.hpp"
 
+#include "../Types/ConnectPackage.hpp"
 #include "../Types/Motorgroup.hpp"
 #include "../Types/Potential.hpp"
 #include "../Types/JCommand.hpp"
@@ -23,6 +24,7 @@
 
 class Relay : public DGRAMinterface {
 	char data[UDP_BUF_SIZE];
+	ConnectPack cp;
 
 	std::map<std::string, AC_action_codes>::iterator AC_start, AC_end;
 	std::map<std::string, AC_action_codes> action;
@@ -65,6 +67,8 @@ public:
 
 	/* blocking - waitin for code */
 	int waitFor( AC_action_codes );
+
+	void waitForHandshake();
 
 	void Listen() {
 		DGRAMinterface::Listen(this->data);

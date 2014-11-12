@@ -15,11 +15,9 @@
 #define DEFINES
 #include <sys/time.h>
 #include <stdint.h>
-//#include <iomanip>
 #include <ctime>
 
 #define ATOMIC volatile bool // i know its the opposite
-//#define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 //#define pid_t float // pid_t, i know...
 #define var_float_t float // start using this for floats
 
@@ -145,6 +143,8 @@ typedef enum {
 	, FAIL_I2C_CAL_READ
 	, NOENT_SOCKET_ERR
 	, BIND_SOCKET_ERR
+	, HOST_ADDRESS_ERR
+	, JWRITER_FAILED_SEND
 	, UNREACHABLE
 	, SHUTDOWN
 	, IMU_BAD_CONNECT
@@ -153,6 +153,7 @@ typedef enum {
 /* action codes, used with systems/relay */
 typedef enum {
 	AC_set
+  , AC_handshake
   , AC_mode_select
   , AC_inactive /*implicit*/
   , AC_throttle_arm

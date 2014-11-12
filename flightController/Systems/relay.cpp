@@ -1,6 +1,7 @@
 #include "relay.hpp"
 	Relay::Relay()  {
 		action["set"]            = AC_set;
+		action["handshake"]      = AC_handshake;
 		action["Mode-select"]    = AC_mode_select;
 		action["Throttle-arm"]   = AC_throttle_arm;
 		action["Throttle-start"] = AC_throttle_start;
@@ -47,22 +48,27 @@
 		if( !post_parse.empty() )
 			Update(m, Pitch, Roll, Yaw, s);
 		// feedback sometimes 
-		if( !timer->Allow() ) return;
+
+		
+
+		//if( !timer->Allow() ) return;
 
 		if( Data_Valid() ) {
 			Set_Data_Valid(false);
 			emit(m);
-			emit(Pitch);
-			emit(Roll);
-			emit(Yaw);
-			emit(g);
-			emit(a);
+			//emit(Pitch);
+			//emit(Roll);
+			//emit(Yaw);
+			//emit(g);
+			//emit(a);
 		}
 	}
 
 
 	void Relay::Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw, Arming& safety ) {
 		if( access.try_lock() ) {
+			//emit( "in lock"  );
+
 			/*TODO, test the reliability of this code, remove try*catch() */
 			/*TODO, test performance of .begin vs algorithm's begin(std::alloc*) */
 			const std::vector<JCommand>::iterator
@@ -75,6 +81,7 @@
 			var_float_t val;
 			try {
 				for(;cursor != end; ++cursor) {
+					//emit( "updating " + cursor->Action()  );
 					//if( !jco.tryParse( *cursor ) ) continue;
 					switch( getActionCode( cursor->Action() ) ) {
 						case AC_set :
@@ -91,6 +98,11 @@
 								case AC_yaw_p : Yaw.setP(val); break;
 								case AC_yaw_i : Yaw.setI(val); break;
 								case AC_yaw_d : Yaw.setD(val); break;
+								case AC_throttle_torque :
+									if( safety.ARMED() ) {
+										motors.All( val );
+									}
+									break;
 								default:
 								break;
 							}
@@ -103,10 +115,6 @@
 							break;
 						case AC_throttle_stop :
 							powerDown(motors);
-							break;
-						case AC_throttle_torque :
-							if( safety.ARMED() )
-								motors.All( val );
 							break;
 						case AC_pitch_activate :
 							setActiveTuner( AC_pitch_activate, motors );
@@ -130,7 +138,7 @@
 						case AC_yaw_save :
 							break;
 						case AC_err :
-							emit.err("Tuner",1,"Unrecognized");
+							//emit.err("Tuner",1,"Unrecognized");
 						default:
 						break;
 					}
@@ -183,7 +191,7 @@
 		if( !good() ) {
 			while(true) {
 				sleep(2);
-				emit.err("Relay",1,"Failed to get coms...");
+				emit.log("Relay:: Failed to get coms...");
 			}
 		}		
 	}
@@ -214,6 +222,7 @@
 		while(true) {
 			/* listen to the socket */   
 			Listen();
+			//emit("got message...");
 			if( !jco.tryParse( data )  ) continue;
 			/* if its the arm signal, arm the UAV's safety */
 			if( getActionCode( jco.Action() ) == code ) {
@@ -221,6 +230,38 @@
 			}
 		}
 	}
+
+	void Relay::waitForHandshake() {
+		lockIfDark();
+		JCommand jco; 
+		/* 
+			waiting for a object with
+			name = client IP
+			value = port
+			{ action:"handshake", name:"0.0.0.0", value:5000 }
+		*/
+		while( true ) {
+			Listen();
+			if( !jco.tryParse( data ) ) continue;
+			if( getActionCode( jco.Action() ) != AC_handshake ) continue;
+
+			ConnectPack cp;
+			cp.setAddress( jco.Name() );
+			cp.setPort( (ushort)jco.Value('u') );
+
+			emit.log( cp.getAddress() );
+			emit.log( std::to_string( cp.getPort() ) ) ;
+
+			emit.Connect( cp );
+			try {
+				emit("Connected");
+				return;
+			} catch( ERR_CODES e ) {
+				err.Response( e );
+			}
+		}
+	}
+
 
 	void *Relay::worker_run() {
 		JCommand jco; 
@@ -230,6 +271,7 @@
 			if( jco.tryParse( data ) ) {
 				access.lock();
 				post_parse.push_back( jco );			
+				//emit("command accepted " + std::to_string(post_parse.size()));
 				access.unlock();
 			}
 			if( Disposed() ) break;

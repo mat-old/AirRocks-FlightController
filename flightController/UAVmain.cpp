@@ -18,9 +18,15 @@ int main(int argc, char *argv[]) {
 	Relay rel;
 	Arming safety;
 
-	rel.Connect();
-	rel.Start().Detach();
-
+	try {
+		rel.Connect();
+	}
+	catch( ERR_CODES e ) {
+		Drone.err.Response(e);
+		exit( EXIT_FAILURE ); 
+	}
+	Drone.emit.log("waiting for handshake...");
+	rel.waitForHandshake();
 
 	while( true ) {
 		Drone.emit( "waiting for mode select..." );
@@ -31,6 +37,7 @@ int main(int argc, char *argv[]) {
 
 			break;
 			case TUNE_MODE: 
+				Drone.emit("Waiting for arm signal");
 				rel.waitForARM(safety);
 				while( safety.ARMED() )
 					Drone.Tuner(rel,safety);  /* relative safety... get it!? */

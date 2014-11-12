@@ -25,7 +25,7 @@ EXEC_C= $(OUT)$(Main).o
 
 # Main target
 all: START $(HPP)  $(EXEC_C)
-	@echo ' linking...'	
+	@echo ' + linking'	
 	@$(CXX) $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
 	@echo ' Build Complete'
 

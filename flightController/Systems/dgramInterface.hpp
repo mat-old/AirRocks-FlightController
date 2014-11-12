@@ -2,6 +2,7 @@
 #define UDP_DATAGRAM_INTERFACE
 
 #include "../Defines.hpp"
+
 #include "../Cores/AsyncWorker.hpp"
 
 #include <sys/socket.h>
@@ -16,11 +17,13 @@
 */
 class DGRAMinterface : public AsyncWorker {
 private:
-	int soc;
+	int soc, data_length;
 	struct sockaddr_in address;
 protected:
+	DGRAMinterface();
 	DGRAMinterface& Listen(char * buffer);
 	DGRAMinterface& Connect();
+	ConnectPack& getHandshake();
 	bool good();
 public:
 

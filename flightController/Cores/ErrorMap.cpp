@@ -23,7 +23,9 @@
 		code[SHUTDOWN]       = "Shutting down";
 		code[IMU_BAD_CONNECT]= "Could not detect accelerometer";
 		code[NOENT_SOCKET_ERR] = "Failed to reserve socket, no permission.";
-		code[BIND_SOCKET_ERR] = "Socket is in use";
+		code[BIND_SOCKET_ERR]  = "Socket is in use";
+		code[HOST_ADDRESS_ERR] = "Failed to connect to host";
+		code[JWRITER_FAILED_SEND] = "Failed to send to client";
 	}
 	void ErrorMap::Response(int r) {
 		std::cout << code[r] << std::endl;
@@ -32,6 +34,14 @@
 			case ERR_ANY:
 				//std::cout << "Any error occurred" << std::endl;
 				emit.err("Anything",1,"Any error occurred","D:");
+				sleepThrowWhere(3,r);
+				return;
+			case JWRITER_FAILED_SEND:
+				emit.err("JWriter.Write()",1,code[r]);
+				sleepThrowWhere(3,r);
+				return;
+			case HOST_ADDRESS_ERR:
+				emit.err("JWriter.Connect()",1,code[r]);
 				sleepThrowWhere(3,r);
 				return;
 			case NOENT_SOCKET_ERR:
