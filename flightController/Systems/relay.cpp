@@ -213,7 +213,8 @@
 
 	void Relay::waitForARM() {
 		lockIfDark();
-		
+
+		emit("Waiting for arm signal");
 		waitFor( AC_throttle_arm );
 		safety.ARM();
 		emit("ARMED");
@@ -240,12 +241,16 @@
 
 			for( ;end != cursor; ++cursor ) {
 				if ( getActionCode( cursor->Action() ) == code ) {
+					// if found, copy, clear, unlock, return
 					int v = cursor->Value();
 					post_parse.clear();
 					access.unlock();
 					return v;
 				}
 			}
+			/* if not found clean and unlock */
+			post_parse.clear();
+			access.unlock();
 		}
 		return 0;
 	}

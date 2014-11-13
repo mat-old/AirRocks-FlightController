@@ -54,6 +54,7 @@
 		PIDctrl    pid;
 		Motorgroup motors;
 
+		sendSettings( pid, motors );
 
 		try {
 
@@ -89,3 +90,10 @@
 		}
 		return;
 	}
+
+	void Mode::sendSettings(PIDctrl& pid, Motorgroup& motors) {
+		emit("setting",pid.getPitch());
+		emit("setting",pid.getRoll());
+		emit("setting",pid.getYaw());
+	}
+

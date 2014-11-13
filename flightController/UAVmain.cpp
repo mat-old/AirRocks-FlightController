@@ -49,22 +49,23 @@ int main(int argc, char *argv[]) {
 
 			break;
 			case TUNE_MODE: 
-				Drone.emit("Waiting for arm signal");
-				rel.waitForARM();
 
 				do {
+					Drone.safety.clear();
+					
+					rel.waitForARM();
+
 					Drone.Tuner(rel, spi, imu);  /* relative safety... get it!? */
+					
 					if( Drone.safety.RESETTING_HARD() ) {
-						Drone.safety.UNSET_HARD();
 						Drone.setMode(NO_MODE);
 						Drone.Shutdown();
 					}
 					if( Drone.safety.RESETTING() ) {
-						Drone.safety.UNSET();
 						Drone.safety.DISARM();	
 					}
 				}
-				while( Drone.safety.ARMED()  );
+				while( Drone.safety.RESETTING() ); // loop if resetting
 
 			break;
 			case UAV_MODE: 

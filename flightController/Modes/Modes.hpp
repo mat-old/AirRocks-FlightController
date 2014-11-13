@@ -28,6 +28,8 @@ public:
 
 	void Tuner(Relay& rel, SPIworker& spi, IMUworker& imu);
 
+	void sendSettings(PIDctrl& pids, Motorgroup& motors);
+
 	bool Shutdown();
 	void ShutdownSequence();
 	void setMode(int i);

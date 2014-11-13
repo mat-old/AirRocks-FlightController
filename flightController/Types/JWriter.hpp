@@ -66,6 +66,9 @@ protected:
 
 	template <typename T>
 	std::string pair( std::string const name, T value, char fmt);
+
+
+
 public:
 	/* acquires socket */
 	/* host must be a string like "192.168.10.13" */
@@ -91,6 +94,9 @@ public:
 
 	/*  { type:PID, name:'s', input:'f', output:'f', data: { labels:[ s,s,s ],values:[ f, f, f ] }  }  */
 	void operator()(PID_t& pt);
+
+	/*  { type:'', sender:'PID', name:'s', input:'f', output:'f', data: { labels:[ s,s,s ],values:[ f, f, f ] }  }  */
+	void operator()(std::string, PID_t& pt);
 
 	/*  { type:'potential', data:{ name:'', values:[ float, float, float ] } }  */
 	void operator()(Potential_t& pot);

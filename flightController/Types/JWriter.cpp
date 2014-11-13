@@ -112,6 +112,24 @@
 		<< jEnd;
 		Write(ss.str());
 	}
+
+	void JWriter::operator()(std::string type, PID_t& pt) {
+		std::ostringstream ss;
+		ss
+		<< jBeg 
+		<< pair("type", type)
+		<< ','
+		<< pair("sender", "PID")
+		<< ','
+		<< pair("name", pt.name)
+		<< ','
+		<< pair("input", pt.last_input, 'f')
+		<< ','
+		<< pairNQ("data", array_3T( pt.kp, pt.ki, pt.kd ))
+		<< jEnd;
+		Write(ss.str());
+	}
+
 	void JWriter::operator()(PID_t& pt){
 		std::ostringstream ss;
 		ss
