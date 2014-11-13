@@ -39,6 +39,19 @@
 	bool JCommand::tryParse( char * s) {
 		std::stringstream ss;
 		ss << s;
+		this->obj.clear();
+		try {
+			boost::property_tree::read_json(ss,this->obj);
+			return true;
+		}
+		catch( /*std::exception const& e */...) {}
+		return false;
+	}
+
+	bool JCommand::tryParse( std::string s) {
+		std::stringstream ss;
+		ss << s;
+		this->obj.clear();
 		try {
 			boost::property_tree::read_json(ss,this->obj);
 			return true;

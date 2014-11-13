@@ -25,6 +25,7 @@
 class Relay : public DGRAMinterface {
 	char data[UDP_BUF_SIZE];
 	ConnectPack cp;
+	TimerMS * delayTimer;
 
 	std::map<std::string, AC_action_codes>::iterator AC_start, AC_end;
 	std::map<std::string, AC_action_codes> action;
@@ -53,22 +54,21 @@ public:
 				, PID_t& Roll
 				, PID_t& Yaw
 				, Potential_t& g
-				, Potential_t& a 
-				, Arming& s);
+				, Potential_t& a );
 
 				
-	void Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw, Arming& safety ) ;
+	void Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw ) ;
 
 	/* true IF the tuner is in a state it can move a motor */
 	bool inactive() ;
 
 	/* blocking - waiting for ARM code */
-	void waitForARM( Arming& safety ) ;
+	void waitForARM( ) ;
 
 	/* blocking - waitin for code */
 	int waitFor( AC_action_codes );
 
-	void waitForHandshake();
+	void ListenForHandshake();
 
 	void Listen() {
 		DGRAMinterface::Listen(this->data);

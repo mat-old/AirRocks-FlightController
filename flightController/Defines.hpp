@@ -18,20 +18,15 @@
 #include <ctime>
 
 #define ATOMIC volatile bool // i know its the opposite
-//#define pid_t float // pid_t, i know...
 #define var_float_t float // start using this for floats
-
-
 
 typedef enum {
 	NO_MODE, TEST_MODE, TUNE_MODE, UAV_MODE
 } DRONE_MODES;
 
-
 #ifndef GLOBALVARS
 #define GLOBALVARS
 namespace global {
-
 	const bool IMU_ENABLED = true;
 	const bool SPI_ENABLED = true;
 	const bool PID_ENABLED = true;
@@ -39,10 +34,11 @@ namespace global {
 #endif
 
 /* General */
-#define   STD_DELAY_MS      20
+#define STD_DELAY_MS    20
 /* UDP    */
-#define UDP_BUF_SIZE  2048
-#define PORT 5000
+#define UDP_BUF_SIZE    2048
+#define PORT            5000
+#define delayTimerMS    240 /* 100 ms, 10 updates / second */
 
 /* IMU Interface */
 #define imuBAUD_RATE        20000u
@@ -61,7 +57,7 @@ namespace global {
 #define MOTOR_MAX_LEVEL   254u
 #define THROTTLE_MAX      MOTOR_MAX_LEVEL - MOTOR_ARM_START
 #define PID_RESERVED      20u
-#define   PID_RATIO       0.2f
+#define PID_RATIO         0.2f
 #define USER_LIMIT        THROTTLE_MAX - PID_RESERVED
 
 /* SPI Worker */
@@ -73,7 +69,7 @@ namespace global {
 #define ioFlag_End     0xB
 #define ioMsg_Length   4u
 #define ioMsg_Offset   1u
-#define   spi_device   "/dev/spidev0.1"
+#define spi_device     "/dev/spidev0.1"
 
 /* PIDctrl */
 #define pitch_zero  0.035f
@@ -153,6 +149,8 @@ typedef enum {
 /* action codes, used with systems/relay */
 typedef enum {
 	AC_set
+  , AC_reset
+  , AC_reset_HARD
   , AC_handshake
   , AC_mode_select
   , AC_inactive /*implicit*/

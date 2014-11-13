@@ -38,5 +38,5 @@ DGRAMinterface& DGRAMinterface::Connect() {
 }
 
 bool DGRAMinterface::good() {
-	return Active() && Data_Valid();
+	return Active();
 }

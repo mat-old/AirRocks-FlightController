@@ -30,6 +30,7 @@ public:
 	int Value(char);
 
 	bool tryParse(char * s);
+	bool tryParse(std::string s);
 
 };
 #endif

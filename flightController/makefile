@@ -50,6 +50,11 @@ all: START $(HPP)  $(EXEC_C)
 
 build: START $(HPP)  $(EXEC_C) END
 
+debug: START $(HPP)  $(EXEC_C)
+	@echo ' + linking'	
+	@$(CXX) -g -Wall $(LI_FLAGS) $(CC_FLAGS) $(EXEC_C) $(HPP) -o $(EXEC)
+	@echo ' Build Complete'
+
 new: clean PRE START all
 
 

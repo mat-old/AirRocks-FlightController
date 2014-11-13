@@ -3,6 +3,8 @@
 #include "../Defines.hpp"
 #include "Throttle.hpp"
 
+//#include <iostream>
+//using namespace std;
 
 Throttle_t::Throttle_t()  {
 	Zero();
@@ -14,17 +16,23 @@ Throttle_t::Throttle_t(const std::string n) {
 	enabled = false;
 }
 Throttle_t::~Throttle_t() {}
-
-void Throttle_t::setReserveRatio( var_float_t res ) {
-	var_float_t r  = (var_float_t)THROTTLE_MAX * res;
-	power    = (uint8_t)((var_float_t)THROTTLE_MAX - r);
-	reserved = (uint8_t)r;
+/* i really hate floats */
+void Throttle_t::setReserveRatio( var_float_t n ) {
+	if( n > 1.0f ) return;
+	var_float_t range   = (var_float_t)MOTOR_MAX_LEVEL - MOTOR_ARM_START;
+	//cout << range << "=" << MOTOR_MAX_LEVEL << "-" << MOTOR_ARM_START << endl;
+	reserved = range * n;
+	//cout << (int)reserved << " = " << range << "*" << res << endl;
+	power    = (var_float_t)range - reserved;
+	//cout << (int)power << " = " << range << "*" << (int)reserved << endl;
 }
-void Throttle_t::setReserve( var_float_t in ) {
-	set_r = reserved * in;
+void Throttle_t::setReserve( var_float_t n ) {
+	if( n > 1.0f ) return;
+	set_r = reserved * n;
 }
-void Throttle_t::setPower( var_float_t in ) {
-	set_p = power * in;
+void Throttle_t::setPower( var_float_t n ) {
+	if( n > 1.0f ) return;
+	set_p = power * n;
 }
 uint8_t Throttle_t::SPI_data() {
 	return this->enabled?Throttle() + MOTOR_ZERO_LEVEL : MOTOR_ZERO_LEVEL;

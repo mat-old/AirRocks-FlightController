@@ -5,6 +5,7 @@
 #include "../Defines.hpp"
 #include "ErrorMap.hpp"
 #include "../Types/JWriter.hpp"
+#include "../Types/Arming.hpp"
 
 /* SubSystem     *  basic system subclass, with multiple flags
 *  Set_Data_Valid( bool )
@@ -27,6 +28,8 @@ protected:
 public:
 	static ErrorMap err;
 	static JWriter emit;
+	static Arming safety;
+
 	SubSystem();
 	~SubSystem();
 	void Set_Data_Valid(bool tof);

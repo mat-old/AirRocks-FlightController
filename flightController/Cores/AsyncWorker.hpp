@@ -25,6 +25,7 @@ public:
 
 	AsyncWorker& Detach();
 	AsyncWorker& Start();
+	AsyncWorker& Stop();
 	static void *worker_helper(void *context) {
 		return static_cast<AsyncWorker*>(context)->worker_run();
 	}

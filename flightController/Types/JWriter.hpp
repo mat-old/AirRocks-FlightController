@@ -27,6 +27,7 @@
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 #define jBeg '{'
 #define jEnd '}'
+#define dq   '"'
 
 
 /*
@@ -48,14 +49,23 @@ private:
 	static struct sockaddr_in address;
 protected:
 	void Write(std::string s);
-	//ptree array(const char* fmt...);
+
+	template <typename T>	
+	std::string array_4T( T, T, T, T );
+	template <typename T>	
+	std::string array_3T( T, T, T );
 	//template <typename T>
 	//void put(const std::string name, T val);
 
+	/* no quote on second arg */
+	template <typename T>
+	std::string pairNQ( std::string const name, T value);
 
 	template <typename T>
 	std::string pair(std::string name, T value);
 
+	template <typename T>
+	std::string pair( std::string const name, T value, char fmt);
 public:
 	/* acquires socket */
 	/* host must be a string like "192.168.10.13" */
@@ -94,5 +104,7 @@ public:
 	void cmd(std::string data, bool processed);
 
 	void log(std::string s);
+
+	void log(std::string s, var_float_t t);
 };
 #endif

@@ -24,9 +24,9 @@ public:
 
 	Mode();
 
-	void UAV(Relay& rel, Arming& safety) ;
+	void UAV(Relay& rel) ;
 
-	void Tuner(Relay& rel, Arming& safety);
+	void Tuner(Relay& rel, SPIworker& spi, IMUworker& imu);
 
 	bool Shutdown();
 	void ShutdownSequence();

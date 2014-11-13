@@ -22,6 +22,7 @@ public:
 
 	void setReserveRatio( var_float_t res );
 	void setReserve( var_float_t in );
+	/* MUST BE LESS THAN 1 */
 	void setPower( var_float_t in ) ;
 	uint8_t SPI_data();
 	uint8_t Throttle();

@@ -2,11 +2,23 @@
 #define ARMING_FLAG_TYPE
 class Arming {
 private:
-	bool ARM_FLAG;
+	static bool ARM_FLAG;
+	static bool RESET_FLAG;
+	static bool RESET_HARD_FLAG;
 public:
 	Arming();
-	void ARM();
-	void DISARM();
-	bool ARMED();
+	static void ARM();
+	static void DISARM();
+	static bool ARMED();
+
+	static void RESET();
+	static void UNSET();
+	static bool RESETTING();
+
+	static void RESET_HARD();
+	static void UNSET_HARD();
+	static bool RESETTING_HARD();
+
+	static void clear();
 };
 #endif

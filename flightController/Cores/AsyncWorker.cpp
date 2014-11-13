@@ -23,3 +23,11 @@
 		} else throw FAIL_FLAG_SET;
 		return *this;
 	}
+	AsyncWorker& AsyncWorker::Stop() {
+		try {
+			pthread_cancel(worker);	
+		} catch(...) {
+
+		}
+	}
+

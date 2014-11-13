@@ -12,25 +12,37 @@
 }
 */
 
-int main(int argc, char *argv[]) {
-	Mode Drone;
 
-	Relay rel;
-	Arming safety;
+int main(int argc, char *argv[]) {
+	Mode      Drone;
+	Relay     rel;
+	SPIworker spi;
+	IMUworker imu;
 
 	try {
 		rel.Connect();
+		rel.ListenForHandshake();
+		rel.Start().Detach();
+		spi.Open().Zero(); 
+		spi.Start().Detach();
+		imu.Prepare().Start().Detach();
 	}
 	catch( ERR_CODES e ) {
 		Drone.err.Response(e);
 		exit( EXIT_FAILURE ); 
 	}
-	Drone.emit.log("waiting for handshake...");
-	rel.waitForHandshake();
+
 
 	while( true ) {
-		Drone.emit( "waiting for mode select..." );
-		Drone.setMode( rel.waitFor( AC_mode_select ) );
+		try {
+			sleep(1);
+			Drone.emit( "waiting for mode select..." );
+			Drone.setMode( rel.waitFor( AC_mode_select ) );
+			Drone.emit.log( "mode selected" );
+		} catch( ERR_CODES e ) {
+			Drone.err.Response(e);
+			exit( EXIT_FAILURE ); 
+		}
 
 		switch( Drone.mode ) {
 			case TEST_MODE:
@@ -38,9 +50,22 @@ int main(int argc, char *argv[]) {
 			break;
 			case TUNE_MODE: 
 				Drone.emit("Waiting for arm signal");
-				rel.waitForARM(safety);
-				while( safety.ARMED() )
-					Drone.Tuner(rel,safety);  /* relative safety... get it!? */
+				rel.waitForARM();
+
+				do {
+					Drone.Tuner(rel, spi, imu);  /* relative safety... get it!? */
+					if( Drone.safety.RESETTING_HARD() ) {
+						Drone.safety.UNSET_HARD();
+						Drone.setMode(NO_MODE);
+						Drone.Shutdown();
+					}
+					if( Drone.safety.RESETTING() ) {
+						Drone.safety.UNSET();
+						Drone.safety.DISARM();	
+					}
+				}
+				while( Drone.safety.ARMED()  );
+
 			break;
 			case UAV_MODE: 
 
@@ -50,9 +75,12 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 
-		if( Drone.Shutdown() ) return 0;
+		if( Drone.Shutdown() ) {
+			Drone.emit.log("Shutdown flag 0x0");
+			return 0;
+		}
 	}
 
-
+	Drone.emit.log("How did I get here?");
 	return 0;
 }

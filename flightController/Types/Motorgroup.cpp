@@ -5,8 +5,10 @@
 
 
 Motorgroup& Motorgroup::All( var_float_t percent ) {
-	for (int i = 0; i < MOTORS; ++i)
-		motors[i].setPower(percent);
+	A(percent);
+	B(percent);
+	C(percent);
+	D(percent);
 	return *this;
 }
 Motorgroup& Motorgroup::All( bool b ) {

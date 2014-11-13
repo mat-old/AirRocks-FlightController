@@ -48,7 +48,27 @@
 	template <typename T>
 	std::string JWriter::pair( std::string const name, T value) {
 		std::ostringstream ss;
-		ss << name << ':' << value;
+		ss << dq << name << dq << ':' << dq << value << dq;
+		return ss.str();
+	}
+	template <typename T>
+	std::string JWriter::pair( std::string const name, T value, char fmt) {
+		std::ostringstream ss;
+		switch( fmt ) {
+			case 'F':
+			case 'f':
+				ss << dq << name << dq << ':' << FLOAT_FORMAT << dq << value << dq;
+			break;
+			default:
+				ss << dq << name << dq << ':' << dq << value << dq;
+		}
+		return ss.str();
+	}
+	/* no quote on second arg */
+	template <typename T>
+	std::string JWriter::pairNQ( std::string const name, T value) {
+		std::ostringstream ss;
+		ss << dq << name << dq << ':' << value;
 		return ss.str();
 	}
 
@@ -69,10 +89,42 @@
 		//p.add("val",cmd.getValue());
 		//JWriter::operator () ("cmd",p);
 	//}
+	template <typename T>
+	std::string JWriter::array_4T( T v1, T v2, T v3, T v4 ) {
+		std::ostringstream ss;
+		ss <<'['<<dq<<v1<<dq<<','<<dq<<v2<<dq<<','<<dq<<v3<<dq<<','<<dq<<v4<<dq <<']';
+		return ss.str();
+	}
+	template <typename T>
+	std::string JWriter::array_3T( T v1, T v2, T v3 ) {
+		std::ostringstream ss;
+		ss <<'['<<dq<<v1<<dq<<','<<dq<<v2<<dq<<','<<dq<<v3<<dq<<']';
+		return ss.str();
+	}
+
 	void JWriter::operator()(Motorgroup& mg) {
-		//JWriter::operator () ("motors",array("dddd",mg.A(),mg.B(),mg.C(),mg.D()));
+		std::ostringstream ss;
+		ss
+		<< jBeg
+		<< pair("type", "motors")
+		<< ','
+		<< pairNQ("data", array_4T( (int)mg.A(), (int)mg.B(), (int)mg.C(), (int)mg.D()) )
+		<< jEnd;
+		Write(ss.str());
 	}
 	void JWriter::operator()(PID_t& pt){
+		std::ostringstream ss;
+		ss
+		<< jBeg
+		<< pair("type", "PID")
+		<< ','
+		<< pair("name", pt.name)
+		<< ','
+		<< pair("input", pt.last_input, 'f')
+		<< ','
+		<< pairNQ("data", array_3T( pt.kp, pt.ki, pt.kd ))
+		<< jEnd;
+		Write(ss.str());
 		//ptree p;
 		//this->put("name"  , pt.name);
 		//this->put("input" , pt.last_input);
@@ -114,5 +166,9 @@
 	}
 
 	void JWriter::log(std::string s) {
-		std::cout << s << std::endl;
+		std::cout << s << std::endl << std::flush;
+	}
+
+	void JWriter::log(std::string s, var_float_t t) {
+		std::cout << s << " " << t << std::endl << std::flush;
 	}

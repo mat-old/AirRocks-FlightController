@@ -1,6 +1,8 @@
 #include "relay.hpp"
 	Relay::Relay()  {
 		action["set"]            = AC_set;
+		action["reset"]          = AC_reset; 
+		action["reset-hard"]     = AC_reset_HARD;
 		action["handshake"]      = AC_handshake;
 		action["Mode-select"]    = AC_mode_select;
 		action["Throttle-arm"]   = AC_throttle_arm;
@@ -29,43 +31,43 @@
 
 		AC_start = action.begin();
 		AC_end   = action.end();
+		delayTimer = new TimerMS(delayTimerMS);
 		/*for initial disarmed state*/
-		Set_Active(false);
+		Set_Active(true);
 		AC_tuneing_state = AC_inactive;
 		/* TODO: update this for performance */
 		//setDelay(10);
 	}
-	Relay::~Relay() {}
+	Relay::~Relay() {
+		Dispose();
+	}
 
 	void Relay::Process(Motorgroup& m
 				, PID_t& Pitch
 				, PID_t& Roll
 				, PID_t& Yaw
 				, Potential_t& g
-				, Potential_t& a 
-				, Arming& s) {
+				, Potential_t& a ) {
 		// process always 
 		if( !post_parse.empty() )
-			Update(m, Pitch, Roll, Yaw, s);
+			Update(m, Pitch, Roll, Yaw);
 		// feedback sometimes 
 
 		
 
-		//if( !timer->Allow() ) return;
-
-		if( Data_Valid() ) {
+		if( Data_Valid() || delayTimer->Allow() ) {
 			Set_Data_Valid(false);
 			emit(m);
-			//emit(Pitch);
-			//emit(Roll);
-			//emit(Yaw);
+			emit(Pitch);
+			emit(Roll);
+			emit(Yaw);
 			//emit(g);
 			//emit(a);
 		}
 	}
 
 
-	void Relay::Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw, Arming& safety ) {
+	void Relay::Update(Motorgroup& motors, PID_t& Pitch, PID_t& Roll, PID_t& Yaw ) {
 		if( access.try_lock() ) {
 			//emit( "in lock"  );
 
@@ -100,18 +102,28 @@
 								case AC_yaw_d : Yaw.setD(val); break;
 								case AC_throttle_torque :
 									if( safety.ARMED() ) {
-										motors.All( val );
+										//emit.log( "throttle", val );
+										motors.All( val / 100.0f );
 									}
 									break;
 								default:
 								break;
 							}
 							break;
+						case AC_reset_HARD:
+							emit.log(" HARD Reset");
+							safety.RESET_HARD();
+						case AC_reset:
+							emit.log(" Reset");
+							safety.RESET();
+							safety.DISARM();
+							break;
 						case AC_throttle_arm :
 							safety.ARM();
 							break;
 						case AC_throttle_start :
-							setActiveTuner( AC_tuneing_state, motors );
+							//setActiveTuner( AC_tuneing_state, motors );
+							motors.All(true);
 							break;
 						case AC_throttle_stop :
 							powerDown(motors);
@@ -154,16 +166,19 @@
 
 	void Relay::setActiveTuner( AC_action_codes tuner, Motorgroup& motors) {
 		powerDown(motors);
-		bool unset = tuner == AC_tuneing_state;
+		//bool unset = tuner == AC_tuneing_state;
 		if( AC_tuneing_state != tuner ) {
 			switch( tuner ) {
 				case AC_pitch_activate : 
+						emit("Pitch-activated");
 						motors.PitchOnly();
 					break;
 				case AC_roll_active : 
+						emit("Roll-activated");
 						motors.RollOnly();
 					break;
 				case AC_yaw_active : 
+						emit("Yaw-activated");
 						motors.YawOnly();
 					break;
 			}
@@ -196,42 +211,46 @@
 		}		
 	}
 
-	void Relay::waitForARM( Arming& safety ) {
+	void Relay::waitForARM() {
 		lockIfDark();
 		
-		JCommand jco; 
-		/* while not armed */
-		while(!safety.ARMED()) {
-			/* listen to the socket */   
-			Listen();
-			if( !jco.tryParse( data )  ) continue;
-			/* if its the arm signal, arm the UAV's safety */
-			if( getActionCode( jco.Action() ) == AC_throttle_arm ) {
-				emit("'ARM' signal received");
-				safety.ARM();
-			}
-		}
+		waitFor( AC_throttle_arm );
+		safety.ARM();
 		emit("ARMED");
 	}
 
 	int Relay::waitFor( AC_action_codes code ) {
 		lockIfDark();
-
-		JCommand jco; 
 		/* while not armed */
 		while(true) {
-			/* listen to the socket */   
-			Listen();
-			//emit("got message...");
-			if( !jco.tryParse( data )  ) continue;
-			/* if its the arm signal, arm the UAV's safety */
-			if( getActionCode( jco.Action() ) == code ) {
-				return jco.Value();
+
+			if( !delayTimer->Allow() ) {
+				usleep(100);
+				continue;
+			}
+
+			if( post_parse.empty() ) continue;
+
+			access.lock();
+			std::vector<JCommand>::iterator
+				start = post_parse.begin()
+			  , end   = post_parse.end();
+			 
+			std::vector<JCommand>::iterator cursor = start;
+
+			for( ;end != cursor; ++cursor ) {
+				if ( getActionCode( cursor->Action() ) == code ) {
+					int v = cursor->Value();
+					post_parse.clear();
+					access.unlock();
+					return v;
+				}
 			}
 		}
+		return 0;
 	}
 
-	void Relay::waitForHandshake() {
+	void Relay::ListenForHandshake() {
 		lockIfDark();
 		JCommand jco; 
 		/* 
@@ -241,6 +260,7 @@
 			{ action:"handshake", name:"0.0.0.0", value:5000 }
 		*/
 		while( true ) {
+			emit.log("waiting for handshake...");
 			Listen();
 			if( !jco.tryParse( data ) ) continue;
 			if( getActionCode( jco.Action() ) != AC_handshake ) continue;
@@ -266,11 +286,12 @@
 	void *Relay::worker_run() {
 		JCommand jco; 
 		while(true) {
-			//emit("processing...");
 			Listen();
+			//emit.log( data );
 			if( jco.tryParse( data ) ) {
 				access.lock();
-				post_parse.push_back( jco );			
+				post_parse.push_back( jco );
+				emit.log( data );			
 				//emit("command accepted " + std::to_string(post_parse.size()));
 				access.unlock();
 			}
