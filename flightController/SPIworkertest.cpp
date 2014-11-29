@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-
 #include "errorMap.hpp"
 #include "subSystem.hpp"
 #include "spiWorker.hpp"
@@ -13,17 +12,26 @@ int main(int argc, char const *argv[])
 {
 	SPIworker *spi = new SPIworker();
 
+	spi->Start().Detach();
 
-	uint64_t x = spi->testUp();
-
-	for (int i = 0; i < 8; ++i)
-	{
-		uint8_t t = x >> (i*8u);
-		printf("%x",t);
-	}
+	sleep(4);
+	
 	cout << endl;
 	try {
-		spi->Open();		
+		uint8_t speedBuf[Def::ioMsg_Length] = {0u,};
+		spi->Open().Start().Detach();	
+
+
+		while(true) {
+			uint8_t n = 1;
+			cin >> n;
+			if( n == 0 ) throw 0xFF;
+			speedBuf[0] = n;
+			speedBuf[1] = n;
+			speedBuf[2] = n;
+			speedBuf[3] = n;
+			spi->Update(speedBuf);
+		}	
 	}
 	catch(exception& e) {
 		cout << e.what() << " occured disposing objects and exiting..." << endl;

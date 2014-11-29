@@ -2,6 +2,7 @@
 
 #include <thread>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
 #ifndef SPIWORKER
@@ -43,19 +44,17 @@ public:
 	SPIworker& Dispose() {
 		dispose = true;
 	}
-	uint64_t testUp() {
-		uint8_t s[4] = {0xF,0xF,0xF,0xF};
-		return updateTx(Def::ioMsg_Offset, Def::ioMsg_Length, s);
+	SPIworker& Update(uint8_t speeds[Def::ioMsg_Length]) {
+		motor_Tx_bytes = updateTx(Def::ioMsg_Offset, Def::ioMsg_Length, speeds);
 	}
 private:
 	/* ioctrl file descriptor */
 	int dev;
 	/* SPI constants */
 	uint8_t   mode;
-	uint64_t  Tx, Rx;
 	struct spi_ioc_transfer io;
 	/* SPIworker daemon members */
-	volatile long motor_Tx_bytes;
+	volatile uint64_t motor_Tx_bytes;
 	volatile bool dispose = false;
 	std::thread * daemon;
 
@@ -70,9 +69,12 @@ private:
 	}
 
 	void transmit_SPId() {
+		int fd = dev;
 		while(true) {
 			
 
+			
+			usleep(Def::ioBAUD_RATE);
 			if( dispose ) return;
 		}
 	}

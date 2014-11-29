@@ -32,6 +32,11 @@ public:
 	}
 	void Response(int r) {
 		switch(r) {
+			/* AnyError */
+			case 0xFFFF:
+				std::cout << "Any error occured" << std::endl;
+				sleepThrowWhere(3,sysEx,r);
+				return;
 			/* SPI subsystem */
 			case 0:
 			case 1:
