@@ -1,3 +1,13 @@
+Citations & Information
+------------------  
+Title | Author | Link  
+------|-------|-----  
+PID Control | Brian Douglas |https://www.youtube.com/watch?v=UR0hOmjaHp0 
+Understanding PID for Quadcopter RC – Flight behaviour | Oscar | http://blog.oscarliang.net/understanding-pid-for-quadcopter-rc-flight/
+SCA | WikiEn | http://en.wikipedia.org/wiki/Spatial_contextual_awareness 
+
+
+
 Packages
 ------------------  
 Package | /bin/* | note  
