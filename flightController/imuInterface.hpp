@@ -27,7 +27,7 @@
 #endif
 #ifndef IMUINTERFACE
 #define IMUINTERFACE
-class IMUinterface : public SubSystem {
+class IMUinterface : public AsyncWorker {
 private:
 	LSM303 * compass;
 	L3G    * gyro;
@@ -49,8 +49,9 @@ public:
 	int 		  time_next
 				, time_last;
 
-	IMUinterface() : SubSystem() {
+	IMUinterface() : AsyncWorker() {
 		fenabled = fopened = foffsets = fprepared = false;
+		if( !IMU_ENABLED ) Disable();
 	}
 	~IMUinterface() {
 		delete compass;

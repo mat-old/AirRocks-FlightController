@@ -7,7 +7,9 @@
 class PIDctrl : public SubSystem {
 private:
 public:
-	PIDctrl() : SubSystem() {}
+	PIDctrl() : SubSystem() {
+		if( !PID_ENABLED ) Disable();
+	}
 	~PIDctrl() {}
 
 	

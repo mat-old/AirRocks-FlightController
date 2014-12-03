@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
 	cout << endl;
-	//SPIworker *spi = new SPIworker();
+	SPIworker *spi = new SPIworker();
 	IMUworker *imu = new IMUworker();
 	//PIDctrl   *pid = new PIDctrl();
 
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
 		#endif
 		uint8_t speedBuf[Def::ioMsg_Length] = {Def::MOTOR_ZERO_LEVEL,};
 		Potential gyro, accel;
-		//spi->Open().Start().Detach().Update(speedBuf);
+		spi->Open().Start().Detach();
 		imu->Prepare().Start().Detach();
 		#ifdef MAIN_DEBUG
 			cout << "> Entering open control" << endl;
@@ -35,7 +35,7 @@ int main(int argc, char const *argv[]) {
 		/* wait for all threads to run */
 		sleep(1);
 		while(imu->Active()) {
-			//spi->Update(speedBuf);
+			spi->Update(speedBuf);
 			imu->Update(gyro, accel);
 
 
@@ -51,7 +51,7 @@ int main(int argc, char const *argv[]) {
 		cout << e.what() << ":: safely disposing objects and exiting..." << endl;
 	}
 	delete imu;
-	//delete spi;
+	delete spi;
 	//delete pid;
 	cout << "> Exit(1)::\n" << endl;
 	exit(1);

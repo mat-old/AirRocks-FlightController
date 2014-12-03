@@ -12,7 +12,7 @@
 #include <linux/spi/spidev.h>
 #ifndef SPIWORKER
 #define SPIWORKER
-class SPIworker : public SubSystem {
+class SPIworker : public AsyncWorker {
 private:
 	/* ioctrl file descriptor */
 	int dev;
@@ -22,15 +22,14 @@ private:
 			, mode;
 	/* SPIworker worker members */
 	volatile uint8_t Tx[Def::ioLength];
-	pthread_t worker;
-
 public:
-	SPIworker() : SubSystem() {
+	SPIworker() : AsyncWorker() {
 		iospeed_hz       = Def::ioBAUD_RATE;
 		iobits_per_word  = Def::ioBits;
 		iomode           = 0x0;
 		dev              = -1;
 		updateTx(Tx, Def::InitialMotorState);
+		if( !SPI_ENABLED ) Disable();
 	}
 	~SPIworker() {
 		Dispose();
@@ -63,19 +62,6 @@ public:
 		}
 		return *this;
 	}
-	/* start thread */
-	SPIworker& Start() {
-		if( !Fail() ) {
-			int ret = pthread_create(&worker, NULL, &SPIworker::worker_helper, this);
-			if( ret != 0 ) throw FAIL_START_WORKER;
-		} else throw FAIL_FLAG_SET;
-		return *this;
-	}
-	/* make worker, "just saves resources, dont do if switch has too much over head" */
-	SPIworker& Detach() {
-		pthread_detach(worker);
-		return *this;
-	}
 	SPIworker& Update(uint8_t speeds[Def::ioMsg_Length]) {
 		Tx[0] = Def::ioFlag_Start;
 		Tx[1] = speeds[0];
@@ -100,12 +86,7 @@ private:
 			destination[i] = Def::MOTOR_SAFE_SPEED(source[i]);
 		destination[i] = Def::ioFlag_End;
 	}
-
-	static void *worker_helper(void *context) {
-		return ((SPIworker *)context)->worker_run();
-	}
-
-	void *worker_run() {
+	virtual void *worker_run() {
 		int fd  = dup(dev);
 		#ifdef DEBUG
 			std::cout << "spi mode      " << (int)mode << "\n"

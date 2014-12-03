@@ -21,7 +21,9 @@ public:
 		_active           = false;
 		_dispose          = false;
 	}
-	~SubSystem(){}
+	~SubSystem(){
+		Dispose();
+	}
 
 	void Set_Data_Valid(bool tof)	{ _valid = tof; }
 	void Dispose()                  { _dispose = true; }
@@ -31,6 +33,14 @@ public:
 	bool Disposed()     { return _dispose; }
 	bool Active() 		{ return _active;}
 	bool Fail()			{ return _fail;  }
+
+	void Disable() {
+		Set_Data_Valid(false);
+		Set_Active(false);
+		Set_Fail(true);
+		Dispose();
+	}
+
 };
 
 
@@ -39,22 +49,22 @@ protected:
 	pthread_t worker;
 public:
 	AsyncWorker() : SubSystem() {}
+	
+	virtual void* worker_run() = 0;
 
-	void *worker_run();
-	virtual AsyncWorker& Detach() {
+	AsyncWorker& Detach() {
 		pthread_detach(worker);
 		return *this;
 	}
-	virtual AsyncWorker& Start() {
-		if( !_fail ) {
-			int ret = pthread_create(&worker, NULL, &AsyncWorker::worker_helper, this);
+	AsyncWorker& Start() {
+		if( !Fail() ) {
+			int ret = pthread_create(&worker, NULL, &worker_helper, this);
 			if( ret != 0 ) throw FAIL_START_WORKER;
 		} else throw FAIL_FLAG_SET;
 		return *this;
 	}
-
 	static void *worker_helper(void *context) {
-		return ((AsyncWorker *)context)->worker_run();
+		return static_cast<AsyncWorker*>(context)->worker_run();
 	}
 
 };

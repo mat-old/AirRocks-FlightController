@@ -7,6 +7,11 @@
 #define ATOMIC volatile bool
 #define FLOAT_FORMAT std::fixed << std::setprecision(3) << std::setw(6)
 
+const bool IMU_ENABLED = true;
+const bool SPI_ENABLED = true;
+const bool PID_ENABLED = true;
+
+
 namespace Def {
 	/* IMU Interface */
 	const useconds_t imuBAUD_RATE  = 20000u;
