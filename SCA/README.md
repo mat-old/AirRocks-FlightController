@@ -1,0 +1,1 @@
+This directory is used to develop the Spacial Contextual Awareness(SCA) subsystem.

@@ -1,1 +1,1 @@
-sshfs -o idmap=user arfc@150.156.218.37: arfc/
+sshfs -o idmap=user arfc@192.168.10.1: arfc/

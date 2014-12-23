@@ -1,0 +1,66 @@
+extends mixins
+block content
+	doctype html
+	html(lang="en")
+	head
+		title Tune PIDs
+		link(href='bootstrap.min.css' rel='stylesheet')
+		link(href='jquery-ui.min.css' rel='stylesheet')
+		link(href='bootstrap-theme.min.css' rel='stylesheet')
+		link(href='tuner.css' rel='stylesheet')
+
+		script(type='text/javascript' src='socket.io.js')
+		script(type='text/javascript' src='jquery.js')
+		script(type='text/javascript' src='bootstrap.min.js')
+		script(type='text/javascript' src='tuner.js')
+		script(type='text/javascript' src='jquery-ui.min.js')
+		script(type='text/javascript' src='raphael.2.1.0.min.js')
+		script(type='text/javascript' src='justgage.1.0.1.min.js')
+
+		script.
+			global_hash["all"]     = true;
+			global_hash["status"]  = true;
+			global_hash["data"]    = true;
+			global_hash["warning"] = true;
+			global_hash["error"]   = true;
+	body
+		nav.navbar.navbar-fixed-top(role="navigation")
+			.container-fluid
+				.navbar-header
+					a.navbar-brand
+						| UAV Pid Tuner
+				#navbar
+					ul.nav.navbar-nav.navbar-left
+						li
+							a actions
+
+					.navbar-right
+						.signal
+							.bar
+
+				.container-fluid
+					.row
+						.col-sm-3.col-md-2.sidebar
+							each MENU in SIDEBARS
+								+MAKESIDEBAR(MENU)
+
+			
+		.col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main.suppressible.suppressed
+			.row.gage-groups
+				each group, name in GAUGES
+					.gages(class="#{name}")
+						each g in group
+							+MAKEGAUGE(g.id,g.class,g.container,g.subtext,g.min,g.max)
+
+			br
+
+			each tuner in Tuners
+				.panel.panel-default
+					.panel-heading
+						h1.btn-group-label #{tuner.name}
+						.btn-group.btn-group-panel
+							each cont in tuner.controls
+								button.btn.btn-default #{cont}
+					.panel-body
+						each sb in tuner.scrollBars
+							+SLIDER(tuner.name,sb.name,sb.min,sb.max, sb.div )

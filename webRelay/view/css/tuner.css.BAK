@@ -5,7 +5,13 @@ html {
 	left: 0;
 	right: 0;
 }
+.panel {
+	background: #222 !important;
+}
 body {
+	background-color: #222;
+	color:#EEE;
+
 	margin-top: 15px;
 }
 ul.nav {

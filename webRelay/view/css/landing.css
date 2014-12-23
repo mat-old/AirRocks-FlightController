@@ -71,6 +71,7 @@ body, a, html {
 }
 
 .loader {
+	width: 60% !important;
 	left:50% !important;
   	color: #EFEFEF !important;
   	font: normal 18px/1em Helvetica, Arial, sans-serif;

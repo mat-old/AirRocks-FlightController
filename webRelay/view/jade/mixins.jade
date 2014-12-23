@@ -1,0 +1,58 @@
+script.
+	var global_hash = {};
+
+mixin SLIDER(ctrl,item,min,max,div)
+	.row.slider-row
+		.col-sm-1
+			label #{item}
+		.col-sm-1
+			label(class="data-#{ctrl}-#{item}")
+		.col-sm-10
+			div(id='#{ctrl}-#{item}')
+			script.
+				$(function(){
+					PidCtrls.push('#{ctrl}-#{item}')
+					$('##{ctrl}-#{item}').slider({
+						max:#{max},
+						min:#{min},
+						slide: function(event,ui) {
+							var num = ui.value / #{div}
+							$(this).children(0).attr('data-content', num)
+							slideUpdate( this.id, num )
+							$('.data-#{ctrl}-#{item}').text(num)
+						}
+					});
+				});
+
+
+mixin MAKEGAUGE(id,gclass,cont,sub,min,max)
+	div(class="#{cont}")
+		div(id="#{id}" style="#{gclass}")
+		script.
+			global_hash[ '#{id}' ] = {}
+			$(function(){
+				global_hash[ '#{id}' ] = new JustGage({
+					id:"#{id}",
+					value:0,
+					min: #{min},
+					max: #{max},
+					title:"#{id}",
+					label: "#{sub}"
+				});
+			});
+
+mixin MAKESIDEBAR( m )
+	if( !m.active )
+		script.
+			$(function(){
+				$(".menu-box#"+"#{m.id}").hide();			
+			});
+	.menu-box(id="#{m.id}")
+		label #{m.name}
+		ul.nav.nav-sidebar
+			each ITEM in m.opts
+				li(class="#{ITEM.active?'active':''}" id="#{ITEM.id}" group="#{m.id}")
+					a #{ITEM.name}
+
+
+block content
