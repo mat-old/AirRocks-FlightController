@@ -4,6 +4,12 @@ AirRocks-FlightController
 ARFC is a quad-copter flight controller which uses concepts from SCA and iterative learning to achieve awesome drone actions.
 
 ___________________
+Makefile
+------------------- 
+`make`  - optomized build, only assembles new sources, no headers  
+`make scratch` - clear old objects and starts build from scratch   
+`make build` - optomized build, no linking  
+___________________
 Progress 
 -------------------
 __Subsystems__  96%   
