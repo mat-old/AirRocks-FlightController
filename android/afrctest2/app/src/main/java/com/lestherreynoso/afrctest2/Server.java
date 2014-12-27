@@ -55,7 +55,7 @@ public class Server {
                     Log.d("Received ",sen.trim());
                     Message msg = networkDebugHandler.obtainMessage();
                     msg.obj = sen;
-//                    networkDebugHandler.handleMessage(msg);
+                    networkDebugHandler.handleMessage(msg);
 //                    Network.mhandler.post(new updateUI("socket accepted.."+sen, context));
 //                    CommT commRunnable = new CommT(datagramSocket);
 //                    new Thread(commRunnable).start();

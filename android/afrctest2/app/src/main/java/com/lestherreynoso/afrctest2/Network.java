@@ -57,7 +57,9 @@ public class Network extends Fragment {
     private String connectedNetwork;
     WifiManager wifiManager;
     static Handler mhandler = new Handler();
+    MainActivity mActivity = new MainActivity();
     Handler ndHandler;
+
 //    Context mcontext = getActivity().getApplicationContext();
 
 
@@ -119,8 +121,15 @@ public class Network extends Fragment {
             @Override
             public void handleMessage(Message msg) {
 
-                String dMsg = (String) msg.obj;
-                networkDebug.append(dMsg);
+                final String dMsg = (String) msg.obj;
+                mActivity.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        networkDebug.append("Recieved: "+dMsg+ "\n");
+                    }
+                });
+
                 super.handleMessage(msg);
             }
         };
@@ -192,6 +201,7 @@ public class Network extends Fragment {
             @Override
             public void onClick(View v) {
                 networkDebug.append("Starting Server...\n ");
+//                server.start(MainActivity.mainHandler);
                 server.start(ndHandler);
 //                mhandler.post(UDPClientRunnable);
                 networkDebug.append("Running...\n ");

@@ -2,6 +2,8 @@ package com.lestherreynoso.afrctest2;
 
 import java.util.Locale;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +34,8 @@ public class MainActivity extends ActionBarActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+//    static Handler mainHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,24 @@ public class MainActivity extends ActionBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+//        mainHandler = new Handler(){
+//
+//            @Override
+//            public void handleMessage(Message msg) {
+//
+//                final String dMsg = (String) msg.obj;
+//                final TextView nDebug = (TextView)findViewById(R.id.debugTextView);
+//                runOnUiThread(new Runnable(){
+//
+//                    @Override
+//                    public void run() {
+//                        nDebug.append(dMsg);
+//                    }
+//                });
+//
+//                super.handleMessage(msg);
+//            }
+//        };
 
     }
 
