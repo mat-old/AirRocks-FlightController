@@ -1,5 +1,9 @@
 __List of acceptable interface messages__  
-
+__NOTE:__ default properties are as fallows...     
+```json  
+{ action:"std::string", name:"std::string", value:"float" }  
+```  
+  
 AC_mode_select  _Selects which mode the drone will run with_   
  ```json
  {"action":"Mode-select", "value":0} = NO_MODE
