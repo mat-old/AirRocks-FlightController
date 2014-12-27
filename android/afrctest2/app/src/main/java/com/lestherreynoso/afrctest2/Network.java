@@ -9,6 +9,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
@@ -55,6 +57,7 @@ public class Network extends Fragment {
     private String connectedNetwork;
     WifiManager wifiManager;
     static Handler mhandler = new Handler();
+    Handler ndHandler;
 //    Context mcontext = getActivity().getApplicationContext();
 
 
@@ -111,24 +114,36 @@ public class Network extends Fragment {
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
         final Server server = new Server();
-////        rec r = new rec();
-////        r.execute();
-//        Runnable UDPClientRunnable = new Runnable() {
+        ndHandler = new Handler(){
+
+            @Override
+            public void handleMessage(Message msg) {
+
+                String dMsg = (String) msg.obj;
+                networkDebug.append(dMsg);
+                super.handleMessage(msg);
+            }
+        };
+//        rec r = new rec();
+//        r.execute();
+//        final Runnable UDPClientRunnable = new Runnable() {
 //            @Override
 //            public void run() {
 //                try {
 //
 //                    DatagramSocket clientSocket = new DatagramSocket(5005);
 //                    byte[] receiveData = new byte[1024];
-//                    DatagramPacket recv_packet = new DatagramPacket(receiveData, receiveData.length);
-//                    networkDebug.append("UDP S: Recieving...");
-//                    clientSocket.receive(recv_packet);
-//                    String receivedString = new String(recv_packet.getData());
-//                    networkDebug.append("UDP Recieved String " + receivedString);
+//                    while (!Thread.currentThread().isInterrupted()) {
+//                        DatagramPacket recv_packet = new DatagramPacket(receiveData, receiveData.length);
+//                        networkDebug.append("UDP S: Recieving...");
+//                        clientSocket.receive(recv_packet);
+//                        String receivedString = new String(recv_packet.getData());
+//                        networkDebug.append("UDP Recieved String " + receivedString);
 ////                        Log.d("UDP", " Received String: " + receivedString);
-//                    InetAddress ipAddress = recv_packet.getAddress();
-//                    int port = recv_packet.getPort();
-//                    networkDebug.append("UDP IPAddress: " + Network.this.ipAddress.toString() + "\nUDP Port: " + Integer.toString(port));
+//                    }
+////                    InetAddress ipAddress = recv_packet.getAddress();
+////                    int port = recv_packet.getPort();
+////                    networkDebug.append("UDP IPAddress: " + Network.this.ipAddress.toString() + "\nUDP Port: " + Integer.toString(port));
 ////                        Log.d("UDP", "IPAddress : " + ipAddress.toString());
 ////                        Log.d("UDP", "Port : " + Integer.toString(port));
 //
@@ -142,7 +157,7 @@ public class Network extends Fragment {
 //                mhandler.post(this);
 //            }
 //        };
-//        mhandler.post(UDPClientRunnable);
+
 
 
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +192,8 @@ public class Network extends Fragment {
             @Override
             public void onClick(View v) {
                 networkDebug.append("Starting Server...\n ");
-                server.start();
+                server.start(ndHandler);
+//                mhandler.post(UDPClientRunnable);
                 networkDebug.append("Running...\n ");
             }
         });
@@ -266,7 +282,19 @@ public class Network extends Fragment {
         }
     }
 
-
+//public class DebugManager {
+//    public DebugManager() {
+//        debugHandler = new Handler(Looper.getMainLooper()) {
+//
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                String debugString = (String) msg.obj;
+//                networkDebug.append(debugString + "\n");
+//            }
+//        };
+//    }
+//}
 
 
 //    class rec extends AsyncTask<Void, Void, Void> {

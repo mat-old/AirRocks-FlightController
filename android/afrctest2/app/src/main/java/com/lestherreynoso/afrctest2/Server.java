@@ -1,6 +1,9 @@
 package com.lestherreynoso.afrctest2;
 
+import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,38 +22,48 @@ public class Server {
     Thread serverThread;
     Thread commThread;
     public static final int SERVER_PORT = 5005;
+    Context context;
+//    Network.DebugManager debugManager;
+    Handler networkDebugHandler;
 
-    public void start() {
+
+    public void start(Handler ndHandler) {
         updateUIHandler = new Handler();
         this.serverThread = new Thread(new ServerRun());
+        this.networkDebugHandler = ndHandler;
+//        this.context = context;
+
         serverThread.start();
     }
 
     class ServerRun implements  Runnable {
         @Override
         public void run() {
-            byte[] data = new byte[5];
-            DatagramPacket datagramPacket = new DatagramPacket(data, data.length);
+            byte[] receivedData = new byte[10];
+            DatagramPacket receivedPacket = new DatagramPacket(receivedData, receivedData.length);
             try {
                 datagramSocket = new DatagramSocket(SERVER_PORT);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            while (!Thread.currentThread().isInterrupted()){
+//            while (!Thread.currentThread().isInterrupted()){
+              while(true){
                 try{
-                    datagramSocket.receive(datagramPacket);
-                    String sen = new String(datagramPacket.getData());
-
-                    Network.mhandler.post(new updateUI("socket accepted.."+sen));
+                    datagramSocket.receive(receivedPacket);
+                    String sen = new String(receivedPacket.getData());
+                    Log.d("Received ",sen.trim());
+                    Message msg = networkDebugHandler.obtainMessage();
+                    msg.obj = sen;
+//                    networkDebugHandler.handleMessage(msg);
+//                    Network.mhandler.post(new updateUI("socket accepted.."+sen, context));
 //                    CommT commRunnable = new CommT(datagramSocket);
 //                    new Thread(commRunnable).start();
 
                 }catch (IOException e){
                     e.printStackTrace();
                 }
-                datagramSocket.close();
+//                datagramSocket.close();
             }
         }
     }
@@ -83,13 +96,14 @@ public class Server {
 
     private class updateUI implements Runnable {
         String msg;
-        public updateUI(String read) {
-            this.msg = read;
+        Context  context;
+        public updateUI(String read, Context context) {
+            this.msg = read; this.context = context;
         }
 
         @Override
         public void run() {
-//         networkDebug.append("Received message: "+msg+"\n");
+//         context.networkDebug.append("Received message: "+msg+"\n");
 
         }
     }
