@@ -7,18 +7,15 @@ CODE/CATAGORY
 `
 
 __AC_mode_select__  _Selects which mode the drone will run with_
-> {"action":"Mode-select", "value":0} = NO_MODE  
-> {"action":"Mode-select", "value":1} = TEST_MODE  
-> {"action":"Mode-select", "value":2} = TUNE_MODE  
-> {"action":"Mode-select", "value":3} = UAV_MODE  
+ `{"action":"Mode-select", "value":0}` -> NO_MODE  
+ `{"action":"Mode-select", "value":1}` -> TEST_MODE  
+ `{"action":"Mode-select", "value":2}` -> TUNE_MODE  
+ `{"action":"Mode-select", "value":3}` -> UAV_MODE  
  
 __AC_thrittke_*__ _States for controlling the throttle's safety and output_  
-> __AC_throttle_arm__    
-> `{"action":"Throttle-arm"}`    
-> __AC_throttle_start__  
-> `{"action":"Throttle-start"}`  
-> __AC_throttle_stop__  
-> `{"action":"Throttle-stop"}`  
+ `{"action":"Throttle-arm"}`    -> __AC_throttle_arm__ 
+ `{"action":"Throttle-start"}`  -> __AC_throttle_start__  
+ `{"action":"Throttle-stop"}`   -> __AC_throttle_stop__   
 
 __AC_set__  _ The AC_set action is class of setter functions for use in 'Tuning mode'_
 > __AC_throttle_torque__
