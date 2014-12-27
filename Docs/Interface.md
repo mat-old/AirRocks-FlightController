@@ -1,5 +1,5 @@
 __List of acceptable interface messages__  
-__NOTE:__ default properties are as fallows...     
+__NOTE:__ default properties are as follows...     
 ```javascript  
 { action:'std::string', name:'std::string', value:0.0 }  
 ```  
