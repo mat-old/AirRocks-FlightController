@@ -69,4 +69,12 @@
         android:layout_below="@+id/connectButton"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop Server"
+        android:id="@+id/stopSeverButton"
+        android:layout_below="@+id/startServerbutton"
+        android:layout_centerHorizontal="true"  />
+
 </RelativeLayout>

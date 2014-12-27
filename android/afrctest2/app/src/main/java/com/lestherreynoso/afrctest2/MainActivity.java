@@ -34,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-//    static Handler mainHandler;
 
 
     @Override
@@ -50,25 +49,6 @@ public class MainActivity extends ActionBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-//        mainHandler = new Handler(){
-//
-//            @Override
-//            public void handleMessage(Message msg) {
-//
-//                final String dMsg = (String) msg.obj;
-//                final TextView nDebug = (TextView)findViewById(R.id.debugTextView);
-//                runOnUiThread(new Runnable(){
-//
-//                    @Override
-//                    public void run() {
-//                        nDebug.append(dMsg);
-//                    }
-//                });
-//
-//                super.handleMessage(msg);
-//            }
-//        };
-
     }
 
 
