@@ -2,12 +2,12 @@ __The follow is a list of acceptable interface messages__
 
 AC_mode_select  _Selects which mode the drone will run with_   
  ```json
- {"action":"Mode-select", "value":0}
+ {"action":"Mode-select", "value":0} = NO_MODE
+ {"action":"Mode-select", "value":1} = TEST_MODE
+ {"action":"Mode-select", "value":2} = TUNE_MODE
+ {"action":"Mode-select", "value":3} = UAV_MODE
  ```
- -> NO_MODE  
- `{"action":"Mode-select", "value":1}` -> TEST_MODE  
- `{"action":"Mode-select", "value":2}` -> TUNE_MODE  
- `{"action":"Mode-select", "value":3}` -> UAV_MODE  
+
  
 AC_Throttle* _States for controlling the throttle's safety and output_   
  `{"action":"Throttle-arm"}`    -> __AC_throttle_arm__   
