@@ -3,6 +3,10 @@ __NOTE:__ default properties are as follows...
 ```javascript  
 { action:'std::string', name:'std::string', value:0.0 }  
 ```  
+AC_handshake, name is a std::string representing the clients IP addresss, value is the PORT, representated as an unsighed short.  
+```json  
+{ "action":"handshake", "name":"0.0.0.0", "value":"5000" }  
+```  
   
 AC_mode_select  _Selects which mode the drone will run with_   
  ```json
