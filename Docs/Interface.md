@@ -1,4 +1,4 @@
-__The follow is a list of acceptable interface messages__  
+__List of acceptable interface messages__  
 
 AC_mode_select  _Selects which mode the drone will run with_   
  ```json
