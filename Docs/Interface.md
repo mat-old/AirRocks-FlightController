@@ -39,5 +39,5 @@ AC_set  _The AC_set action is class of setter functions for use in 'Tuning mode'
  `{"action":"set", "name":"Yaw-I","value":0.1}`   -> __AC_yaw_i__  
  `{"action":"set", "name":"Yaw-D","value":0.1}`   -> __AC_yaw_d__  
 
- AC_err _any malformed message_
- _none_ -> _does nothing_ 
+ AC_err _any malformed message_  
+ _none_ -> _does nothing_   
