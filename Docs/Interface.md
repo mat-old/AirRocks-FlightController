@@ -3,7 +3,7 @@ __NOTE:__ default properties are as follows...
 ```javascript  
 { action:'std::string', name:'std::string', value:0.0 }  
 ```  
-AC_handshake, name is a std::string representing the clients IP addresss, value is the PORT, representated as an unsighed short.  
+AC_handshake _name = clients IP addresss, value = PORT_  
 ```json  
 { "action":"handshake", "name":"0.0.0.0", "value":"5000" }  
 ```  
