@@ -15,6 +15,8 @@ var PidCtrls = []
   , processMotorGroup = function(d) {
 		var avg = 0, frac = 254-125, mchar = 'A';
 		for (var i = 0; i < d.length; i++) {
+			console.log( "Motor_"+mchar )
+			console.log( global_hash["Motor_"+mchar] );
 			global_hash["Motor_"+mchar].refresh( Math.floor(frac/d[i]*100) );
 			mchar = nextChar(mchar);
 			avg += parseInt(d[i], 10);
@@ -187,6 +189,18 @@ $(document).ready(function(){
 	$('.control').click(function(){
 		socket.emit('control', this.id)
 	});
+
+	$('#settuner').click(function(){
+		socket.emit('update', {action:'Mode-select', value: 2 } )
+	});
+	$('#setuav').click(function(){
+		socket.emit('update', {action:'Mode-select', value: 3 } )
+	});
+
+	$('#handshake').click(function(){
+	socket.emit('starthandshake', '');
+	});
+
 	$('section#help-menu, section#controls-menu').hide();
 	$('.carousel-indicators li').click(function(){
 		setActiveGroupItem( this )

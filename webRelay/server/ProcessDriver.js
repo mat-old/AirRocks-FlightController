@@ -26,8 +26,8 @@ Driver.prototype.setArgs = function( args ){
 };
 Driver.prototype.killAll = function() {
 	this.safety = false;
-	var trykill = 'pkill ' + this.exec
-	exec_cp(trykill, function (err , stdout, stderr){});
+	//var trykill = 'pkill ' + this.exec
+	//exec_cp(trykill, function (err , stdout, stderr){});
 };
 Driver.prototype.on      = function( e, cb ) {
 	assert.equal( typeof e, 'string' );
@@ -64,7 +64,7 @@ Driver.prototype.reset   = function( cb ) {
 	this.safety = false;
 	/* do things */
 	try{
-		this.child.kill('SIGKILL');
+		//this.child.kill('SIGKILL');
 		this.start();
 	} catch(e) {
 		console.log(e)
@@ -73,7 +73,7 @@ Driver.prototype.reset   = function( cb ) {
 Driver.prototype.kill    = function() {
 	this.safety = false;
 	try{
-		this.child.kill('SIGKILL');
+		//this.child.kill('SIGKILL');
 	} catch(e) {
 		console.log(e)
 	}

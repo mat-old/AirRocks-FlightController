@@ -1,6 +1,5 @@
 var router  = require('./RequestHandler.js')
   , G       = require('./global.js');
-
 function httpserver(iom, peers, port) {
 
 	function requestCB( req, res ) {
@@ -11,6 +10,8 @@ function httpserver(iom, peers, port) {
 	var server = CreateServer( requestCB, port )
 	  , io     = iom.Connect( server );
 	
+	console.log( '> IP  ::'+ server.address().address )
+
 	io.sockets.on('connection', function(socket){
 		if( peers.Available() ) {
 			iom.Handler( socket, peers, router.info(socket.handshake.headers.referer ) )

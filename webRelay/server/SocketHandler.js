@@ -1,7 +1,12 @@
 var io = require('socket.io')
   , pro= require('./ProcessDriver.js')
   , dgram = require('dgram')
+  , IP = require('./getIP.js')
   , G  = require('./global.js').g;
+
+var client = dgram.createSocket('udp4');
+var relay = dgram.createSocket('udp4');
+
 
 Connect = function(app) {
 	var ioh     = io.listen(app, { log: false });
@@ -9,33 +14,47 @@ Connect = function(app) {
 	return ioh;
 };
 
-SocketHandler  = function(socket,peers,info) {
+function SocketHandler(socket,peers,info) {
+	this.handshakeObj;
+
+	this.heartbeat = setInterval(function(){
+		socket.emit('heartbeat', G.ioperiod);
+	}, G.ioperiod);
+
 	if( !peers.Available() ) { 
 		socket.disconnect();
 		return false
 	} else {
-		var client = dgram.createSocket('udp4');
-		child = new pro.Driver();
-		child.setPath(G.uavpath);
-		child.setExec(G.uavexec);
-		child.setArgs( [info.target] );
-		//child.setOpts( ['pipe','pipe','pipe'] );
-		child.on('out', function(data){
-			socket.emit( 'res', data );
-		});
-		
-
-
 		peers.PeerStart();
 		console.log( '> peer accepted' )		
+
 		socket.emit('handshake', G.ioperiod);
 
-		var heartbeat = setInterval(function(){
-			socket.emit('heartbeat', G.ioperiod);
-		}, G.ioperiod);
+		relay.on("listening", function () {
+			var addr = relay.address();
+			console.log("> listening "+addr.address+":"+addr.port);
+		});
+
+		relay.on("message", function (msg, rinfo) {
+			console.log("server got: " + msg + " from " +
+			rinfo.address + ":" + rinfo.port);
+		});
+		relay.bind( 5001 );
+
+		socket.on('starthandshake', function() {
+			var message = new Buffer( JSON.stringify({
+					action: 'handshake'
+				  , name  : IP.get()
+				  , value : G.recvport
+				})
+			);
+			client.send(message, 0, message.length, G.destport, G.destIP, function(err, bytes){
+				console.log( message.toString('utf8') )
+			});
+		})
 
 
-		/* the switch case is used to filter */
+		/* the switch is used to filter */
 		socket.on('update', function(req) {
 			switch( req.action || '' ) {
 				case 'set':
@@ -51,6 +70,7 @@ SocketHandler  = function(socket,peers,info) {
 				case 'Roll-save':
 				case 'Yaw-reset':
 				case 'Yaw-save':
+				case 'Mode-select':
 					var message = new Buffer( JSON.stringify( req ) )
 					client.send(message, 0, message.length, G.destport, G.destIP, function(err, bytes){
 						console.log( message.toString('utf8') )
@@ -61,33 +81,6 @@ SocketHandler  = function(socket,peers,info) {
 			}
 		});
 
-		socket.on('control',function(s){
-			switch(s) {
-				case 'reset':
-					child.reset();
-				break;
-				case 'kill':
-					console.log( 'killing child' )
-					child.kill();
-				break;
-				case 'start':
-					console.log( 'killing child' )
-					child.start();
-				break;
-				case 'killall':
-					child.killAll();
-				break;
-				case 'settest':
-					child.setExec(G.uavAltEx);
-					child.setPath(G.uavAltP);
-				break;
-				case 'setuav':
-					child.setExec(G.uavexec);
-					child.setPath(G.uavpath);
-				break;
-			}	
-		});
-
 		socket.on('ready', function(){
 		});
 
@@ -96,10 +89,14 @@ SocketHandler  = function(socket,peers,info) {
 		});
 
 		socket.on('disconnect',function() {
+			relay.close();
 			peers.PeerEnd();
 		});
 	}
 }
+
+
+
 
 exports.Handler = SocketHandler;
 exports.Connect = Connect;
