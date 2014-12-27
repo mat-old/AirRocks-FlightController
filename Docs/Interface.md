@@ -35,9 +35,9 @@ RESET _A class of functions that reloads the config.json file last saved setting
 
 SAVE _A class of functions that save each setting to the config.json file_    
 ```json 
- {"action":"Pitch-save"}` = AC_pitch_save   
- {"action":"Roll-save"}`  = AC_roll_save  
- {"action":"Yaw-save"}`   = AC_yaw_save  
+ {"action":"Pitch-save"} = AC_pitch_save   
+ {"action":"Roll-save"}  = AC_roll_save  
+ {"action":"Yaw-save"}   = AC_yaw_save  
 ```
 
 
