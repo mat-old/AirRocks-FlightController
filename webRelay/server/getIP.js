@@ -14,7 +14,7 @@ function get( s ) {
 	        }
 	    }
 	}
-	return addresses[1];
+	return addresses[0];
 }
 
 //console.log( get() )

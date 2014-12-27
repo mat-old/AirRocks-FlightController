@@ -15,8 +15,6 @@ Connect = function(app) {
 };
 
 function SocketHandler(socket,peers,info) {
-	this.handshakeObj;
-
 	this.heartbeat = setInterval(function(){
 		socket.emit('heartbeat', G.ioperiod);
 	}, G.ioperiod);
@@ -39,6 +37,7 @@ function SocketHandler(socket,peers,info) {
 			console.log("server got: " + msg + " from " +
 			rinfo.address + ":" + rinfo.port);
 		});
+		
 		relay.bind( 5001 );
 
 		socket.on('starthandshake', function() {
