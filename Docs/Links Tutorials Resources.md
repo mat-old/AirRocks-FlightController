@@ -14,7 +14,7 @@ Package | /bin/* | note
 --------------|-----|------------  
  i2c-tools  |  i2cdetect -y 1 | run with ``-y 1`` for the model AorB revision 2+  
  python-smbus | none | i2c selection driver
- math packs| none | python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
+ ~~math packs~~| none | ~~python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose~~
  miniIMU9 ahrs | minimu9-ahrs-calibrate -b /dev/i2c-1  | https://github.com/DavidEGrayson/minimu9-ahrs/wiki 
  boost  | none | libboost-all-dev      
 
