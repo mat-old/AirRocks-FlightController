@@ -5,7 +5,7 @@ Title | Author | Link
 PID Control | Brian Douglas |https://www.youtube.com/watch?v=UR0hOmjaHp0 
 Understanding PID for Quadcopter RC – Flight behaviour | Oscar | http://blog.oscarliang.net/understanding-pid-for-quadcopter-rc-flight/
 SCA | WikiEn | http://en.wikipedia.org/wiki/Spatial_contextual_awareness 
-AIR VEHICLE C++ |  stroustrup?  | CODING STANDARDS | http://stroustrup.com/JSF-AV-rules.pdf
+AIR VEHICLE C++ |  Lockheed Martin  |  http://stroustrup.com/JSF-AV-rules.pdf
 
 
 Packages
@@ -16,7 +16,7 @@ Package | /bin/* | note
  python-smbus | none | i2c selection driver
  math packs| none | python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
  miniIMU9 ahrs | minimu9-ahrs-calibrate -b /dev/i2c-1  | https://github.com/DavidEGrayson/minimu9-ahrs/wiki 
- 
+ boost  | none | libboost-all-dev      
 
 GrovePi
 -----------------
