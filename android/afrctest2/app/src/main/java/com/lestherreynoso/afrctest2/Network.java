@@ -45,7 +45,12 @@ public class Network extends Fragment {
     private Button connectButton;
     private Button startServerButton;
     private Button stopServerButton;
+    private Button sendButton;
     private EditText ipAddressEditText;
+    EditText routerSsidEditText;
+    EditText routerPassEditText;
+    EditText sendEditText;
+//    EditText relayIpEditText;
     private String ipAddress;
     public  TextView networkDebug;
     private String connectedNetwork;
@@ -54,6 +59,9 @@ public class Network extends Fragment {
     MainActivity mActivity = new MainActivity();
     Handler ndHandler;
     Boolean serverRunning = false;
+    private String routerName;
+    private String routerPass;
+    private String relayIp;
 //    Context mcontext = getActivity().getApplicationContext();
 
 
@@ -106,7 +114,12 @@ public class Network extends Fragment {
         connectButton = (Button) view.findViewById(R.id.connectButton);
         startServerButton = (Button) view.findViewById(R.id.startServerbutton);
         stopServerButton = (Button) view.findViewById(R.id.stopSeverButton);
+        sendButton = (Button) view.findViewById(R.id.sendButton);
         ipAddressEditText = (EditText) view.findViewById(R.id.ipAddressEditText);
+        routerSsidEditText = (EditText) view.findViewById(R.id.routerSsidEditText);
+        routerPassEditText = (EditText) view.findViewById(R.id.routerPassEditText);
+        sendEditText = (EditText) view.findViewById(R.id.sendEditText);
+//        relayIpEditText = (EditText) view.findViewById(R.id.relayIpEditText);
         ipAddress = String.valueOf(ipAddressEditText.getText());
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
@@ -117,14 +130,16 @@ public class Network extends Fragment {
             public void handleMessage(Message msg) {
 
                 final String dMsg = (String) msg.obj;
-                mActivity.runOnUiThread(new Runnable() {
+                if (serverRunning) {
+                    mActivity.runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        networkDebug.append("Recieved: "+dMsg+ "\n");
-                    }
-                });
-
+                        @Override
+                        public void run() {
+//                            networkDebug.append("Recieved: " + dMsg + "\n");
+                              networkDebug.append(dMsg +"\n");
+                        }
+                    });
+                }
                 super.handleMessage(msg);
             }
         };
@@ -133,6 +148,7 @@ public class Network extends Fragment {
             @Override
             public void onClick(View v) {
                 ipAddress = String.valueOf(ipAddressEditText.getText());
+                initSettings();
                 if (ipAddress.isEmpty()){
                     networkDebug.append("touched connect with no ip entry \n");
                 }else {
@@ -189,6 +205,26 @@ public class Network extends Fragment {
                 }
             }
         });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                server.send("Sending test message");
+                networkDebug.append("sent test\n");
+            }
+        });
+    }
+
+    private void initSettings() {
+        if(routerSsidEditText.getText().toString().isEmpty()){
+            routerName = "arfc";
+        }else{routerName = routerSsidEditText.getText().toString();}
+        if(routerPassEditText.getText().toString().isEmpty()){
+            routerPass = "arfcarfc";
+        }else{routerPass = routerPassEditText.getText().toString();}
+//        if(relayIpEditText.getText().toString().isEmpty()){
+//            relayIp = "192.168.0.1";
+//        }else{relayIp = relayIpEditText.getText().toString();}
     }
 
     private int getARFCRange() {
@@ -217,11 +253,15 @@ public class Network extends Fragment {
     }
 
     private void connectToARFC() {
-        networkDebug.append("connecting to "+ ROUTER_NAME +"\n");
+//        networkDebug.append("connecting to "+ ROUTER_NAME +"\n");
+        networkDebug.append("connecting to "+ routerName +"\n");
+
 //        WifiManager wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
         wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
-        String networkSSID = ROUTER_NAME;
-        String networkPass = ROUTER_PASSWORD;
+//        String networkSSID = ROUTER_NAME;
+//        String networkPass = ROUTER_PASSWORD;
+        String networkSSID = routerName;
+        String networkPass = routerPass;
 
         WifiConfiguration conf = new WifiConfiguration();
         conf.SSID = "\"" + networkSSID + "\"";
@@ -243,11 +283,13 @@ public class Network extends Fragment {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
                 wifiManager.reconnect();
-                networkDebug.append("connected to "+ ROUTER_NAME +"\n");
+//                networkDebug.append("connected to "+ ROUTER_NAME +"\n");
+                networkDebug.append("connected to "+ routerName +"\n");
                 break;
             }
             else{
-                networkDebug.append("failed to find configuration for "+ ROUTER_NAME +"\n");
+//                networkDebug.append("failed to find configuration for "+ ROUTER_NAME +"\n");
+                networkDebug.append("failed to find configuration for "+ routerName +"\n");
                 networkDebug.append(i.SSID.toString()+ "\n"); //show networks
             }
         }
@@ -263,7 +305,8 @@ public class Network extends Fragment {
 //            networkDebug.append(networkInfo.getExtraInfo() + "\n");
 //            networkDebug.append(networkInfo.toString() +"\n");
             connectedNetwork = networkInfo.getExtraInfo().replace("\"", "");
-            if (connectedNetwork.equals(ROUTER_NAME)){
+//            if (connectedNetwork.equals(ROUTER_NAME)){
+            if (connectedNetwork.equals(routerName)){
                 return true;
             }
             else return false;
