@@ -33,7 +33,7 @@ public class Server {
     InetAddress ipAddress;
 
 
-    public void start(Handler ndHandler) {
+    public void start(Handler ndHandler, String ipadstring) {
         updateUIHandler = new Handler();
         this.receiveThread = new Thread(new ReceiveRunnable());
         this.networkDebugHandler = ndHandler;
@@ -41,9 +41,15 @@ public class Server {
 //        this.sendThread = new Thread(new SendRunnable());
 //        sendThread.start();
         receiveThread.start();
+        if (ipadstring.isEmpty()){
+            ipadstring = "192.168.42.1";
+        }
         try {
-            ipAddress = InetAddress.getByName("192.168.42.1");
+            ipAddress = InetAddress.getByName(ipadstring);
         } catch (UnknownHostException e) {
+            Message errorMsg = new Message();
+            errorMsg.obj = "failed to connect to "+ipadstring;
+            ndHandler.handleMessage(errorMsg);
             e.printStackTrace();
         }
 

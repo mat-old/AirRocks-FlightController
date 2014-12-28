@@ -176,10 +176,11 @@ public class Network extends Fragment {
         startServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String ipadstring = ipAddressEditText.getText().toString().trim();
                 if(!serverRunning) {
                     networkDebug.append("Starting Server...\n");
 //                server.start(MainActivity.mainHandler);
-                    server.start(ndHandler);
+                    server.start(ndHandler, ipadstring);
 //                mhandler.post(UDPClientRunnable);
                     networkDebug.append("Running...\n");
                     serverRunning = true;
