@@ -78,13 +78,13 @@ public class Control extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-//        String relayIp =((EditText)view.findViewById(R.id.relayIpEditText)).getText().toString();
-        String relayIp = "";
+        String relayIp =((EditText)view.findViewById(R.id.relayIpEditText)).getText().toString();
+//        String relayIp = "";
         if(relayIp.isEmpty() || relayIp.equals(null)) {
-            webView.loadUrl("http://192.168.0.5:8888");
+            webView.loadUrl("http://192.168.0.5:8888/tuner");
         }
         else{
-            webView.loadUrl("http://" + relayIp +":8888");
+            webView.loadUrl("http://" + relayIp +":8888/tuner");
         }
 //        webView.loadUrl("https://www.google.com");
     }
