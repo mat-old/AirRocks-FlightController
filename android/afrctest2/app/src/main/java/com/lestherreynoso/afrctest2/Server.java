@@ -99,8 +99,7 @@ public class Server {
 //            while(true)
                 byte[] sendData = sendMsg.getBytes();
                 byte[] ip = {64,-88,42,1};
-
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getAllByName("192.168.42.1"), 5001);
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 5001);
                 try {
                     datagramSocket = new DatagramSocket(5001);
                     datagramSocket.send(sendPacket);
