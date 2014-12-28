@@ -83,12 +83,12 @@ var sg = function( name, controls, scrollBars, active ) {
 var  PIDSETTINGS =  [sb('P',0,100,100),sb('I',0,100,100),sb('D',0,100,100)];
 
 var Global = {
-    maxpeers : 1
+    maxpeers : 2
   , ioperiod : 2000 /* 2 sec */
   , favoritePort : process.env.PORT
   , backupPort   : 8888
   , destport : 5000
-  , destIP   : '192.168.1.113'
+  , destIP   : '192.168.1.117'
   , recvport : 5001
   , viewpath : './view/'
   , uavpath  : '/home/arfc/arfc/flightController/' 

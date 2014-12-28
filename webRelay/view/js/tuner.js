@@ -44,6 +44,7 @@ var PidCtrls = []
 			switch( obj.type ) {
 			case "status"       : return displayMsg(obj.data,'status');
 			case "cmd"          : return;
+			case "setting"      : return settingRouter( obj );
 			case "motors"       : return processMotorGroup(obj.data);
 			case "PID"          : return processPID(obj);
 			case "potential"    : return;
@@ -55,6 +56,17 @@ var PidCtrls = []
 			console.log('malformed message')
 		}
 	}
+  , settingRouter = function( o ) {
+  	switch( o.sender ) {
+  		case 'PID' : return resetSlider( o.name, o.data )
+  	}
+  }
+  , resetSlider   = function( elem, pidAry ) {
+		var id = '#'+elem.caps()+'-'
+		$(id+'P').slider('option', 'change')( parseFloat(pidAry[0],10), id+'P' );
+		$(id+'I').slider('option', 'change')( parseFloat(pidAry[1],10), id+'I' );
+		$(id+'D').slider('option', 'change')( parseFloat(pidAry[2],10), id+'D' );
+  }
   , displayMsg = function(text,type) {
   		var t = 'msg'+(type || 'status');
 		$('.msg-target').append( $("<li>", { id:'m'+(msgCount++),text:text,class:t }) );
@@ -101,6 +113,12 @@ var PidCtrls = []
 		}
 	};
 
+String.prototype.caps = function() {
+	var s = this.split('')
+	s[0] = s[0].toUpperCase()
+	return s.join('');
+};
+
 socket.on('heartbeat',function(td){
 	var d = new Date();
 	signal = (d.getTime() - lastBeat.getTime()) / td;
@@ -136,6 +154,8 @@ $(document).ready(function(){
 	socket.on('res',function(obj){
 		msgRouter(obj);
 	});
+
+
 	$('.menu-box li,.navbar-nav li').click(function(){
 		var id = this.id
 		setActiveGroupItem( this )

@@ -20,6 +20,12 @@ mixin SLIDER(ctrl,item,min,max,div)
 							$(this).children(0).attr('data-content', num)
 							slideUpdate( this.id, num )
 							$('.data-#{ctrl}-#{item}').text(num)
+						},
+						change: function( v, id ) {
+							if( typeof v != 'number' ) return
+							$('.data-#{ctrl}-#{item}').text(v)
+							$(id).children(0).attr('data-content', v)
+							$(id).slider({'value':v})
 						}
 					});
 				});
