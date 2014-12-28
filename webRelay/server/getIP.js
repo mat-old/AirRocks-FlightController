@@ -8,7 +8,7 @@ function get( s ) {
 	for (var k in interfaces) {
 	    for (var k2 in interfaces[k]) {
 	        var address = interfaces[k][k2];
-	        console.log( " > " + k )
+	        //console.log( " > " + k )
 	        if (address.family === 'IPv4' && !address.internal) {
 	            addresses.push(address.address);
 	        }

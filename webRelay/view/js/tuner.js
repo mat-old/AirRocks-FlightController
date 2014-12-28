@@ -10,21 +10,19 @@ var PidCtrls = []
 	}
   , processPID = function(p) {
 		/* p.input is what the IMU reported p.output is the response */
-		global_hash[ p.name ].refresh( p.input );
+		//console.log( p )
+		global_hash[ p.name ].refresh( Math.round(p.input*1000)/1000 );
 	}
   , processMotorGroup = function(d) {
-		var avg = 0, frac = 254-125, mchar = 'A';
+		var avg = 0, frac = 254 - 140, mchar = 'A', div = 4;
 		for (var i = 0; i < d.length; i++) {
-			console.log( "Motor_"+mchar )
-			console.log( global_hash["Motor_"+mchar] );
-			global_hash["Motor_"+mchar].refresh( Math.floor(frac/d[i]*100) );
+			d[i] = d[i] - 125;
+			var n = (d[i]/frac)*100;
+			global_hash["Motor_"+mchar].refresh( Math.floor(n) );
 			mchar = nextChar(mchar);
-			avg += parseInt(d[i], 10);
-		}
-		avg /= 4;
-		/* (max - min) / average */
-		avg = Math.floor( frac/avg * 100 );
-		global_hash['throttle'].refresh( avg )
+			avg = avg + n;
+		} 
+		global_hash['throttle'].refresh( Math.floor( n ) );
 	}
   , processNormal = function(obj) {
   		obj.data = obj.data || 'Unknown message.'
@@ -42,6 +40,7 @@ var PidCtrls = []
 			catch(e) {
 				obj = s;			
 			}
+			//console.log( s )
 			switch( obj.type ) {
 			case "status"       : return displayMsg(obj.data,'status');
 			case "cmd"          : return;
@@ -195,6 +194,10 @@ $(document).ready(function(){
 	});
 	$('#setuav').click(function(){
 		socket.emit('update', {action:'Mode-select', value: 3 } )
+	});
+
+	$('#reset, #reset-hard').click(function(){
+		socket.emit( 'update', {action:this.id} )
 	});
 
 	$('#handshake').click(function(){

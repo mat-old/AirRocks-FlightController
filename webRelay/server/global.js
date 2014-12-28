@@ -128,7 +128,7 @@ var Global = {
 				group3 : [
 					gm('pitch',gc(188,150),'gauge-small','Y\'',-1,1),
 					gm('roll',gc(188,150),'gauge-small','X\'',-1,1),
-					gm('yaw',gc(188,150),'gauge-small','Z\'',-1,1)
+					gm('yaw',gc(188,150),'gauge-small','Z\'',0,2)
 				]
 			},
 			MENU : [

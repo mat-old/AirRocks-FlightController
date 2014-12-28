@@ -90,29 +90,38 @@ block content
 
 
 			section#controls-menu
-				button.btn.btn-warning.control#reset
-					|Reset Tuner Process
-				button.btn.btn-danger.control#kill
-					|Kill Tuner Process
-				button.btn.btn-danger.control#killall
-					|Pkill UAV.o
-				button.btn.btn-success.control#start
-					|Start Tuner Process
-				button.btn.btn-warning.control#settest
-					|Set executable 'TEST'
-				button.btn.btn-success.control#handshake
-					|Handhake
+				.col-sm-12
+					h3 connect
+					button.btn.btn-success.control#handshake
+						|Handshake
+				.col-sm-12
+					h3 select mode
+					button.btn.btn-primary.control#settuner
+						|Tuner Mode-select
+					button.btn.btn-primary.control#setuav
+						|UAV Mode-select
+				
+				.col-sm-12
+					h3 reset
+					button.btn.btn-danger.control#reset
+						|Reset
+					button.btn.btn-danger.control#reset-hard
+						|Reset HARD
 
-
-				button.btn.btn-primary.control#settuner
-					|Tuner Mode-select
-
-				button.btn.btn-primary.control#setuav
-					|UAV Mode-select
-
-				button.btn.btn-danger.control#mode-leave
-					|Leave Mode
-
+				.col-sm-12(style="padding-top:60px;")
+					h4
+						small Unused...
+					button.btn.btn-warning.control#reset
+						|Reset Tuner Process
+					button.btn.btn-danger.control#kill
+						|Kill Tuner Process
+					button.btn.btn-danger.control#killall
+						|Pkill UAV.o
+					button.btn.btn-success.control#start
+						|Start Tuner Process
+					button.btn.btn-warning.control#settest
+						|Set executable 'TEST'
+			
 
 			section#help-menu
 				span.label.label-info.pull-right Info

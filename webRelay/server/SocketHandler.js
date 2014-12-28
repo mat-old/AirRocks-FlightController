@@ -6,6 +6,7 @@ var io = require('socket.io')
 
 var client = dgram.createSocket('udp4');
 var relay = dgram.createSocket('udp4');
+var globalSocket = false;
 
 
 Connect = function(app) {
@@ -13,6 +14,25 @@ Connect = function(app) {
 	ioh.handler = SocketHandler 
 	return ioh;
 };
+
+try {
+		relay.on("listening", function () {
+			var addr = relay.address();
+			console.log("> listening "+addr.address+":"+addr.port);
+		});
+
+/*		relay.on("message", function (msg, rinfo) {
+			if( globalSocket ) {
+				console.log( rinfo.address, ">>" )
+				socket.emit('res', msg.toString())
+			}
+		});*/
+
+	relay.bind( 5001 );
+} catch( e ) {
+	//socket.emit('res',{error:"cannot connect"})
+}
+
 
 function SocketHandler(socket,peers,info) {
 	this.heartbeat = setInterval(function(){
@@ -28,17 +48,6 @@ function SocketHandler(socket,peers,info) {
 
 		socket.emit('handshake', G.ioperiod);
 
-		relay.on("listening", function () {
-			var addr = relay.address();
-			console.log("> listening "+addr.address+":"+addr.port);
-		});
-
-		relay.on("message", function (msg, rinfo) {
-			console.log("server got: " + msg + " from " +
-			rinfo.address + ":" + rinfo.port);
-		});
-		
-		relay.bind( 5001 );
 
 		socket.on('starthandshake', function() {
 			var message = new Buffer( JSON.stringify({
@@ -52,6 +61,12 @@ function SocketHandler(socket,peers,info) {
 			});
 		})
 
+		relay.removeListener("message", function(){
+		})
+		relay.addListener("message", function (msg, rinfo) {
+			console.log( rinfo.address, ">>" )
+			socket.emit('res', msg.toString())
+		});			
 
 		/* the switch is used to filter */
 		socket.on('update', function(req) {
@@ -70,6 +85,8 @@ function SocketHandler(socket,peers,info) {
 				case 'Yaw-reset':
 				case 'Yaw-save':
 				case 'Mode-select':
+				case 'reset':
+				case 'reset-hard':
 					var message = new Buffer( JSON.stringify( req ) )
 					client.send(message, 0, message.length, G.destport, G.destIP, function(err, bytes){
 						console.log( message.toString('utf8') )
@@ -88,7 +105,9 @@ function SocketHandler(socket,peers,info) {
 		});
 
 		socket.on('disconnect',function() {
-			relay.close();
+			try{
+			}
+			catch(e) { /*no issues*/ }
 			peers.PeerEnd();
 		});
 	}
