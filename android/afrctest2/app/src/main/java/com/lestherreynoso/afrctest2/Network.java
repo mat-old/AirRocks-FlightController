@@ -209,8 +209,16 @@ public class Network extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                server.send("Sending test message");
-                networkDebug.append("sent test\n");
+                if(serverRunning) {
+                    if(!sendEditText.getText().toString().isEmpty()) {
+                        server.send(sendEditText.getText().toString());
+                    }else{
+                        server.send("nothing was inputted so yea..");
+                    }
+//                    networkDebug.append("sent \n");
+                }else{
+                    networkDebug.append("Server not running \n");
+                }
             }
         });
     }
