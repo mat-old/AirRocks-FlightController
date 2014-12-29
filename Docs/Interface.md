@@ -75,3 +75,23 @@ __I2C config__   `i2cdetect -y 1`
 60: -- -- -- -- -- -- -- -- -- -- -- 6b -- -- -- --  
 70: -- -- -- -- -- -- -- --  
 ```
+
+__BEC Programming__ 
+ 
+1 Brake: OFF  
+2 Battery Type: Li-xx  
+3 Cut Off Type: Soft-Off   
+4 Cut Off Voltage: Middle  
+5 Start Mode: Soft  
+6 Timing Mode: Middle  
+7 Music:   
+8 Governor Mode: Off  
+  
+1 0  
+1 0  
+1 0  
+0 1 0  
+0 1 0  
+0 1 0  
+0 0 0 0  
+1 0  
