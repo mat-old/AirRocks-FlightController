@@ -64,7 +64,8 @@ AC_set  _The AC_set action is class of setter functions for use in 'Tuning mode'
  
  
  #I2C config#   `i2cdetect -y 1`    
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+ ```
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  
     -- 04 -- -- -- -- -- -- -- -- -- -- --   
 10: -- -- -- -- -- -- -- -- -- -- -- UU -- 1d -- --    
 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --   
@@ -72,4 +73,5 @@ AC_set  _The AC_set action is class of setter functions for use in 'Tuning mode'
 40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --   
 50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --   
 60: -- -- -- -- -- -- -- -- -- -- -- 6b -- -- -- --  
-70: -- -- -- -- -- -- -- --   
+70: -- -- -- -- -- -- -- --  
+```
