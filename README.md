@@ -7,7 +7,7 @@ ___________________
 Makefile
 ------------------- 
 `make`  - optomized build, only assembles new sources, no headers  
-`make scratch` - clear old objects and starts build from scratch   
+`make new` - clear old objects and starts build from scratch   
 `make build` - optomized build, no linking  
 ___________________
 Progress 
