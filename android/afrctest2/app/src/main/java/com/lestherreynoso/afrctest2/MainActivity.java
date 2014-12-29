@@ -95,7 +95,8 @@ public class MainActivity extends ActionBarActivity {
 //                    return DiagnosticsFragment.newInstance("1", "2");
                     return Network.newInstance("1", "2");
                 case (1):
-                    return Network.newInstance("1", "2");
+//                    return Network.newInstance("1", "2");
+                    return DiagnosticsFragment.newInstance("1", "2");
                 case (2):
                     return Control.newInstance("1", "2");
                 default:

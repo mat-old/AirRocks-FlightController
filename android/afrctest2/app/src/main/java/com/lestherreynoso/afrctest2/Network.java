@@ -135,8 +135,8 @@ public class Network extends Fragment {
 
                         @Override
                         public void run() {
-//                            networkDebug.append("Recieved: " + dMsg + "\n");
-                              networkDebug.append(dMsg +"\n");
+//                            d("Recieved: " + dMsg );
+                              d(dMsg );
                         }
                     });
                 }
@@ -150,26 +150,26 @@ public class Network extends Fragment {
                 ipAddress = String.valueOf(ipAddressEditText.getText());
                 initSettings();
                 if (ipAddress.isEmpty()){
-                    networkDebug.append("touched connect with no ip entry \n");
+                    d("touched connect with no ip entry ");
                 }else {
-                    networkDebug.append("touched connect with ip entry of: " + ipAddress + "\n");
+                    d("touched connect with ip entry of: " + ipAddress );
                 }
                 if(isConnectedToARFC()){
                     //get ip and connect to it
-                    networkDebug.append("already connected to "+ ROUTER_NAME + "\n");
+                    d("already connected to "+ ROUTER_NAME );
                 }
                 else{
-                    networkDebug.append("not connected to "+ ROUTER_NAME + "\n");
+                    d("not connected to "+ ROUTER_NAME );
                     if(isARFCInRange()){
                         connectToARFC();
                     }
                     else{
-                        networkDebug.append(ROUTER_NAME + " is not in range\n");
+                        d(ROUTER_NAME + " is not in range");
                     }
 
                 }
-                networkDebug.append("Range: "+getARFCRange()+"%");
-                networkDebug.append("\n");
+                d("Range: "+getARFCRange()+"%");
+
             }
         });
 
@@ -178,15 +178,15 @@ public class Network extends Fragment {
             public void onClick(View v) {
                 String ipadstring = ipAddressEditText.getText().toString().trim();
                 if(!serverRunning) {
-                    networkDebug.append("Starting Server...\n");
+                    d("Starting Server...");
 //                server.start(MainActivity.mainHandler);
                     server.start(ndHandler, ipadstring);
 //                mhandler.post(UDPClientRunnable);
-                    networkDebug.append("Running...\n");
+                    d("Running...");
                     serverRunning = true;
                 }
                 else{
-                    networkDebug.append("Server already running \n");
+                    d("Server already running ");
                 }
             }
         });
@@ -194,15 +194,15 @@ public class Network extends Fragment {
             @Override
             public void onClick(View v) {
                 if(serverRunning) {
-                    networkDebug.append("Stopping Server...\n");
+                    d("Stopping Server...");
 //                server.start(MainActivity.mainHandler);
                     server.stop();
 //                mhandler.post(UDPClientRunnable);
-                    networkDebug.append("done.\n");
+                    d("done.");
                     serverRunning = false;
                 }
                 else{
-                    networkDebug.append("Server not running \n");
+                    d("Server not running ");
                 }
             }
         });
@@ -216,9 +216,9 @@ public class Network extends Fragment {
                     }else{
                         server.send("nothing was inputted so yea..");
                     }
-//                    networkDebug.append("sent \n");
+//                    d("sent ");
                 }else{
-                    networkDebug.append("Server not running \n");
+                    d("Server not running ");
                 }
             }
         });
@@ -245,14 +245,14 @@ public class Network extends Fragment {
     }
 
     private boolean isARFCInRange() {
-        networkDebug.append("verifying if "+ ROUTER_NAME +" is in range\n");
+        d("verifying if "+ ROUTER_NAME +" is in range");
 //        WifiManager wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
         wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
         List<ScanResult> scanResults = wifiManager.getScanResults();
 
-        networkDebug.append("results of scan \n");
+        d("results of scan ");
         for (ScanResult i : scanResults){
-            networkDebug.append(i.SSID +"\n");
+            d(i.SSID );
             if(i.SSID.equals(ROUTER_NAME)){
                 return true;
             }
@@ -262,8 +262,8 @@ public class Network extends Fragment {
     }
 
     private void connectToARFC() {
-//        networkDebug.append("connecting to "+ ROUTER_NAME +"\n");
-        networkDebug.append("connecting to "+ routerName +"\n");
+//        d("connecting to "+ ROUTER_NAME );
+        d("connecting to "+ routerName );
 
 //        WifiManager wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
         wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
@@ -292,27 +292,27 @@ public class Network extends Fragment {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
                 wifiManager.reconnect();
-//                networkDebug.append("connected to "+ ROUTER_NAME +"\n");
-                networkDebug.append("connected to "+ routerName +"\n");
+//                d("connected to "+ ROUTER_NAME );
+                d("connected to "+ routerName );
                 break;
             }
             else{
-//                networkDebug.append("failed to find configuration for "+ ROUTER_NAME +"\n");
-                networkDebug.append("failed to find configuration for "+ routerName +"\n");
-                networkDebug.append(i.SSID.toString()+ "\n"); //show networks
+//                d("failed to find configuration for "+ ROUTER_NAME );
+                d("failed to find configuration for "+ routerName );
+                d(i.SSID.toString()); //show networks
             }
         }
     }
 
     private Boolean isConnectedToARFC() {
-        networkDebug.append("verifying if device is already connected to arfc\n");
+        d("verifying if device is already connected to arfc");
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-//            networkDebug.append("networkInfo is not null and is connected \n");
-//            networkDebug.append(networkInfo.getDetailedState().toString()+"\n");
-//            networkDebug.append(networkInfo.getExtraInfo() + "\n");
-//            networkDebug.append(networkInfo.toString() +"\n");
+//            d("networkInfo is not null and is connected ");
+//            d(networkInfo.getDetailedState().toString());
+//            d(networkInfo.getExtraInfo() );
+//            d(networkInfo.toString() );
             connectedNetwork = networkInfo.getExtraInfo().replace("\"", "");
 //            if (connectedNetwork.equals(ROUTER_NAME)){
             if (connectedNetwork.equals(routerName)){
@@ -320,9 +320,13 @@ public class Network extends Fragment {
             }
             else return false;
         } else {
-            networkDebug.append("networkInfo is null or not connected \n");
+            d("networkInfo is null or not connected ");
             connectedNetwork = "not connected to a network";
             return false;
         }
+    }
+    
+    public void d(String debugText){
+        networkDebug.append(debugText +"\n");
     }
 }
