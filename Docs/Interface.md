@@ -76,22 +76,17 @@ __I2C config__   `i2cdetect -y 1`
 70: -- -- -- -- -- -- -- --  
 ```
 
-__BEC Programming__ 
- 
-1 Brake: OFF  
-2 Battery Type: Li-xx  
-3 Cut Off Type: Soft-Off   
-4 Cut Off Voltage: Middle  
-5 Start Mode: Soft  
-6 Timing Mode: Middle  
-7 Music:   
-8 Governor Mode: Off  
-  
-1 0  
-1 0  
-1 0  
-0 1 0  
-0 1 0  
-0 1 0  
-0 0 0 0  
-1 0  
+__BEC Programming__  
+_Used with Turnigy Programming Card_    
+
+| Number | Option | Setting |----|------|
+|--------|--------|---------|----|------|
+|   1    | Brake  | __OFF__  | _ON_ |     |    
+|   2    | Battery  | __Li-xx__  | _Ni-xx_ |     |     
+|   3    | Cut Off Typ  | __Soft-Cut__  | _Cut-Off_ |     |   
+|   4    | Cut Off Voltage  | _Low_  | __Middle__ | _High_  |   
+|   5    | Start Mode  | _Normal_  | __SofT__ | _Very Soft_  |    
+|   6    | Timing Mode  | _Low_  | __Middle__ | _High_  |  |
+|   7    | Music  | ---- | ---- |  ----   |  
+|   8    | Governor Mode  | __OFF__  | _ON_ |     |  
+
