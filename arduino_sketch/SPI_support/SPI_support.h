@@ -46,18 +46,15 @@ public:
 		return newSpeed == oldSpeed;
 	}
 	void update() {
-		oldSpeed = newSpeed;
-	}
-	void update_if_change() {
 		//if(changed()) {
 			analogWrite( pin, (int)newSpeed ); 
 			oldSpeed = newSpeed;
-			#ifdef DEBUG
-				Serial.print(pin);
-				Serial.print(pinToID(pin));
-				Serial.print(newSpeed);
-				Serial.print('\n');
-			#endif
+			//#ifdef DEBUG
+			//	Serial.print(pin);
+			//	Serial.print(pinToID(pin));
+			//	Serial.print(newSpeed);
+			//	Serial.print('\n');
+			//#endif
 		//}
 	}
 	void usepin(MotorPin pin) {
@@ -67,4 +64,3 @@ public:
 
 
 #endif
-
