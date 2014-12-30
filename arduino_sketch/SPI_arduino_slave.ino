@@ -1,13 +1,5 @@
-// SPI INTERFACE
-// Adapted from Nick Gammon's https://gist.github.com/chrismeyersfsu/3317769#file-arduino_spi_slave-pde
-// February 2011
 
-// MOTOR CONTROL
-// Basel Al-Rudainy https://github.com/baselsw/BlueCopter/tree/master/BlueCopter
-// 6 april 2013
-
-
-#define DEBUG
+//#define DEBUG
 #define LED_PIN  13
 #define BUF_SIZE 32
 #define MSG_SIZE 4
@@ -78,8 +70,8 @@ ISR(SPI_STC_vect)
 void loop(void)
 {
 	if (!COMS) waitingBlink();
-	
-	delay(100);
+	bool change = false;
+	//delay(100);
 	byte * b = buf;
 	while( b != bufEnd ) {
 		if( *(b++) != 0xA ) continue;
@@ -93,12 +85,29 @@ void loop(void)
 		motor_D.newSpeed = *b;
 		pos  = 0;
 		COMS = true;
+		change = true;
 		break;
 	}
-	motor_A.update_if_change();
-	motor_B.update_if_change();
-	motor_C.update_if_change();
-	motor_D.update_if_change();
+
+	#ifdef DEBUG
+		Serial.print("A=");
+		Serial.print(motor_A.newSpeed);
+		Serial.print(" B=");
+		Serial.print(motor_B.newSpeed);
+		Serial.print(" C=");
+		Serial.print(motor_C.newSpeed);
+		Serial.print(" D=");
+		Serial.print(motor_D.newSpeed);
+		Serial.print(" B=");
+	#endif
+
+	if(change) {
+		motor_A.update();
+		motor_B.update();
+		motor_C.update();
+		motor_D.update();
+	}
+	else delay(100);
 }
 
 void motorInit(void) {
@@ -120,8 +129,10 @@ void waitingBlink(void) {
 	digitalWrite(LED_PIN, HIGH );
 	if( !BLINK )
 		motorArm();
+	#ifdef DEBUG
 	else
 		Serial.println("\rwaiting on coms...");
+	#endif
 	BLINK = !BLINK;
 	if( pos != 0 )
 		COMS = true;
@@ -131,4 +142,3 @@ void waitingBlink(void) {
 	digitalWrite(LED_PIN, LOW );
 	delay(200);
 }
-
