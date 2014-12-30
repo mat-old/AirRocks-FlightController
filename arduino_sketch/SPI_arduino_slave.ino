@@ -25,6 +25,8 @@ char * bufStr;
 bool  COMS  = false
 	, BLINK = false;
 
+int ArmWaitCount = 0;
+
 void setup(void) {
 	/* data setup */
 	bufStr = (char *)buf;
@@ -127,8 +129,12 @@ void motorArm(void) {
 
 void waitingBlink(void) {
 	digitalWrite(LED_PIN, HIGH );
-	if( !BLINK )
-		motorArm();
+	if( !BLINK ) {
+		if( ArmWaitCount++ == 10 ) {
+			motorArm();
+			ArmWaitCount = 0;
+		}
+	}
 	#ifdef DEBUG
 	else
 		Serial.println("\rwaiting on coms...");
