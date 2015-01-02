@@ -2,11 +2,9 @@ package com.lestherreynoso.afrctest2;
 
 import java.util.Locale;
 
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +35,6 @@ public class MainActivity extends ActionBarActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 
     @Override
@@ -72,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-//            getFragmentManager().beginTransaction()
+            //            getFragmentManager().beginTransaction()
 //                    .replace(android.R.id.content, new SettingsFragment())
 //                    .commit();
             return true;
@@ -101,7 +98,6 @@ public class MainActivity extends ActionBarActivity {
                 case (0):
 //                    return DiagnosticsFragment.newInstance("1", "2");
                     return Network.newInstance("1", "2");
-
                 case (1):
 //                    return Network.newInstance("1", "2");
                     return DiagnosticsFragment.newInstance("1", "2");
@@ -168,12 +164,13 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-//    public static class SettingsFragment extends PreferenceFragment{
-//
-//        @Override
-//        public void onCreate(Bundle savedInstanceState) {
-//            super.onCreate(savedInstanceState);
-//            addPreferencesFromResource(R.xml.preferences);
-//        }
-//    }
+        public static class SettingsFragment extends PreferenceFragment {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+
 }
