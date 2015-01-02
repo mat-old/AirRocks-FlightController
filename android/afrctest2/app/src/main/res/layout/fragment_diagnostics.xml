@@ -13,34 +13,52 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/fragmentTitle"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Throttle"
-            android:id="@+id/throttleText"
-            android:layout_gravity="center_horizontal" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/throttle"
-            android:max="100"
-            android:progress="30"
-            android:indeterminate="false"
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_gravity="center_horizontal" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Throttle"
+                android:id="@+id/throttleText"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/throttle"
+                android:max="100"
+                android:progress="30"
+                android:indeterminate="false"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@+id/throttleText"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="0"
+                android:id="@+id/throttleValue"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@+id/throttle"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
 
             <RelativeLayout
@@ -65,7 +83,16 @@
                     android:max="100"
                     android:progress="50"
                     android:indeterminate="false"
-                    android:layout_centerVertical="true"
+                    android:layout_below="@+id/motorAValue"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/motorAValue"
+                    android:layout_below="@+id/motorAText"
                     android:layout_centerHorizontal="true" />
 
 
@@ -93,7 +120,16 @@
                     android:max="100"
                     android:progress="50"
                     android:indeterminate="false"
-                    android:layout_centerVertical="true"
+                    android:layout_below="@+id/motorCValue"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/motorCValue"
+                    android:layout_below="@+id/motorCText"
                     android:layout_centerHorizontal="true" />
 
 
@@ -103,12 +139,11 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <ProgressBar
@@ -119,7 +154,7 @@
                     android:max="100"
                     android:progress="50"
                     android:indeterminate="false"
-                    android:layout_centerVertical="true"
+                    android:layout_below="@+id/motorBValue"
                     android:layout_centerHorizontal="true" />
 
                 <TextView
@@ -131,11 +166,20 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/motorBValue"
+                    android:layout_below="@+id/motorBText"
+                    android:layout_centerHorizontal="true" />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <ProgressBar
@@ -146,7 +190,7 @@
                     android:max="100"
                     android:progress="50"
                     android:indeterminate="false"
-                    android:layout_centerVertical="true"
+                    android:layout_below="@+id/motorDValue"
                     android:layout_centerHorizontal="true" />
 
                 <TextView
@@ -157,24 +201,32 @@
                     android:id="@+id/motorDText"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/motorDValue"
+                    android:layout_below="@+id/motorDText"
+                    android:layout_centerHorizontal="true" />
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
     
                     <TextView
@@ -186,12 +238,21 @@
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="0"
+                        android:id="@+id/pitchValue"
+                        android:layout_below="@+id/pitchText"
+                        android:layout_centerHorizontal="true" />
+
                 </RelativeLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <ProgressBar
@@ -227,12 +288,12 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <TextView
@@ -244,12 +305,21 @@
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="0"
+                        android:id="@+id/yawValue"
+                        android:layout_below="@+id/yawText"
+                        android:layout_centerHorizontal="true" />
+
                 </RelativeLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <ProgressBar
@@ -284,12 +354,12 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <TextView
@@ -301,12 +371,21 @@
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="0"
+                        android:id="@+id/rollValue"
+                        android:layout_below="@+id/rollText"
+                        android:layout_centerHorizontal="true" />
+
                 </RelativeLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <ProgressBar
