@@ -69,9 +69,7 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            //            getFragmentManager().beginTransaction()
-//                    .replace(android.R.id.content, new SettingsFragment())
-//                    .commit();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
             return true;
         }
 
@@ -170,6 +168,7 @@ public class MainActivity extends ActionBarActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
         }
     }
 
