@@ -60,8 +60,8 @@ public class DiagnosticsFragment extends Fragment {
 //        surfaceView.draw(c);
 
         LinearLayout testll = (LinearLayout) view.findViewById(R.id.testll);
-//       testll.addView(new ARFCCopter(getActivity().getApplicationContext(), 75, 75));
-        testll.addView(new Circle(getActivity().getApplicationContext(), 50, 50, 25));
+       testll.addView(new ARFCCopter(getActivity().getApplicationContext(), 75, 75));
+//        testll.addView(new Circle(getActivity().getApplicationContext(), 50, 50, 25));
     }
 }
 
@@ -148,7 +148,7 @@ class MainThread extends Thread {
         while (true) {
 
             try {
-                canvas = surfaceHolder.lockCanvas(null);
+                canvas = surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
                     circle.clearCircle(canvas);
                     circle.moveCircle();
