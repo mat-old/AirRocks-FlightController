@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="pref_sync"
-        android:title="sync"
-        android:summary="would you like to sync"
-        android:defaultValue="true" />
+    <PreferenceCategory
+        android:title="IPCONFIG">
+        <CheckBoxPreference
+            android:key="pref_sync"
+            android:title="sync"
+            android:summary="would you like to sync"
+            android:defaultValue="true" />
+        <EditTextPreference
+            android:key="ipEditTextPrefenceKey"
+            android:title="ipEditTextPreferenceTitle"
+            android:summary="ipEditTextPreferenceSummary"
+            android:dialogTitle="Enter Ip"
+            android:dialogMessage="Enter the Ip Address of the copter"
+            android:defaultValue="Default welcome message" />
+    </PreferenceCategory>
 </PreferenceScreen>

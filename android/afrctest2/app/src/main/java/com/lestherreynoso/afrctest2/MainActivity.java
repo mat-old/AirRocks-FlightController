@@ -2,6 +2,7 @@ package com.lestherreynoso.afrctest2;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceFragment;
@@ -68,9 +69,15 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-            return true;
+        switch (id){
+            case R.id.action_settings:
+//            getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+            default:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -101,6 +108,8 @@ public class MainActivity extends ActionBarActivity {
                     return DiagnosticsFragment.newInstance("1", "2");
                 case (2):
                     return Control.newInstance("1", "2");
+//                case (10):
+//                    return SettingsFragment.instantiate(getApplicationContext(), "settings");
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
 
@@ -162,14 +171,5 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-        public static class SettingsFragment extends PreferenceFragment {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
-
-        }
-    }
 
 }
