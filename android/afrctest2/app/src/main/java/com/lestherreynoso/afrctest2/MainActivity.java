@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    static Handler valueHandler;
 
 
     @Override
@@ -51,6 +53,23 @@ public class MainActivity extends ActionBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        valueHandler = new Handler(){
+
+            @Override
+            public void handleMessage(Message msg) {
+                final int viewId = msg.arg1;
+                final String value = (String) msg.obj;
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        ((TextView) findViewById(viewId)).setText(value);
+                        Log.d("hanlder", value);
+                    }
+                });
+                super.handleMessage(msg);
+            }
+        };
     }
 
 

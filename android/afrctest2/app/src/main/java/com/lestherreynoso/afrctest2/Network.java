@@ -124,6 +124,7 @@ public class Network extends Fragment {
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
         final Server server = new Server();
+
         ndHandler = new Handler(){
 
             @Override

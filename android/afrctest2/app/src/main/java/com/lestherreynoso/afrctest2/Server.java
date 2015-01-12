@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,11 +23,11 @@ public class Server {
     Handler updateUIHandler;
     Thread receiveThread;
 //    Thread sendThread;
-    Thread commThread;
+//    Thread commThread;
 //    SendRunnable sendRunnable = new SendRunnable();
     Boolean sendNotStarted = true;
     String sendMsg = "";
-
+    MessageHandler messageHandler = new MessageHandler();
     public static final int SERVER_PORT = 5000;
     Context context;
 //    Network.DebugManager debugManager;
@@ -42,6 +44,9 @@ public class Server {
 //        sendThread.start();
         receiveThread.start();
         if (ipadstring.isEmpty()){
+            ipadstring = "192.168.42.1";
+        }
+        else{
             ipadstring = "192.168.42.1";
         }
         try {
@@ -102,10 +107,12 @@ public class Server {
                     receivedPacket.setData(new byte[1024]);
                     recvDatagramSocket.receive(receivedPacket);
 //                    ipAddress = receivedPacket.getAddress();
-                    String sen = new String(receivedPacket.getData());
-                    Log.d("Received ",sen.trim());
+                    String stringMessage = new String(receivedPacket.getData());
+                    stringMessage = stringMessage.trim();
+                    messageHandler.read(stringMessage);
+//                    Log.d("Received ",sen.trim());
                     Message msg = networkDebugHandler.obtainMessage();
-                    msg.obj = "Received: " +sen;
+                    msg.obj = "Received: " +stringMessage;
                     networkDebugHandler.handleMessage(msg);
 
                 }catch (IOException e){
@@ -128,6 +135,7 @@ public class Server {
                         sendDatagramSocket = new DatagramSocket(5001);
                         sendDatagramSocket.send(sendPacket);
                         String sen = params[0];
+
                         Log.d("Sent ", sen.trim());
                         Message msg = networkDebugHandler.obtainMessage();
                         msg.obj = "sent:" + sen;
