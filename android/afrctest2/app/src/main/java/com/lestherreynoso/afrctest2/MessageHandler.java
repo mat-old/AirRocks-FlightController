@@ -1,11 +1,14 @@
 package com.lestherreynoso.afrctest2;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by lesther on 1/9/2015.
@@ -48,6 +51,7 @@ public class MessageHandler {
 
     private void interpretJSON(JSONObject jsonMessage) {
         String name = "";
+        String action = "";
         String value = "";
         try {
             name = (String) jsonMessage.get("name");
@@ -59,14 +63,33 @@ public class MessageHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        switch (name) {
-            case "Throttle-Torque":
-                update(R.id.throttleValue, value.toString());
-                break;
-            default:
-                //no name
-                break;
+        if (name.isEmpty()){
+            try {
+                action = (String) jsonMessage.get("action");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if(!action.isEmpty()) {
+                switch (action) {
+                    case "Pitch-activate":
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }else{
+            switch (name) {
+                case "Throttle-Torque":
+                    update(R.id.throttleValue, value.toString(), "TextView");
+                    update(R.id.throttle, value.toString(), "ProgressBar");
+                    break;
+                default:
+                    //no name
+                    break;
+            }
         }
+
+
 
     }
 
@@ -93,7 +116,7 @@ public class MessageHandler {
         jsonMessage = jsonMessage;
     }
 
-    public void update(final int viewId, final String value){
+    public void update(final int viewId, final String value, final String viewType){
 //        ((TextView)mActivity.findViewById(viewId)).setText(value);
 //        mActivity.runOnUiThread(new Runnable(){
 //
@@ -106,8 +129,13 @@ public class MessageHandler {
 
 //        ((TextView)DiagnosticsFragment.diagnosticsFragmentView.findViewById(viewId)).setText(value);
         Message msg = MainActivity.valueHandler.obtainMessage();
-        msg.arg1 = viewId;
-        msg.obj = value;
+        Bundle msgBundle = new Bundle();
+        msgBundle.putString("viewType", viewType);
+        msgBundle.putInt("viewId", viewId);
+        msgBundle.putString("value", value);
+        msg.setData(msgBundle);
+//        msg.arg1 = viewId;
+//        msg.obj = value;
         MainActivity.valueHandler.handleMessage(msg);
 
     }

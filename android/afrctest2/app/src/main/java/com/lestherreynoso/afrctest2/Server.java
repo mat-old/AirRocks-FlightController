@@ -47,7 +47,7 @@ public class Server {
             ipadstring = "192.168.42.1";
         }
         else{
-            ipadstring = "192.168.42.1";
+            ipadstring = "192.168.0.6";
         }
         try {
             ipAddress = InetAddress.getByName(ipadstring);

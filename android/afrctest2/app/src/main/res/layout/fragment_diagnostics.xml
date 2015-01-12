@@ -34,9 +34,9 @@
                 android:layout_centerHorizontal="true" />
 
             <ProgressBar
-                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="270dp"
+                android:layout_height="30dp"
                 android:id="@+id/throttle"
                 android:max="100"
                 android:progress="30"
@@ -78,8 +78,10 @@
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/motorA"
                     android:max="100"
                     android:progress="50"
@@ -115,8 +117,10 @@
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/motorC"
                     android:max="100"
                     android:progress="50"
@@ -149,8 +153,10 @@
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/motorB"
                     android:max="100"
                     android:progress="50"
@@ -185,8 +191,10 @@
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/motorD"
                     android:max="100"
                     android:progress="50"
@@ -260,6 +268,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
                         android:id="@+id/negPitch"
                         android:progress="44"
                         android:indeterminate="false"
@@ -274,6 +283,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
                         android:id="@+id/posPitch"
                         android:progress="44"
                         android:indeterminate="false"
@@ -327,6 +337,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
                         android:id="@+id/negYaw"
                         android:progress="44"
                         android:indeterminate="false"
@@ -341,6 +352,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
                         android:id="@+id/posYaw"
                         android:progress="44"
                         android:indeterminate="false"
@@ -393,6 +405,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
                         android:id="@+id/negRoll"
                         android:progress="44"
                         android:indeterminate="false"
@@ -407,6 +420,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
                         android:id="@+id/posRoll"
                         android:progress="44"
                         android:indeterminate="false"

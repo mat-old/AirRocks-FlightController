@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -49,8 +50,11 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
     private float[] motorA, motorB, motorC, motorD;
     private float[] bladeA, bladeB, bladeC, bladeD;
 
-    private Matrix rotateBladeA, rotateBladeB, rotateBladeC, rotateBladeD;
+    private Matrix rotateBladeA, rotateBladeB, rotateBladeC, rotateBladeD, rotateAll;
     private float angle;
+    private float allAngle;
+
+    private RectF centerRect;
 
     private float[] bladeTipA, bladeTipB, bladeTipC, bladeTipD;
 
@@ -116,7 +120,13 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         rotateBladeB = new Matrix();
         rotateBladeC = new Matrix();
         rotateBladeD = new Matrix();
+        rotateAll = new Matrix();
         angle = 1;
+//        allAngle = 1;
+
+//        centerRect = new float[] {mainX, mainY, mainX + centerWidth, mainY + centerHeight};
+
+//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
 //        rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
 //        rotateBladeA.mapPoints(bladeA);
 
@@ -171,13 +181,24 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         bladeC = new float[] {motorC[0], motorC[1] - (2 * radius), motorC[0], motorC[1] + (2 * radius)};
         bladeD = new float[] {motorD[0], motorD[1] - (2 * radius), motorD[0], motorD[1] + (2 * radius)};
 
+//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
+
         angle +=24;
         if (angle >= 360){angle = 1;}       //reset angle after full rotation
+
+//        allAngle +=1;
+//        if (allAngle >= 360){allAngle = 1;}       //reset angle after full rotation
 
         rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
         rotateBladeB.setRotate(-angle, motorB[0], motorB[1]);
         rotateBladeC.setRotate(-angle, motorC[0], motorC[1]);
         rotateBladeD.setRotate(angle, motorD[0], motorD[1]);
+//
+//        rotateAll.setRotate(allAngle, mainX + centerWidth/2, mainY + centerWidth/2);
+//        rotateAll.mapRect(centerRect);
+
+
+
 
         rotateBladeA.mapPoints(bladeA);
         rotateBladeB.mapPoints(bladeB);
@@ -241,6 +262,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     private void drawCenter(Canvas centerCanvas) {
         centerCanvas.drawRect(mainX, mainY, mainX + centerWidth, mainY + centerHeight, mainPaint);
+//        centerCanvas.drawRect(centerRect, mainPaint);
     }
 
 //    public void clearCopter(Canvas centerCanvas, Canvas armsCanvas, Canvas motorCanvas){

@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -57,14 +58,25 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void handleMessage(Message msg) {
-                final int viewId = msg.arg1;
-                final String value = (String) msg.obj;
+                final int viewId = msg.getData().getInt("viewId");
+                final String value = msg.getData().getString("value");
+                final String viewType = msg.getData().getString("viewType");
+
                 runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
-                        ((TextView) findViewById(viewId)).setText(value);
-                        Log.d("hanlder", value);
+                        switch(viewType){
+                            case "TextView":
+                                ((TextView) findViewById(viewId)).setText(value);
+                                break;
+                            case "ProgressBar":
+                                ((ProgressBar) findViewById(viewId)).setProgress(Integer.parseInt(value));
+                            default:
+                                break;
+                        }
+
+//                        Log.d("hanlder", value);
                     }
                 });
                 super.handleMessage(msg);
