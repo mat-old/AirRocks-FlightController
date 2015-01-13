@@ -1,7 +1,5 @@
 package com.lestherreynoso.afrctest2;
 
-import java.util.Locale;
-
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -155,7 +153,10 @@ public class MainActivity extends ActionBarActivity {
 //                    return NetworkFragment.newInstance("1", "2");
                     return DiagnosticsFragment.newInstance("1", "2");
                 case (2):
-                    return Control.newInstance("1", "2");
+//                    return ControlFragment.newInstance("1", "2");
+                    return new ControlFragment();
+//                case (3):
+//                    return RelayFragment.newInstance("1", "2");
 //                case (10):
 //                    return SettingsFragment.instantiate(getApplicationContext(), "settings");
                 default:
@@ -168,22 +169,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
-
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            Locale l = Locale.getDefault();
-//            switch (position) {
-//                case 0:
-//                    return getString(R.string.title_section1).toUpperCase(l);
-//                case 1:
-//                    return getString(R.string.title_section2).toUpperCase(l);
-//                case 2:
-//                    return getString(R.string.title_section3).toUpperCase(l);
-//            }
-//            return null;
-//        }
     }
 
     /**
