@@ -1,43 +1,21 @@
 package com.lestherreynoso.afrctest2;
 
+import android.net.Network;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by lesther on 1/9/2015.
  */
 public class MessageHandler {
     JSONObject jsonMessage;
-//    private Handler valueHandler;
-    MainActivity mActivity = new MainActivity();
-    DiagnosticsFragment diagnosticsFragment = new DiagnosticsFragment();
-//    DiagnosticsFragment diagnosticsFragment = (DiagnosticsFragment)getSupportFragmentManager().findFragmentById(R.id.)
-
+    Server server;
 
     public MessageHandler() {
-//        valueHandler = new Handler(){
-//
-//            @Override
-//            public void handleMessage(Message msg) {
-//                final int viewId = msg.arg1;
-//                final String value = (String) msg.obj;
-//                mActivity.runOnUiThread(new Runnable(){
-//
-//                    @Override
-//                    public void run() {
-//                        ((TextView)mActivity.findViewById(viewId)).setText(value);
-//                    }
-//                });
-//                super.handleMessage(msg);
-//            }
-//        };
+        server = NetworkFragment.getServer();
     }
 
     public void sendMessage(){
@@ -80,11 +58,83 @@ public class MessageHandler {
         }else{
             switch (name) {
                 case "Throttle-Torque":
-                    update(R.id.throttleValue, value.toString(), "TextView");
-                    update(R.id.throttle, value.toString(), "ProgressBar");
+                    MainActivity.updateUI(R.id.throttleValue, value, "TextView", "set");
+                    MainActivity.updateUI(R.id.throttle, value, "ProgressBar", "set");
+                    break;
+                case "MotorA":
+                    MainActivity.updateUI(R.id.motorAValue, value, "TextView", "set");
+                    MainActivity.updateUI(R.id.motorA, value, "ProgressBar", "set");
+                    break;
+                case "MotorB":
+                    MainActivity.updateUI(R.id.motorBValue, value, "TextView", "set");
+                    MainActivity.updateUI(R.id.motorB, value, "ProgressBar", "set");
+                    break;
+                case "MotorC":
+                    MainActivity.updateUI(R.id.motorCValue, value, "TextView", "set");
+                    MainActivity.updateUI(R.id.motorC, value, "ProgressBar", "set");
+                    break;
+                case "MotorD":
+                    MainActivity.updateUI(R.id.motorDValue, value, "TextView", "set");
+                    MainActivity.updateUI(R.id.motorD, value, "ProgressBar", "set");
+                    break;
+                case "Pitch":
+                    MainActivity.updateUI(R.id.pitchValue, value, "TextView", "set");
+                    if (Integer.parseInt(value) > 0){
+
+                        MainActivity.updateUI(R.id.posPitch, value, "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negPitch, "0", "ProgressBar", "set");
+
+                    }else if(Integer.parseInt(value) < 0){
+
+                        MainActivity.updateUI(R.id.posPitch, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negPitch, value, "ProgressBar", "set");
+
+                    }else if (Integer.parseInt(value) == 0){
+
+                        MainActivity.updateUI(R.id.posPitch, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negPitch, "0", "ProgressBar", "set");
+
+                    }
+                    break;
+                case "Roll":
+                    MainActivity.updateUI(R.id.rollValue, value, "TextView", "set");
+                    if (Integer.parseInt(value) > 0){
+
+                        MainActivity.updateUI(R.id.posRoll, value, "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negRoll, "0", "ProgressBar", "set");
+
+                    }else if(Integer.parseInt(value) < 0){
+
+                        MainActivity.updateUI(R.id.posRoll, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negRoll, value, "ProgressBar", "set");
+
+                    }else if (Integer.parseInt(value) == 0){
+
+                        MainActivity.updateUI(R.id.posRoll, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negRoll, "0", "ProgressBar", "set");
+
+                    }
+                    break;
+                case "Yaw":
+                    MainActivity.updateUI(R.id.yawValue, value, "TextView", "set");
+                    if (Integer.parseInt(value) > 0){
+
+                        MainActivity.updateUI(R.id.posYaw, value, "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negYaw, "0", "ProgressBar", "set");
+
+                    }else if(Integer.parseInt(value) < 0){
+
+                        MainActivity.updateUI(R.id.posYaw, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negYaw, value, "ProgressBar", "set");
+
+                    }else if (Integer.parseInt(value) == 0){
+
+                        MainActivity.updateUI(R.id.posYaw, "0", "ProgressBar", "set");
+                        MainActivity.updateUI(R.id.negYaw, "0", "ProgressBar", "set");
+
+                    }
                     break;
                 default:
-                    //no name
                     break;
             }
         }
@@ -116,27 +166,5 @@ public class MessageHandler {
         jsonMessage = jsonMessage;
     }
 
-    public void update(final int viewId, final String value, final String viewType){
-//        ((TextView)mActivity.findViewById(viewId)).setText(value);
-//        mActivity.runOnUiThread(new Runnable(){
-//
-//            @Override
-//            public void run() {
-//                ((TextView)mActivity.findViewById(viewId)).setText(value);
-//            }
-//        });
-//        diagnosticsFragment.setText(viewId, value);
-
-//        ((TextView)DiagnosticsFragment.diagnosticsFragmentView.findViewById(viewId)).setText(value);
-        Message msg = MainActivity.valueHandler.obtainMessage();
-        Bundle msgBundle = new Bundle();
-        msgBundle.putString("viewType", viewType);
-        msgBundle.putInt("viewId", viewId);
-        msgBundle.putString("value", value);
-        msg.setData(msgBundle);
-//        msg.arg1 = viewId;
-//        msg.obj = value;
-        MainActivity.valueHandler.handleMessage(msg);
-
-    }
+    
 }

@@ -5,14 +5,12 @@ import java.util.Locale;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
                 final int viewId = msg.getData().getInt("viewId");
                 final String value = msg.getData().getString("value");
                 final String viewType = msg.getData().getString("viewType");
+                final String mode = msg.getData().getString("mode");
 
                 runOnUiThread(new Runnable() {
 
@@ -68,7 +67,13 @@ public class MainActivity extends ActionBarActivity {
                     public void run() {
                         switch(viewType){
                             case "TextView":
-                                ((TextView) findViewById(viewId)).setText(value);
+                                if(mode == "set"){
+                                    ((TextView) findViewById(viewId)).setText(value);
+                                }
+                                if(mode == "append"){
+                                    ((TextView) findViewById(viewId)).append(value + "\n");
+                                }
+
                                 break;
                             case "ProgressBar":
                                 ((ProgressBar) findViewById(viewId)).setProgress(Integer.parseInt(value));
@@ -82,8 +87,22 @@ public class MainActivity extends ActionBarActivity {
                 super.handleMessage(msg);
             }
         };
+
     }
 
+    public static void updateUI(final int viewId, final String value, final String viewType, final String mode){
+
+        Message msg = valueHandler.obtainMessage();
+        Bundle msgBundle = new Bundle();
+        msgBundle.putString("viewType", viewType);
+        msgBundle.putInt("viewId", viewId);
+        msgBundle.putString("value", value);
+        msgBundle.putString("mode", mode);
+        msg.setData(msgBundle);
+
+        valueHandler.handleMessage(msg);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,8 +117,6 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.action_settings:
 //            getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
@@ -133,9 +150,9 @@ public class MainActivity extends ActionBarActivity {
             switch(position){
                 case (0):
 //                    return DiagnosticsFragment.newInstance("1", "2");
-                    return Network.newInstance("1", "2");
+                    return NetworkFragment.newInstance("1", "2");
                 case (1):
-//                    return Network.newInstance("1", "2");
+//                    return NetworkFragment.newInstance("1", "2");
                     return DiagnosticsFragment.newInstance("1", "2");
                 case (2):
                     return Control.newInstance("1", "2");
@@ -154,19 +171,19 @@ public class MainActivity extends ActionBarActivity {
             return 3;
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            Locale l = Locale.getDefault();
+//            switch (position) {
+//                case 0:
+//                    return getString(R.string.title_section1).toUpperCase(l);
+//                case 1:
+//                    return getString(R.string.title_section2).toUpperCase(l);
+//                case 2:
+//                    return getString(R.string.title_section3).toUpperCase(l);
+//            }
+//            return null;
+//        }
     }
 
     /**

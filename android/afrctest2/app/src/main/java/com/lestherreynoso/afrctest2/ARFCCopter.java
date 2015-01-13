@@ -29,24 +29,9 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
     private int radius;
     private float centerWidth;
     private float centerHeight;
-//    private float cwArmStartX;
-//    private float cwArmStartY;
-//    private float cwArmStopX;
-//    private float cwArmStopY;
-//    private float ccwArmStartX;
-//    private float ccwArmStartY;
-//    private float ccwArmStopX;
-//    private float ccwArmStopY;
+
     private float[] cwArm, ccwArm;
 
-//    private float motorAx;
-//    private float motorAy;
-//    private float motorBx;
-//    private float motorBy;
-//    private float motorCx;
-//    private float motorCy;
-//    private float motorDx;
-//    private float motorDy;
     private float[] motorA, motorB, motorC, motorD;
     private float[] bladeA, bladeB, bladeC, bladeD;
 
@@ -58,10 +43,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     private float[] bladeTipA, bladeTipB, bladeTipC, bladeTipD;
 
-//    private  float bladeLineXStart;
-//    private  float bladeLineYStart;
-//    private  float bladeLineXStop;
-//    private  float bladeLineYStop;
+
 
     private Boolean movingRight;
 
@@ -73,6 +55,11 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         this.fThread = new FlyThread(getHolder(), this);
 
+        init();
+        update();
+    }
+
+    private void init() {
         cwPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         cwPaint.setColor(Color.GREEN);
         ccwPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -85,37 +72,6 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         centerWidth = 15;
         centerHeight = 15;
 
-//        cwArmStartX = mainX - centerWidth;
-//        cwArmStartY = mainY - centerHeight;
-//        cwArmStopX = mainX + (2 * centerWidth);
-//        cwArmStopY = mainY + (2 * centerHeight);
-        cwArm = new float[]{mainX - centerWidth, mainY - centerHeight, mainX + (2 * centerWidth), mainY + (2 * centerHeight)};
-        ccwArm = new float[]{mainX - centerWidth,mainY + (2 * centerHeight), mainX + (2 * centerWidth), mainY - centerHeight};
-
-//        motorAx = cwArmStartX;
-//        motorAy = cwArmStartY;
-        motorA = new float[] {cwArm[0], cwArm[1]};
-//        motorA = cwArm;
-//        motorBy = ccwArmStartY;
-        motorB = new float[] {ccwArm[0], ccwArm[1]};
-//        motorCx = ccwArmStopX;
-//        motorCy = ccwArmStopY;
-        motorC = new float[] {ccwArm[2], ccwArm[3]};
-//        motorDx = cwArmStopX;
-//        motorDy = cwArmStopY;
-        motorD = new float[] {cwArm[2], cwArm[3]};
-
-        bladeTipA = new float[] {cwArm[0], cwArm[1]};
-        bladeTipB = new float[] {ccwArm[0], ccwArm[1]};
-        bladeTipC = new float[] {ccwArm[2], ccwArm[3]};
-        bladeTipD = new float[] {cwArm[2], cwArm[3]};
-
-        movingRight = true;
-
-        bladeA = new float[] {motorA[0], motorA[1] - (2 * radius), motorA[0], motorA[1] + (2 * radius)};
-        bladeB = new float[] {motorB[0], motorB[1] - (2 * radius), motorB[0], motorB[1] + (2 * radius)};
-        bladeC = new float[] {motorC[0], motorC[1] - (2 * radius), motorC[0], motorC[1] + (2 * radius)};
-        bladeD = new float[] {motorD[0], motorD[1] - (2 * radius), motorD[0], motorD[1] + (2 * radius)};
         rotateBladeA = new Matrix();
         rotateBladeB = new Matrix();
         rotateBladeC = new Matrix();
@@ -123,48 +79,14 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         rotateAll = new Matrix();
         angle = 1;
 //        allAngle = 1;
-
-//        centerRect = new float[] {mainX, mainY, mainX + centerWidth, mainY + centerHeight};
-
-//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
-//        rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
-//        rotateBladeA.mapPoints(bladeA);
-
-
-//        bladeLineXStart;
-//        bladeLineYStart;
-//        bladeLineXStop;
-//        bladeLineYStop;
-
-    }
-    public void moveCopter(){
-        if (this.movingRight) {
-            this.mainX++;
-        } else {
-            this.mainX--;
+        movingRight = true;
         }
 
-//        cwArmStartX = mainX - centerWidth;
-//        cwArmStartY = mainY - centerHeight;
-//        cwArmStopX = mainX + (2 * centerWidth);
-//        cwArmStopY = mainY + (2 * centerHeight);
-//        ccwArmStartX = mainX - centerWidth;
-//        ccwArmStartY = mainY + (2 * centerHeight);
-//        ccwArmStopX = mainX + (2 * centerWidth);
-//        ccwArmStopY = mainY - centerHeight;
+    private void update() {
+
 
         cwArm = new float[]{mainX - centerWidth, mainY - centerHeight, mainX + (2 * centerWidth), mainY + (2 * centerHeight)};
         ccwArm = new float[]{mainX - centerWidth,mainY + (2 * centerHeight), mainX + (2 * centerWidth), mainY - centerHeight};
-
-
-//        motorAx = cwArmStartX;
-//        motorAy = cwArmStartY;
-//        motorBx = ccwArmStartX;
-//        motorBy = ccwArmStartY;
-//        motorCx = ccwArmStopX;
-//        motorCy = ccwArmStopY;
-//        motorDx = cwArmStopX;
-//        motorDy = cwArmStopY;
 
         motorA = new float[] {cwArm[0], cwArm[1]};
         motorB = new float[] {ccwArm[0], ccwArm[1]};
@@ -176,12 +98,12 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         bladeTipC = new float[] {ccwArm[2], ccwArm[3]};
         bladeTipD = new float[] {cwArm[2], cwArm[3]};
 
+
+
         bladeA = new float[] {motorA[0], motorA[1] - (2 * radius), motorA[0], motorA[1] + (2 * radius)};
         bladeB = new float[] {motorB[0], motorB[1] - (2 * radius), motorB[0], motorB[1] + (2 * radius)};
         bladeC = new float[] {motorC[0], motorC[1] - (2 * radius), motorC[0], motorC[1] + (2 * radius)};
         bladeD = new float[] {motorD[0], motorD[1] - (2 * radius), motorD[0], motorD[1] + (2 * radius)};
-
-//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
 
         angle +=24;
         if (angle >= 360){angle = 1;}       //reset angle after full rotation
@@ -197,13 +119,26 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 //        rotateAll.setRotate(allAngle, mainX + centerWidth/2, mainY + centerWidth/2);
 //        rotateAll.mapRect(centerRect);
 
-
-
-
         rotateBladeA.mapPoints(bladeA);
         rotateBladeB.mapPoints(bladeB);
         rotateBladeC.mapPoints(bladeC);
         rotateBladeD.mapPoints(bladeD);
+
+//        centerRect = new float[] {mainX, mainY, mainX + centerWidth, mainY + centerHeight};
+
+//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
+//        rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
+//        rotateBladeA.mapPoints(bladeA);
+    }
+
+    public void moveCopter(){
+        if (this.movingRight) {
+            this.mainX++;
+        } else {
+            this.mainX--;
+        }
+
+        update();
 
         if (this.mainX == (getWidth() - centerWidth)) {
             this.movingRight = false;
@@ -212,13 +147,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-//    public void draw(Canvas centerCanvas, Canvas armsCanvas, Canvas motorCanvas){
-//        drawCenter(centerCanvas);
-//        drawArms(armsCanvas);
-//        drawMotors(motorCanvas);
-////        drawBlades(bladesCanvas);
-//    }
-//*************************************************************************************
+
 
     public void draw(Canvas mainCanvas){
         drawCenter(mainCanvas);
@@ -227,7 +156,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         drawBlades(mainCanvas);
         drawBladeTips(mainCanvas);
     }
-    //*************************************************************************************
+
     private void drawBladeTips(Canvas bladeTipCanvas) {
         bladeTipCanvas.drawCircle(bladeTipA[0], bladeTipA[1], radius/3, motorPaint);
         bladeTipCanvas.drawCircle(bladeTipB[0], bladeTipB[1], radius/3, motorPaint);
@@ -253,8 +182,6 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private void drawArms(Canvas armsCanvas) {
-//        float[] arms = {cwArmStartX, cwArmStartY, cwArmStopX, cwArmStopY,
-//                        ccwArmStartX, ccwArmStartY, ccwArmStopX, ccwArmStopY};
         float[] arms = {cwArm[0], cwArm[1], cwArm[2], cwArm[3],
                         ccwArm[0], ccwArm[1], ccwArm[2], ccwArm[3]};
         armsCanvas.drawLines(arms, mainPaint);
@@ -264,12 +191,6 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         centerCanvas.drawRect(mainX, mainY, mainX + centerWidth, mainY + centerHeight, mainPaint);
 //        centerCanvas.drawRect(centerRect, mainPaint);
     }
-
-//    public void clearCopter(Canvas centerCanvas, Canvas armsCanvas, Canvas motorCanvas){
-//        centerCanvas.drawColor(Color.WHITE);
-//        armsCanvas.drawColor(Color.WHITE);
-//        motorCanvas.drawColor(Color.WHITE);
-//    }
 
     public void clearCopter(Canvas mainCanvas){
         mainCanvas.drawColor(Color.LTGRAY);
@@ -300,22 +221,15 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         public void run(){
-//            Canvas centerCanvas = null;
-//            Canvas armsCanvas = null;
-//            Canvas motorCanvas = null;
             Canvas mainCanvas = null;
 
             while(true){
                 try{
-//                    centerCanvas = surfaceHolder.lockCanvas();
-//                    armsCanvas = surfaceHolder.lockCanvas();
-//                    motorCanvas = surfaceHolder.lockCanvas();
+
                     mainCanvas = surfaceHolder.lockCanvas();
                     synchronized (surfaceHolder){
                         arfcCopter.clearCopter(mainCanvas);
-//                        arfcCopter.clearCopter(centerCanvas, armsCanvas, motorCanvas);
                         arfcCopter.moveCopter();
-//                        arfcCopter.draw(centerCanvas, armsCanvas, motorCanvas);
                         arfcCopter.draw(mainCanvas);
                     }
 
@@ -324,15 +238,6 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
                     if (mainCanvas != null){
                         surfaceHolder.unlockCanvasAndPost(mainCanvas);
                     }
-//                    if (centerCanvas != null){
-//                        surfaceHolder.unlockCanvasAndPost(centerCanvas);
-//                    }
-//                    if (armsCanvas != null){
-//                        surfaceHolder.unlockCanvasAndPost(armsCanvas);
-//                    }
-//                    if (motorCanvas != null){
-//                        surfaceHolder.unlockCanvasAndPost(motorCanvas);
-//                    }
                 }
             }
         }

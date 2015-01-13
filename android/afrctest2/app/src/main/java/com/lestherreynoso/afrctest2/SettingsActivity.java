@@ -22,20 +22,3 @@ public class SettingsActivity extends ActionBarActivity {
 
 }
 
-
-//public class SettingsFragment extends PreferenceFragment {
-////        Preference overallDelayPicker;
-////        SharedPreferences sharedprefs;
-////        SharedPreferences.Editor editor;
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        // Load the preferences from an XML resource
-//        addPreferencesFromResource(R.xml.preferences);
-//
-//
-//    }
-//}
-

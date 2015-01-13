@@ -25,12 +25,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
-// * {@link Network.OnFragmentInteractionListener} interface
+// * {@link NetworkFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Network#newInstance} factory method to
+ * Use the {@link NetworkFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Network extends Fragment {
+public class NetworkFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,29 +62,16 @@ public class Network extends Fragment {
     private String routerName;
     private String routerPass;
     private String relayIp;
-//    Context mcontext = getActivity().getApplicationContext();
+    static Server server;
 
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Network.
-     */
     // TODO: Rename and change types and number of parameters
-    public static Network newInstance(String param1, String param2) {
-        Network fragment = new Network();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+    public static NetworkFragment newInstance(String param1, String param2) {
+        NetworkFragment fragment = new NetworkFragment();
         return fragment;
     }
 
-    public Network() {
+    public NetworkFragment() {
         // Required empty public constructor
     }
 
@@ -123,27 +110,7 @@ public class Network extends Fragment {
         ipAddress = String.valueOf(ipAddressEditText.getText());
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
-        final Server server = new Server();
-
-        ndHandler = new Handler(){
-
-            @Override
-            public void handleMessage(Message msg) {
-
-                final String dMsg = (String) msg.obj;
-                if (serverRunning) {
-                    mActivity.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-//                            d("Recieved: " + dMsg );
-                              d(dMsg );
-                        }
-                    });
-                }
-                super.handleMessage(msg);
-            }
-        };
+        server = new Server();
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +148,7 @@ public class Network extends Fragment {
                 if(!serverRunning) {
                     d("Starting Server...");
 //                server.start(MainActivity.mainHandler);
-                    server.start(ndHandler, ipadstring);
+                    server.start(ipadstring);
 //                mhandler.post(UDPClientRunnable);
                     d("Running...");
                     serverRunning = true;
@@ -325,6 +292,10 @@ public class Network extends Fragment {
             connectedNetwork = "not connected to a network";
             return false;
         }
+    }
+
+    static Server getServer(){
+        return server;
     }
     
     public void d(String debugText){

@@ -1,12 +1,11 @@
 package com.lestherreynoso.afrctest2;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,27 +21,17 @@ public class Server {
     DatagramSocket sendDatagramSocket;
     Handler updateUIHandler;
     Thread receiveThread;
-//    Thread sendThread;
-//    Thread commThread;
-//    SendRunnable sendRunnable = new SendRunnable();
-    Boolean sendNotStarted = true;
     String sendMsg = "";
     MessageHandler messageHandler = new MessageHandler();
     public static final int SERVER_PORT = 5000;
-    Context context;
-//    Network.DebugManager debugManager;
-    Handler networkDebugHandler;
     InetAddress ipAddress;
 
 
-    public void start(Handler ndHandler, String ipadstring) {
+    public void start(String ipadstring) {
         updateUIHandler = new Handler();
         this.receiveThread = new Thread(new ReceiveRunnable());
-        this.networkDebugHandler = ndHandler;
-//        this.context = context;
-//        this.sendThread = new Thread(new SendRunnable());
-//        sendThread.start();
         receiveThread.start();
+
         if (ipadstring.isEmpty()){
             ipadstring = "192.168.42.1";
         }
@@ -52,9 +41,7 @@ public class Server {
         try {
             ipAddress = InetAddress.getByName(ipadstring);
         } catch (UnknownHostException e) {
-            Message errorMsg = new Message();
-            errorMsg.obj = "failed to connect to "+ipadstring;
-            ndHandler.handleMessage(errorMsg);
+            MainActivity.updateUI(R.id.debugTextView, "Failed to connect to " + ipadstring, "TextView", "append");
             e.printStackTrace();
         }
 
@@ -62,32 +49,11 @@ public class Server {
 
     public void stop(){
         receiveThread.interrupt();
-//        sendThread.interrupt();
     }
 
     public void send(String message) {
-//         sendRunnable.send(msg);
         sendMsg = message;
         new SendMessage().execute(sendMsg);
-//        if(!sendMsg.isEmpty()){
-//            byte[] sendData = sendMsg.getBytes();
-//            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 5001);
-//            if (ipAddress != null) {
-//                try {
-//                    datagramSocket = new DatagramSocket(5001);
-//                    datagramSocket.send(sendPacket);
-//                    String sen = sendMsg;
-//                    Log.d("Sent ", sen.trim());
-//                    Message msg = networkDebugHandler.obtainMessage();
-//                    msg.obj = "sent:" + sen;
-//                    networkDebugHandler.handleMessage(msg);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }finally{
-////                    datagramSocket.close();
-//                }
-//            }
-//        }
     }
 
     class ReceiveRunnable implements  Runnable {
@@ -102,18 +68,15 @@ public class Server {
             }
 
             while (!Thread.currentThread().isInterrupted()){
-//              while(true){
                 try{
                     receivedPacket.setData(new byte[1024]);
                     recvDatagramSocket.receive(receivedPacket);
-//                    ipAddress = receivedPacket.getAddress();
-                    String stringMessage = new String(receivedPacket.getData());
-                    stringMessage = stringMessage.trim();
-                    messageHandler.read(stringMessage);
-//                    Log.d("Received ",sen.trim());
-                    Message msg = networkDebugHandler.obtainMessage();
-                    msg.obj = "Received: " +stringMessage;
-                    networkDebugHandler.handleMessage(msg);
+
+                    String recievedStringMessage = new String(receivedPacket.getData());
+                    recievedStringMessage = recievedStringMessage.trim();
+                    messageHandler.read(recievedStringMessage);
+
+                    MainActivity.updateUI(R.id.debugTextView, "Recieved: "+ recievedStringMessage, "TextView", "append");
 
                 }catch (IOException e){
                     e.printStackTrace();
@@ -123,6 +86,7 @@ public class Server {
             recvDatagramSocket.close();
         }
     }
+
     public  class SendMessage extends AsyncTask<String, Void, Void>{
 
         @Override
@@ -134,12 +98,11 @@ public class Server {
                     try {
                         sendDatagramSocket = new DatagramSocket(5001);
                         sendDatagramSocket.send(sendPacket);
-                        String sen = params[0];
+                        String sentStringMessage = params[0];
+                        sentStringMessage = sentStringMessage.trim();
 
-                        Log.d("Sent ", sen.trim());
-                        Message msg = networkDebugHandler.obtainMessage();
-                        msg.obj = "sent:" + sen;
-                        networkDebugHandler.handleMessage(msg);
+                        MainActivity.updateUI(R.id.debugTextView, "Sent: " + sentStringMessage, "TextView", "append");
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }finally{
@@ -150,39 +113,4 @@ public class Server {
             return null;
         }
     }
-//    class SendRunnable implements  Runnable {
-////        String sendMsg = "testing";
-//
-////        public void send(String msg){
-////            this.sendMsg = msg.toUpperCase();
-////        }
-//        @Override
-//        public void run() {
-//            while(!sendMsg.isEmpty() && !Thread.currentThread().isInterrupted()){
-////            while(true)
-//                            byte[] sendData = sendMsg.getBytes();
-//                            byte[] ip = {64,-88,42,1};
-//                            try {
-//                                ipAddress = InetAddress.getByName("192.168.42.1");
-//                            } catch (UnknownHostException e) {
-//                                e.printStackTrace();
-//                            }
-//                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 5001);
-//                            if (ipAddress != null) {
-//                                try {
-//                                    datagramSocket = new DatagramSocket(5001);
-//                                    datagramSocket.send(sendPacket);
-//                                    String sen = sendMsg;
-//                                    Log.d("Sent ", sen.trim());
-//                                    Message msg = networkDebugHandler.obtainMessage();
-//                                    msg.obj = "sent:" + sen;
-//                                    networkDebugHandler.handleMessage(msg);
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
-//    }
-
 }
