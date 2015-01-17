@@ -59,7 +59,7 @@ public class DiagnosticsFragment extends Fragment {
 
 
         LinearLayout testll = (LinearLayout) view.findViewById(R.id.testll);
-       testll.addView(new ARFCCopter(getActivity().getApplicationContext(), 75, 75));
+//       testll.addView(new ARFCCopter(getActivity().getApplicationContext(), 75, 75));
 //        testll.addView(new Circle(getActivity().getApplicationContext(), 50, 50, 25));
     }
 

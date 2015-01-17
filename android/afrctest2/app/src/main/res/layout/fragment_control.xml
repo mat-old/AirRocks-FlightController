@@ -111,16 +111,15 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
-            <SurfaceView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/inputSurfaceView"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:layout_below="@+id/inputTV"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:id="@+id/inputll"></LinearLayout>
+
         </RelativeLayout>
     </LinearLayout>
 

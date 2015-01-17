@@ -4,6 +4,7 @@ import android.net.Network;
 import android.os.Bundle;
 import android.os.Message;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,9 +19,68 @@ public class MessageHandler {
         server = NetworkFragment.getServer();
     }
 
-    public void sendMessage(){
-
+    public void sendMessage(String name, String value, String action){
+        server.send(createJson(name, value, action).toString());
     }
+
+    public void sendMessage(String name, int value, String action){
+        server.send(createJson(name, value, action).toString());
+    }
+
+    public void sendMessage(String name, JSONArray value, String action){
+        server.send(createJson(name, value, action).toString());
+    }
+
+    public void sendMessage(String action){
+        server.send(createJson(action).toString());
+    }
+
+    private JSONObject createJson(String name, String value, String action) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", name);
+            json.put("value", value);
+            json.put("action", action);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    private JSONObject createJson(String name, JSONArray value, String action) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", name);
+            json.put("value", value);
+            json.put("action", action);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    private JSONObject createJson(String name, int value, String action) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", name);
+            json.put("value", value);
+            json.put("action", action);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    private JSONObject createJson(String action){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("action", action);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 
     public void read(String message){
         jsonMessage = toJSON(message);

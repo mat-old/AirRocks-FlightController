@@ -33,7 +33,9 @@ public class MainActivity extends ActionBarActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+//    ViewPager mViewPager;
+    static StoppableSwipeViewPager mViewPager;
+
     static Handler valueHandler;
 
 
@@ -48,7 +50,8 @@ public class MainActivity extends ActionBarActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (StoppableSwipeViewPager) findViewById(R.id.pager);
+//        mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         valueHandler = new Handler(){
 
@@ -169,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
     }
 
@@ -205,6 +208,5 @@ public class MainActivity extends ActionBarActivity {
             return rootView;
         }
     }
-
 
 }

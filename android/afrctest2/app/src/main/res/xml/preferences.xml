@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="IPCONFIG">
-        <CheckBoxPreference
-            android:key="pref_sync"
-            android:title="sync"
-            android:summary="would you like to sync"
-            android:defaultValue="true" />
+        android:title="Router Config">
+        <EditTextPreference
+            android:key="routerSSIDPrefenceKey"
+            android:title="Router SSID"
+            android:summary="arfc"
+            android:dialogTitle="Enter SSID"
+            android:dialogMessage="Enter the SSID"
+            android:defaultValue="arfc" />
+
+        <EditTextPreference
+            android:key="routerPasswordPrefenceKey"
+            android:title="Router Password"
+            android:summary="arfcarfc"
+            android:dialogTitle="Enter Password"
+            android:dialogMessage="Enter the Password of the copter"
+            android:defaultValue="arfcarfc" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="IP Config">
         <EditTextPreference
             android:key="ipEditTextPrefenceKey"
-            android:title="ipEditTextPreferenceTitle"
-            android:summary="ipEditTextPreferenceSummary"
-            android:dialogTitle="Enter Ip"
-            android:dialogMessage="Enter the Ip Address of the copter"
-            android:defaultValue="Default welcome message" />
+            android:title="IP Address"
+            android:summary="192.168.0.6"
+            android:dialogTitle="Enter IP"
+            android:dialogMessage="Enter the IP Address of the copter"
+            android:defaultValue="192.168.0.6" />
     </PreferenceCategory>
 </PreferenceScreen>

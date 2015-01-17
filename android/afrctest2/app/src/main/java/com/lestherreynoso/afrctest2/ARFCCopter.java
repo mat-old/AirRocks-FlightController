@@ -140,9 +140,9 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
         update();
 
-        if (this.mainX == (getWidth() - centerWidth)) {
+        if (this.mainX == (getWidth() - 2 * centerWidth)) {
             this.movingRight = false;
-        } else if (this.mainX == (0 + centerWidth)) {
+        } else if (this.mainX == (centerWidth)) {
             this.movingRight = true;
         }
     }
@@ -198,7 +198,9 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        fThread.start();
+        if(!fThread.isAlive()){
+            fThread.start();
+        }
     }
 
     @Override
@@ -208,7 +210,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        fThread.interrupt();
     }
 
     private class FlyThread extends Thread{
@@ -223,7 +225,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         public void run(){
             Canvas mainCanvas = null;
 
-            while(true){
+            while(!Thread.currentThread().isInterrupted()){
                 try{
 
                     mainCanvas = surfaceHolder.lockCanvas();
@@ -232,8 +234,6 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
                         arfcCopter.moveCopter();
                         arfcCopter.draw(mainCanvas);
                     }
-
-
                 }finally {
                     if (mainCanvas != null){
                         surfaceHolder.unlockCanvasAndPost(mainCanvas);

@@ -64,6 +64,8 @@ public class NetworkFragment extends Fragment {
     private String relayIp;
     static Server server;
 
+    MessageHandler messageHandler = new MessageHandler();
+
 
     // TODO: Rename and change types and number of parameters
     public static NetworkFragment newInstance(String param1, String param2) {
@@ -182,7 +184,10 @@ public class NetworkFragment extends Fragment {
                     if(!sendEditText.getText().toString().isEmpty()) {
                         server.send(sendEditText.getText().toString());
                     }else{
-                        server.send("nothing was inputted so yea..");
+                        messageHandler.sendMessage("act");
+                        messageHandler.sendMessage("na", "val", "act");
+                        messageHandler.sendMessage("nana", 90, "jes");
+//                        server.send("nothing was inputted so yea..");
                     }
 //                    d("sent ");
                 }else{
