@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
     static StoppableSwipeViewPager mViewPager;
 
     static Handler valueHandler;
+    static TextView debugTV;
 
 
     @Override
@@ -53,6 +55,9 @@ public class MainActivity extends ActionBarActivity {
         mViewPager = (StoppableSwipeViewPager) findViewById(R.id.pager);
 //        mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        debugTV = (TextView)findViewById(R.id.debugTV);
+        debugTV.setMovementMethod(new ScrollingMovementMethod());
+
         valueHandler = new Handler(){
 
             @Override
@@ -61,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
                 final String value = msg.getData().getString("value");
                 final String viewType = msg.getData().getString("viewType");
                 final String mode = msg.getData().getString("mode");
-
+                final String log = viewId + " " + value + " " + viewType + " " + mode + " " + "\n";
                 runOnUiThread(new Runnable() {
 
                     @Override
@@ -81,8 +86,8 @@ public class MainActivity extends ActionBarActivity {
                             default:
                                 break;
                         }
+                        debugTV.append(log);
 
-//                        Log.d("hanlder", value);
                     }
                 });
                 super.handleMessage(msg);

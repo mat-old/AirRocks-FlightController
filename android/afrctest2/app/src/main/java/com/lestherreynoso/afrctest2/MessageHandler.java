@@ -199,8 +199,6 @@ public class MessageHandler {
             }
         }
 
-
-
     }
 
     private JSONObject toJSON(String message) {

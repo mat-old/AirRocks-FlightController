@@ -25,6 +25,7 @@ public class Server {
     MessageHandler messageHandler = new MessageHandler();
     public static final int SERVER_PORT = 5000;
     InetAddress ipAddress;
+    Boolean serverStarted = false;
 
 
     public void start(String ipadstring) {
@@ -44,16 +45,23 @@ public class Server {
             MainActivity.updateUI(R.id.debugTextView, "Failed to connect to " + ipadstring, "TextView", "append");
             e.printStackTrace();
         }
-
+        serverStarted = true;
     }
 
     public void stop(){
         receiveThread.interrupt();
+        serverStarted = false;
     }
 
     public void send(String message) {
+
         sendMsg = message;
-        new SendMessage().execute(sendMsg);
+        if (serverStarted){
+            new SendMessage().execute(sendMsg);
+        }else{
+            MainActivity.debugTV.append("Server is not started.\n Unable to send: "+message+"\n");
+        }
+
     }
 
     class ReceiveRunnable implements  Runnable {
@@ -76,7 +84,8 @@ public class Server {
                     recievedStringMessage = recievedStringMessage.trim();
                     messageHandler.read(recievedStringMessage);
 
-                    MainActivity.updateUI(R.id.debugTextView, "Recieved: "+ recievedStringMessage, "TextView", "append");
+//                    MainActivity.updateUI(R.id.debugTextView, "Recieved: "+ recievedStringMessage, "TextView", "append");
+                    MainActivity.debugTV.append("Recieved: "+ recievedStringMessage);
 
                 }catch (IOException e){
                     e.printStackTrace();
@@ -101,7 +110,8 @@ public class Server {
                         String sentStringMessage = params[0];
                         sentStringMessage = sentStringMessage.trim();
 
-                        MainActivity.updateUI(R.id.debugTextView, "Sent: " + sentStringMessage, "TextView", "append");
+//                        MainActivity.updateUI(R.id.debugTV, "Sent: " + sentStringMessage, "TextView", "append");
+                        MainActivity.debugTV.append("Sent: " + sentStringMessage);
 
                     } catch (IOException e) {
                         e.printStackTrace();
