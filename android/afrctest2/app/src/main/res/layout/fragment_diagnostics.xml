@@ -471,9 +471,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Take off and hover"
-                    android:id="@+id/button7"
+                    android:id="@+id/takeOffBtn"
                     android:layout_gravity="center_horizontal"
-                    android:layout_below="@+id/button6"
+                    android:layout_below="@+id/startBtn"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
 
@@ -482,15 +482,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start up"
-                    android:id="@+id/button6" />
+                    android:id="@+id/startBtn" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Stop and hover"
-                    android:id="@+id/button8"
-                    android:layout_below="@+id/button7"
+                    android:id="@+id/stopBtn"
+                    android:layout_below="@+id/takeOffBtn"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
 
@@ -499,8 +499,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Land"
-                    android:id="@+id/button9"
-                    android:layout_below="@+id/button8"
+                    android:id="@+id/landBtn"
+                    android:layout_below="@+id/stopBtn"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
 
@@ -509,7 +509,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="rotate cw"
-                    android:id="@+id/button10"
+                    android:id="@+id/rotateCWBtn"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
@@ -519,8 +519,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="rotate ccw"
-                    android:id="@+id/button11"
-                    android:layout_below="@+id/button10"
+                    android:id="@+id/rotateCCWBtn"
+                    android:layout_below="@+id/rotateCWBtn"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>

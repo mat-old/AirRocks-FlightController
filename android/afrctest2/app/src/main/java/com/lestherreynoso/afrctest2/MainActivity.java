@@ -39,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
 
     static Handler valueHandler;
     static TextView debugTV;
+    static ARFCCopter mcopter;
 
 
     @Override
@@ -86,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
                             default:
                                 break;
                         }
-                        debugTV.append(log);
+//                        debugTV.append(log);
 
                     }
                 });
@@ -94,6 +95,22 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mcopter != null) {
+//            mcopter.setIsRunning(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mcopter != null){
+//            mcopter.setIsRunning(true);
+        }
     }
 
     public static void updateUI(final int viewId, final String value, final String viewType, final String mode){
@@ -135,6 +152,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void setMcopter(ARFCCopter copter) {
+        mcopter = copter;
     }
 
 

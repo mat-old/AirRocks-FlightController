@@ -47,10 +47,13 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     private Boolean movingRight;
 
+    private Boolean isRunning;
+
     public ARFCCopter(Context context, float x, float y) {
         super(context);
         this.mainX = x;
         this.mainY = y;
+        this.isRunning = true;
 
         getHolder().addCallback(this);
         this.fThread = new FlyThread(getHolder(), this);
@@ -78,12 +81,13 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         rotateBladeD = new Matrix();
         rotateAll = new Matrix();
         angle = 1;
-//        allAngle = 1;
+        allAngle = 1;
         movingRight = true;
         }
 
     private void update() {
 
+//        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
 
         cwArm = new float[]{mainX - centerWidth, mainY - centerHeight, mainX + (2 * centerWidth), mainY + (2 * centerHeight)};
         ccwArm = new float[]{mainX - centerWidth,mainY + (2 * centerHeight), mainX + (2 * centerWidth), mainY - centerHeight};
@@ -108,14 +112,14 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         angle +=24;
         if (angle >= 360){angle = 1;}       //reset angle after full rotation
 
-//        allAngle +=1;
-//        if (allAngle >= 360){allAngle = 1;}       //reset angle after full rotation
+        allAngle +=6;
+        if (allAngle >= 360){allAngle = 1;}       //reset angle after full rotation
 
         rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
         rotateBladeB.setRotate(-angle, motorB[0], motorB[1]);
         rotateBladeC.setRotate(-angle, motorC[0], motorC[1]);
         rotateBladeD.setRotate(angle, motorD[0], motorD[1]);
-//
+
 //        rotateAll.setRotate(allAngle, mainX + centerWidth/2, mainY + centerWidth/2);
 //        rotateAll.mapRect(centerRect);
 
@@ -124,11 +128,8 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         rotateBladeC.mapPoints(bladeC);
         rotateBladeD.mapPoints(bladeD);
 
-//        centerRect = new float[] {mainX, mainY, mainX + centerWidth, mainY + centerHeight};
 
 //        centerRect = new RectF(mainX, mainY, mainX + centerWidth, mainY + centerHeight);
-//        rotateBladeA.setRotate(angle, motorA[0], motorA[1]);
-//        rotateBladeA.mapPoints(bladeA);
     }
 
     public void moveCopter(){
@@ -155,6 +156,9 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         drawMotors(mainCanvas);
         drawBlades(mainCanvas);
         drawBladeTips(mainCanvas);
+//        mainCanvas.save();
+//        mainCanvas.rotate(allAngle);
+//        mainCanvas.restore();
     }
 
     private void drawBladeTips(Canvas bladeTipCanvas) {
@@ -213,6 +217,10 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         fThread.interrupt();
     }
 
+    public void setIsRunning(boolean b) {
+        this.isRunning = b;
+    }
+
     private class FlyThread extends Thread{
         private SurfaceHolder surfaceHolder;
         private ARFCCopter arfcCopter;
@@ -225,7 +233,8 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         public void run(){
             Canvas mainCanvas = null;
 
-            while(!Thread.currentThread().isInterrupted()){
+//            while(!Thread.currentThread().isInterrupted()){
+            while(isRunning){
                 try{
 
                     mainCanvas = surfaceHolder.lockCanvas();

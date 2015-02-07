@@ -22,7 +22,10 @@ import java.util.Vector;
 public class ShapeDrawing extends View {
     Path path;
     Paint paint;
+    Paint textPaint;
     Canvas c;
+    String coor;
+    Float xx, yy;
     ArrayList<float[]> pathCoordinates;
     MessageHandler messageHandler;
     public ShapeDrawing(Context context) {
@@ -37,6 +40,13 @@ public class ShapeDrawing extends View {
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(20);
+        textPaint = new Paint();
+        textPaint.setColor(Color.RED);
+        textPaint.setTextSize(20);
+        coor="nothingyet";
+        xx=1f;
+        yy=1f;
+
     }
 
     @Override
@@ -45,6 +55,8 @@ public class ShapeDrawing extends View {
         canvas.drawColor(Color.LTGRAY);
 
         canvas.drawPath(path, paint);
+
+//        canvas.drawText(coor, xx,yy , textPaint);
     }
 
     private float mX, mY;
@@ -83,6 +95,7 @@ public class ShapeDrawing extends View {
         mY = y;
         pathCoordinates.clear();
         pathCoordinates.add(new float[]{x,y});
+
     }
     private void touch_move(float x, float y) {
         float dx = Math.abs(x - mX);
@@ -94,20 +107,28 @@ public class ShapeDrawing extends View {
             mY = y;
             pathCoordinates.add(new float[]{x,y});
         }
+        xx = x;
+        yy = y;
+
     }
     private void touch_up() {
         preparePathForSending(pathCoordinates);
         path.lineTo(mX, mY);
         c.drawPath(path, paint);
 //        path.reset();
+//        c.drawText("{"+ x + ","+y+"}", x, y, textPaint);
+
     }
 
     private void preparePathForSending(ArrayList<float[]> pathCoordinates) {
+
         ArrayList<int[]> pC = new ArrayList<>();
         for(float[] pair : pathCoordinates){
             int x = Math.round((pair[0] / this.getWidth()) * 100) ;
             int y = Math.round((pair[1] / this.getHeight()) * 100) ;
             pC.add(new int[] {x, y});
+//            String temp = "{"+ x + ","+y+"}";
+//            c.drawText(temp, pair[0], pair[1], textPaint);
         }
 
         JSONArray jsonArray = new JSONArray(pC);

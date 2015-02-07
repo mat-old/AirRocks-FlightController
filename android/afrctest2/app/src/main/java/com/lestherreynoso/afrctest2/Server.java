@@ -37,7 +37,7 @@ public class Server {
             ipadstring = "192.168.42.1";
         }
         else{
-            ipadstring = "192.168.0.6";
+            ipadstring = "192.168.0.4";
         }
         try {
             ipAddress = InetAddress.getByName(ipadstring);
@@ -84,8 +84,8 @@ public class Server {
                     recievedStringMessage = recievedStringMessage.trim();
                     messageHandler.read(recievedStringMessage);
 
-//                    MainActivity.updateUI(R.id.debugTextView, "Recieved: "+ recievedStringMessage, "TextView", "append");
-                    MainActivity.debugTV.append("Recieved: "+ recievedStringMessage);
+                    MainActivity.updateUI(R.id.debugTV, "Recieved: "+ recievedStringMessage, "TextView", "append");
+//                    MainActivity.debugTV.append("Recieved: "+ recievedStringMessage);
 
                 }catch (IOException e){
                     e.printStackTrace();

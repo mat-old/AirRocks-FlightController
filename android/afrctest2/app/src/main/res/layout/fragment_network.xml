@@ -85,7 +85,8 @@
         android:id="@+id/routerSsidTextView"
         android:layout_below="@+id/debugTextView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -95,7 +96,8 @@
         android:id="@+id/routerPassTextView"
         android:layout_above="@+id/connectButton"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -108,7 +110,8 @@
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/enterIPTextView"
         android:layout_toLeftOf="@+id/enterIPTextView"
-        android:layout_above="@+id/startServerbutton" />
+        android:layout_above="@+id/startServerbutton"
+        android:visibility="gone" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -118,7 +121,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/enterIPTextView"
-        android:layout_toStartOf="@+id/enterIPTextView" />
+        android:layout_toStartOf="@+id/enterIPTextView"
+        android:visibility="gone" />
 
     <EditText
         android:layout_width="wrap_content"

@@ -1,6 +1,7 @@
 package com.lestherreynoso.afrctest2;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -9,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
@@ -65,6 +67,7 @@ public class NetworkFragment extends Fragment {
     static Server server;
 
     MessageHandler messageHandler = new MessageHandler();
+    private SharedPreferences sharedprefs;
 
 
     // TODO: Rename and change types and number of parameters
@@ -109,10 +112,13 @@ public class NetworkFragment extends Fragment {
         routerPassEditText = (EditText) view.findViewById(R.id.routerPassEditText);
         sendEditText = (EditText) view.findViewById(R.id.sendEditText);
 //        relayIpEditText = (EditText) view.findViewById(R.id.relayIpEditText);
-        ipAddress = String.valueOf(ipAddressEditText.getText());
+//        ipAddress = String.valueOf(ipAddressEditText.getText());
+        ipAddress = sharedprefs.getString("ipEditTextPreferenceKey", "");
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
         server = new Server();
+        sharedprefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,9 +126,9 @@ public class NetworkFragment extends Fragment {
                 ipAddress = String.valueOf(ipAddressEditText.getText());
                 initSettings();
                 if (ipAddress.isEmpty()){
-                    d("touched connect with no ip entry ");
+                    d("IP Address is not set. Defaulting to 192.168.0.4");
                 }else {
-                    d("touched connect with ip entry of: " + ipAddress );
+                    d("IP set: " + ipAddress );
                 }
                 if(isConnectedToARFC()){
                     //get ip and connect to it
@@ -198,6 +204,13 @@ public class NetworkFragment extends Fragment {
     }
 
     private void initSettings() {
+        if(sharedprefs.getString("routerSSIDPreferenceKey", "").isEmpty()){
+
+        }
+        if(sharedprefs.getString("routerSSIDPreferenceKey", "").isEmpty()){
+
+        }
+
         if(routerSsidEditText.getText().toString().isEmpty()){
             routerName = "arfc";
         }else{routerName = routerSsidEditText.getText().toString();}

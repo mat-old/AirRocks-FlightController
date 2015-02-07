@@ -88,7 +88,7 @@ var Global = {
   , favoritePort : process.env.PORT
   , backupPort   : 8888
   , destport : 5000
-  , destIP   : '192.168.0.4'
+  , destIP   : '192.168.0.7'
   , recvport : 5001
   , viewpath : './view/'
   , uavpath  : '/home/arfc/arfc/flightController/' 
