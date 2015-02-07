@@ -58,7 +58,7 @@ public class DiagnosticsFragment extends Fragment {
         copter = new ARFCCopter(getActivity().getApplicationContext(), 75, 75);
         MainActivity.setMcopter(copter);
 
-//        testll.addView(copter);
+        testll.addView(copter);
 
 
 

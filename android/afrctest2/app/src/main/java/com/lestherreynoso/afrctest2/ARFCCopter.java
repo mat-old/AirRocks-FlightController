@@ -56,7 +56,7 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         this.isRunning = true;
 
         getHolder().addCallback(this);
-        this.fThread = new FlyThread(getHolder(), this);
+//        this.fThread = new FlyThread(getHolder(), this);
 
         init();
         update();
@@ -202,14 +202,15 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if(!fThread.isAlive()){
-            fThread.start();
-        }
+        this.fThread = new FlyThread(getHolder(), this);
+        fThread.start();
+//        if(!fThread.isAlive()){
+//            fThread.start();
+//        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
     }
 
     @Override

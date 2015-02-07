@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         if(mcopter != null) {
-//            mcopter.setIsRunning(false);
+            mcopter.setIsRunning(false);
         }
     }
 
@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         if(mcopter != null){
-//            mcopter.setIsRunning(true);
+            mcopter.setIsRunning(true);
         }
     }
 
