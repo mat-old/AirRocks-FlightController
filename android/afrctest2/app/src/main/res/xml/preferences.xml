@@ -5,18 +5,18 @@
         <EditTextPreference
             android:key="routerSSIDPreferenceKey"
             android:title="Router SSID"
-            android:summary="arfc"
+
             android:dialogTitle="Enter SSID"
             android:dialogMessage="Enter the SSID"
-            android:defaultValue="arfc" />
+            android:defaultValue="arfc" /><!--android:summary="arfc"-->
 
         <EditTextPreference
             android:key="routerPasswordPreferenceKey"
             android:title="Router Password"
-            android:summary="arfcarfc"
+
             android:dialogTitle="Enter Password"
             android:dialogMessage="Enter the Password of the mcopter"
-            android:defaultValue="arfcarfc" />
+            android:defaultValue="arfcarfc" /><!--android:summary="arfcarfc"-->
 
     </PreferenceCategory>
 
@@ -25,9 +25,9 @@
         <EditTextPreference
             android:key="ipEditTextPreferenceKey"
             android:title="IP Address"
-            android:summary="192.168.0.4"
+
             android:dialogTitle="Enter IP"
             android:dialogMessage="Enter the IP Address of the mcopter"
-            android:defaultValue="192.168.0.4" />
+            android:defaultValue="192.168.0.4" /><!--android:summary="192.168.0.4"-->
     </PreferenceCategory>
 </PreferenceScreen>

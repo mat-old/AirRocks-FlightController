@@ -22,11 +22,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.preferences);
 
         sharedprefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedprefs.registerOnSharedPreferenceChangeListener(this);
         editor = sharedprefs.edit();
 
         routerSSIDPreference = (Preference) findPreference("routerSSIDPreferenceKey");
+        routerSSIDPreference.setSummary(sharedprefs.getString("routerSSIDPreferenceKey", ""));
         routerPasswordPreference = (Preference) findPreference("routerPasswordPreferenceKey");
+        routerPasswordPreference.setSummary(sharedprefs.getString("routerPasswordPreferenceKey", ""));
         ipAddressPreference = (Preference) findPreference("ipEditTextPreferenceKey");
+        ipAddressPreference.setSummary(sharedprefs.getString("ipEditTextPreferenceKey", ""));
 
     }
 

@@ -113,11 +113,12 @@ public class NetworkFragment extends Fragment {
         sendEditText = (EditText) view.findViewById(R.id.sendEditText);
 //        relayIpEditText = (EditText) view.findViewById(R.id.relayIpEditText);
 //        ipAddress = String.valueOf(ipAddressEditText.getText());
-        ipAddress = sharedprefs.getString("ipEditTextPreferenceKey", "");
         networkDebug = (TextView) view.findViewById(R.id.debugTextView);
         networkDebug.setMovementMethod(new ScrollingMovementMethod());
         server = new Server();
         sharedprefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        ipAddress = sharedprefs.getString("ipEditTextPreferenceKey", "");
+//        d("IP Address: "+ipAddress);
 
 
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -132,15 +133,15 @@ public class NetworkFragment extends Fragment {
                 }
                 if(isConnectedToARFC()){
                     //get ip and connect to it
-                    d("already connected to "+ ROUTER_NAME );
+                    d("Already connected to "+ routerName );
                 }
                 else{
-                    d("not connected to "+ ROUTER_NAME );
+                    d("Not connected to "+ routerName );
                     if(isARFCInRange()){
                         connectToARFC();
                     }
                     else{
-                        d(ROUTER_NAME + " is not in range");
+                        d(routerName + " is not in range");
                     }
 
                 }
@@ -152,14 +153,20 @@ public class NetworkFragment extends Fragment {
         startServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ipadstring = ipAddressEditText.getText().toString().trim();
+//                String ipadstring = ipAddressEditText.getText().toString().trim();
+                String ipadstring = sharedprefs.getString("ipEditTextPreferenceKey", "");
                 if(!serverRunning) {
                     d("Starting Server...");
 //                server.start(MainActivity.mainHandler);
-                    server.start(ipadstring);
+                    if(!ipadstring.isEmpty()){
+                        server.start(ipadstring);
+                        d("Running...");
+                        serverRunning = true;
+                    }
+                    else{
+                        d("IP address not set");
+                    }
 //                mhandler.post(UDPClientRunnable);
-                    d("Running...");
-                    serverRunning = true;
                 }
                 else{
                     d("Server already running ");
@@ -205,18 +212,18 @@ public class NetworkFragment extends Fragment {
 
     private void initSettings() {
         if(sharedprefs.getString("routerSSIDPreferenceKey", "").isEmpty()){
-
-        }
-        if(sharedprefs.getString("routerSSIDPreferenceKey", "").isEmpty()){
-
-        }
-
-        if(routerSsidEditText.getText().toString().isEmpty()){
             routerName = "arfc";
-        }else{routerName = routerSsidEditText.getText().toString();}
-        if(routerPassEditText.getText().toString().isEmpty()){
+        }else {routerName =  sharedprefs.getString("routerSSIDPreferenceKey", "");}
+        if(sharedprefs.getString("routerPasswordPreferenceKey", "").isEmpty()){
             routerPass = "arfcarfc";
-        }else{routerPass = routerPassEditText.getText().toString();}
+        }else {routerPass = sharedprefs.getString("routerPasswordPreferenceKey", "");}
+
+//        if(routerSsidEditText.getText().toString().isEmpty()){
+//            routerName = "arfc";
+//        }else{routerName = routerSsidEditText.getText().toString();}
+//        if(routerPassEditText.getText().toString().isEmpty()){
+//            routerPass = "arfcarfc";
+//        }else{routerPass = routerPassEditText.getText().toString();}
 //        if(relayIpEditText.getText().toString().isEmpty()){
 //            relayIp = "192.168.0.1";
 //        }else{relayIp = relayIpEditText.getText().toString();}
@@ -249,7 +256,7 @@ public class NetworkFragment extends Fragment {
 
     private void connectToARFC() {
 //        d("connecting to "+ ROUTER_NAME );
-        d("connecting to "+ routerName );
+        d("Connecting to "+ routerName );
 
 //        WifiManager wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
         wifiManager = (WifiManager)getActivity().getSystemService(Context.WIFI_SERVICE);
@@ -291,7 +298,7 @@ public class NetworkFragment extends Fragment {
     }
 
     private Boolean isConnectedToARFC() {
-        d("verifying if device is already connected to arfc");
+        d("Verifying if device is already connected to arfc");
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -318,6 +325,7 @@ public class NetworkFragment extends Fragment {
     
     public void d(String debugText){
 //        networkDebug.append(debugText +"\n");
-        MainActivity.debugTV.append(debugText +"\n");
+        MainActivity.updateUI(R.id.debugTV, debugText, "TextView", "append");
+//        MainActivity.debugTV.append(debugText +"\n");
     }
 }

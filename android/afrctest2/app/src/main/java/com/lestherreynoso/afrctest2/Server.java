@@ -1,10 +1,7 @@
 package com.lestherreynoso.afrctest2;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 
 import java.io.IOException;
@@ -17,13 +14,14 @@ import java.net.UnknownHostException;
 * Created by Kpable on 12/23/2014.
 */
 public class Server {
+    public static final int SEND_PORT = 5001;
     DatagramSocket recvDatagramSocket;
     DatagramSocket sendDatagramSocket;
     Handler updateUIHandler;
     Thread receiveThread;
     String sendMsg = "";
     MessageHandler messageHandler = new MessageHandler();
-    public static final int SERVER_PORT = 5000;
+    public static final int RECEIVE_PORT = 5000;
     InetAddress ipAddress;
     Boolean serverStarted = false;
 
@@ -33,12 +31,12 @@ public class Server {
         this.receiveThread = new Thread(new ReceiveRunnable());
         receiveThread.start();
 
-        if (ipadstring.isEmpty()){
-            ipadstring = "192.168.42.1";
-        }
-        else{
-            ipadstring = "192.168.0.4";
-        }
+//        if (ipadstring.isEmpty()){        //doesnt get here at all if ip not set
+//            ipadstring = "192.168.42.1";
+//        }
+//        else{
+//            ipadstring = "192.168.0.4";
+//        }
         try {
             ipAddress = InetAddress.getByName(ipadstring);
         } catch (UnknownHostException e) {
@@ -54,12 +52,12 @@ public class Server {
     }
 
     public void send(String message) {
-
-        sendMsg = message;
+        sendMsg = message;//.replace("\"","\\\"");
         if (serverStarted){
             new SendMessage().execute(sendMsg);
         }else{
-            MainActivity.debugTV.append("Server is not started.\n Unable to send: "+message+"\n");
+            MainActivity.updateUI(R.id.debugTV, "Server is not started.\n Unable to send: "+message+"\n","TextView","append");
+//            MainActivity.debugTV.append("Server is not started.\n Unable to send: "+message+"\n");
         }
 
     }
@@ -70,7 +68,7 @@ public class Server {
             byte[] receivedData = new byte[1024];
             DatagramPacket receivedPacket = new DatagramPacket(receivedData, receivedData.length);
             try {
-                recvDatagramSocket = new DatagramSocket(SERVER_PORT);
+                recvDatagramSocket = new DatagramSocket(RECEIVE_PORT);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,16 +100,16 @@ public class Server {
         protected Void doInBackground(String... params) {
             if(!params[0].isEmpty()){
                 byte[] sendData = params[0].getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 5001);
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, SEND_PORT);
                 if (ipAddress != null) {
                     try {
-                        sendDatagramSocket = new DatagramSocket(5001);
+                        sendDatagramSocket = new DatagramSocket(SEND_PORT);
                         sendDatagramSocket.send(sendPacket);
                         String sentStringMessage = params[0];
                         sentStringMessage = sentStringMessage.trim();
 
-//                        MainActivity.updateUI(R.id.debugTV, "Sent: " + sentStringMessage, "TextView", "append");
-                        MainActivity.debugTV.append("Sent: " + sentStringMessage);
+                        MainActivity.updateUI(R.id.debugTV, "Sent: " + sentStringMessage, "TextView", "append");
+//                        MainActivity.debugTV.append("Sent: " + sentStringMessage);
 
                     } catch (IOException e) {
                         e.printStackTrace();
