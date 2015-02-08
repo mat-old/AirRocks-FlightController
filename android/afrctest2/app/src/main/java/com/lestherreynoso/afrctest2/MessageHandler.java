@@ -8,15 +8,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by lesther on 1/9/2015.
  */
 public class MessageHandler {
     JSONObject jsonMessage;
     Server server;
-
+    ARFCCopter copter;
     public MessageHandler() {
         server = NetworkFragment.getServer();
+        copter = DiagnosticsFragment.getCopter();
     }
 
     public void sendMessage(String name, String value, String action){
@@ -194,6 +197,12 @@ public class MessageHandler {
 
                     }
                     break;
+                case "Position":
+                    copter.setFollow(true);
+                    String[] posString = value.split(",");
+                    float[] pos = new float[] {Float.parseFloat(posString[0]), Float.parseFloat(posString[1])};
+                    copter.setPosition(pos);
+                    break;
                 default:
                     break;
             }
@@ -224,5 +233,9 @@ public class MessageHandler {
         jsonMessage = jsonMessage;
     }
 
-    
+
+    public void tempRedirect(ArrayList<int[]> pC) {
+        ARFCCopter c = DiagnosticsFragment.getCopter();
+        c.setPath(pC);
+    }
 }

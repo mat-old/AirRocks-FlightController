@@ -124,6 +124,7 @@ public class ShapeDrawing extends View {
 
         ArrayList<int[]> pC = new ArrayList<>();
         for(float[] pair : pathCoordinates){
+//            int in = pathCoordinates.indexOf(pair);
             int x = Math.round((pair[0] / this.getWidth()) * 100) ;
             int y = Math.round((pair[1] / this.getHeight()) * 100) ;
             pC.add(new int[] {x, y});
@@ -134,5 +135,7 @@ public class ShapeDrawing extends View {
         JSONArray jsonArray = new JSONArray(pC);
 
         messageHandler.sendMessage("path", jsonArray, "set");
+        messageHandler.tempRedirect(pC);
+
     }
 }

@@ -5,14 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lesther on 1/7/2015.
@@ -48,13 +47,23 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
     private Boolean movingRight;
 
     private Boolean isRunning;
+    private boolean isTherePath;
+    private ArrayList<int[]> thePoints;
+
+    private Path path;
+    private PathMeasure pathMeasure;
+    float[] pos, tan;
+    float speed, distance;
+    private boolean isFollow;
+
 
     public ARFCCopter(Context context, float x, float y) {
         super(context);
         this.mainX = x;
         this.mainY = y;
         this.isRunning = true;
-
+        this.isTherePath = false;
+        this.isFollow = false;
         getHolder().addCallback(this);
 //        this.fThread = new FlyThread(getHolder(), this);
 
@@ -149,6 +158,24 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
+    public float[] getRelativePosition(float x, float y){
+        float mx =  this.getWidth() * (x / 100);
+        float my =  this.getHeight() * (y / 100);
+        float[] fpos = new float[]{mx, my};
+
+        return fpos;
+    }
+
+    public void setPosition(float[] pos){
+        this.mainX = pos[0];
+        this.mainY = pos[1];
+    }
+
+    public void setPath(ArrayList<int[]> intpath){
+        this.thePoints = intpath;
+        isTherePath = true;
+    }
+
 
     public void draw(Canvas mainCanvas){
         drawCenter(mainCanvas);
@@ -222,6 +249,10 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
         this.isRunning = b;
     }
 
+    public void setFollow(boolean b) {
+        this.isFollow = b;
+    }
+
     private class FlyThread extends Thread{
         private SurfaceHolder surfaceHolder;
         private ARFCCopter arfcCopter;
@@ -236,20 +267,96 @@ public class ARFCCopter extends SurfaceView implements SurfaceHolder.Callback {
 
 //            while(!Thread.currentThread().isInterrupted()){
             while(isRunning){
-                try{
 
-                    mainCanvas = surfaceHolder.lockCanvas();
-                    synchronized (surfaceHolder){
-                        arfcCopter.clearCopter(mainCanvas);
-                        arfcCopter.moveCopter();
-                        arfcCopter.draw(mainCanvas);
+                if(isTherePath){
+                    int n = thePoints.size();
+                    for(int i = 0; i < n; i++ ){
+                        if(i+1 != n) {
+                            setPathBetween(thePoints.get(i), thePoints.get(i + 1));
+                            while (distance < pathMeasure.getLength()) {
+                                float[] p = getPathPointsBetween();
+                                try {
+
+                                    mainCanvas = surfaceHolder.lockCanvas();
+                                    synchronized (surfaceHolder) {
+                                        arfcCopter.clearCopter(mainCanvas);
+
+                                        arfcCopter.moveCopterThroughPath(p);
+                                        arfcCopter.draw(mainCanvas);
+                                    }
+                                } finally {
+                                    if (mainCanvas != null) {
+                                        surfaceHolder.unlockCanvasAndPost(mainCanvas);
+                                    }
+                                }
+                            }
+                        }
+//                        else{
+//                            String got = "got";
+//                        }
                     }
-                }finally {
-                    if (mainCanvas != null){
-                        surfaceHolder.unlockCanvasAndPost(mainCanvas);
+                    isTherePath = false;
+                }else if(isFollow){
+                    try {
+
+                        mainCanvas = surfaceHolder.lockCanvas();
+                        synchronized (surfaceHolder) {
+                            arfcCopter.clearCopter(mainCanvas);
+                            arfcCopter.update();
+                            arfcCopter.draw(mainCanvas);
+                        }
+                    } finally {
+                        if (mainCanvas != null) {
+                            surfaceHolder.unlockCanvasAndPost(mainCanvas);
+                        }
+                    }
+                }else{             //default left and right movement
+                    try {
+
+                        mainCanvas = surfaceHolder.lockCanvas();
+                        synchronized (surfaceHolder) {
+                            arfcCopter.clearCopter(mainCanvas);
+                            arfcCopter.moveCopter();
+                            arfcCopter.draw(mainCanvas);
+                        }
+                    } finally {
+                        if (mainCanvas != null) {
+                            surfaceHolder.unlockCanvasAndPost(mainCanvas);
+                        }
                     }
                 }
             }
         }
+    }
+
+    private float[] getPathPointsBetween() {
+        pathMeasure.getPosTan(distance, pos, tan);
+        distance += speed;
+        return pos;
+    }
+
+    private void setPathBetween(int[] start, int[] end) {
+        path = new Path();
+        path.moveTo(start[0], start[1]);
+        path.lineTo(end[0], end[1]);
+        pathMeasure = new PathMeasure(path, false);
+        speed = pathMeasure.getLength() / 10;
+        pos = new float[2];
+        tan = new float[2];
+        distance = 0;
+//        pathMeasure.getPosTan(distance, pos, tan);
+//        distance += speed;
+    }
+
+
+    private void moveCopterThroughPath(float[] p) {
+//        while(distance < pathMeasure.getLength()){
+//            pathMeasure.getPosTan(distance, pos, tan);
+//            distance += speed;
+//        }
+        float[] rPos = getRelativePosition(p[0], p[1]);
+        this.mainX = rPos[0];
+        this.mainY = rPos[1];
+        update();
     }
 }

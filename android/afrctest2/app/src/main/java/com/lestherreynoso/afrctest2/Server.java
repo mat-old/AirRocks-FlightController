@@ -56,7 +56,7 @@ public class Server {
         if (serverStarted){
             new SendMessage().execute(sendMsg);
         }else{
-            MainActivity.updateUI(R.id.debugTV, "Server is not started.\n Unable to send: "+message+"\n","TextView","append");
+            MainActivity.updateUI(R.id.debugTV, "Server is not started.\n Unable to send: "+message,"TextView","append");
 //            MainActivity.debugTV.append("Server is not started.\n Unable to send: "+message+"\n");
         }
 
