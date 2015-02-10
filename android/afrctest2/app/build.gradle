@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.lestherreynoso.afrctest2"
+        applicationId "com.lestherreynoso.airrocksflightcontroller"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 1

@@ -1,4 +1,4 @@
-package com.lestherreynoso.afrctest2;
+package com.lestherreynoso.airrocksflightcontroller;
 
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -56,7 +56,7 @@ public class Server {
         if (serverStarted){
             new SendMessage().execute(sendMsg);
         }else{
-            MainActivity.updateUI(R.id.debugTV, "Server is not started.\n Unable to send: "+message,"TextView","append");
+            MainActivity.updateUI(R.id.debugTV, "Server is not started.\n Unable to send: " + message, "TextView", "append");
 //            MainActivity.debugTV.append("Server is not started.\n Unable to send: "+message+"\n");
         }
 

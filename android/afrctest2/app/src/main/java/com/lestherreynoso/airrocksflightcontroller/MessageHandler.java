@@ -1,8 +1,4 @@
-package com.lestherreynoso.afrctest2;
-
-import android.net.Network;
-import android.os.Bundle;
-import android.os.Message;
+package com.lestherreynoso.airrocksflightcontroller;
 
 import org.json.JSONArray;
 import org.json.JSONException;

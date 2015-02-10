@@ -1,4 +1,4 @@
-package com.lestherreynoso.afrctest2;
+package com.lestherreynoso.airrocksflightcontroller;
 
 import android.os.Bundle;
 import android.os.Handler;
