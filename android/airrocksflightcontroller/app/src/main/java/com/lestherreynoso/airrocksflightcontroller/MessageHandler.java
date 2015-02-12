@@ -13,6 +13,7 @@ public class MessageHandler {
     JSONObject jsonMessage;
     Server server;
     ARFCCopter copter;
+
     public MessageHandler() {
         server = NetworkFragment.getServer();
         copter = DiagnosticsFragment.getCopter();

@@ -28,8 +28,9 @@ public class DiagnosticsFragment extends Fragment {
     static ARFCCopter copter;
     TextView throttleValue;
     static View diagnosticsFragmentView;
-    Button startBtn, stopBtn, takeOffBtn, landBtn, rotateCWBtn, rotateCCWBtn;
+    Button startBtn, stopBtn, takeOffBtn, landBtn, rotateCWBtn, rotateCCWBtn, pathSend, pathClear;
     MessageHandler messageHandler;
+    private ShapeDrawing shape;
 
     // TODO: Rename and change types and number of parameters
     public static DiagnosticsFragment newInstance(String param1, String param2) {
@@ -54,11 +55,16 @@ public class DiagnosticsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         messageHandler = new MessageHandler();
+//        messageHandler = NetworkFragment.getMessageHandler();
         LinearLayout testll = (LinearLayout) view.findViewById(R.id.testll);
         copter = new ARFCCopter(getActivity().getApplicationContext(), 75, 75);
         MainActivity.setMcopter(copter);
 
         testll.addView(copter);
+
+        LinearLayout inputll = (LinearLayout) view.findViewById(R.id.inputll);
+        shape = new ShapeDrawing(getActivity().getApplicationContext());
+        inputll.addView(shape);
 
 
 
@@ -104,6 +110,21 @@ public class DiagnosticsFragment extends Fragment {
                 messageHandler.sendMessage("rotateCCW");
             }
         });
+        pathSend = (Button)view.findViewById(R.id.pathSend);
+        pathSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shape.sendPath();
+            }
+        });
+        pathClear = (Button)view.findViewById(R.id.pathClear);
+        pathClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shape.clearPath();
+            }
+        });
+
 
 //        testll.addView(new Circle(getActivity().getApplicationContext(), 50, 50, 25));
     }

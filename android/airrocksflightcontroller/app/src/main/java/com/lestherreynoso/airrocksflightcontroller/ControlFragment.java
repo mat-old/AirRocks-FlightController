@@ -33,8 +33,8 @@ public class ControlFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayout inputll = (LinearLayout) view.findViewById(R.id.inputll);
-        inputll.addView(new ShapeDrawing(getActivity().getApplicationContext()));
+//        LinearLayout inputll = (LinearLayout) view.findViewById(R.id.inputll);
+//        inputll.addView(new ShapeDrawing(getActivity().getApplicationContext()));
 
     }
 

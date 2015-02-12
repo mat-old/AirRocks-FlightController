@@ -118,7 +118,7 @@
                 android:layout_below="@+id/inputTV"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:id="@+id/inputll"></LinearLayout>
+                android:id="@+id/inputllold"></LinearLayout>
 
         </RelativeLayout>
     </LinearLayout>

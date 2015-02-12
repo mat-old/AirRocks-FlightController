@@ -323,8 +323,9 @@ public class NetworkFragment extends Fragment {
     }
     
     public void d(String debugText){
-//        networkDebug.append(debugText +"\n");
+        networkDebug.append(debugText +"\n");
         MainActivity.updateUI(R.id.debugTV, debugText, "TextView", "append");
 //        MainActivity.debugTV.append(debugText +"\n");
     }
+
 }

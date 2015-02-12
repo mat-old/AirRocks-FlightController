@@ -24,6 +24,8 @@ public class ShapeDrawing extends View {
     Float xx, yy;
     ArrayList<float[]> pathCoordinates;
     MessageHandler messageHandler;
+    JSONArray jsonArray;
+    ArrayList<int[]> pC;
     public ShapeDrawing(Context context) {
         super(context);
         pathCoordinates = new ArrayList<>();
@@ -118,7 +120,7 @@ public class ShapeDrawing extends View {
 
     private void preparePathForSending(ArrayList<float[]> pathCoordinates) {
 
-        ArrayList<int[]> pC = new ArrayList<>();
+        pC = new ArrayList<>();
         for(float[] pair : pathCoordinates){
 //            int in = pathCoordinates.indexOf(pair);
             int x = Math.round((pair[0] / this.getWidth()) * 100) ;
@@ -128,10 +130,21 @@ public class ShapeDrawing extends View {
 //            c.drawText(temp, pair[0], pair[1], textPaint);
         }
 
-        JSONArray jsonArray = new JSONArray(pC);
+        jsonArray = new JSONArray(pC);
 
+
+
+
+    }
+
+    public void sendPath() {
         messageHandler.sendMessage("path", jsonArray, "set");
         messageHandler.tempRedirect(pC);
+        clearPath();
+    }
 
+    public void clearPath() {
+        path.reset();
+        postInvalidate();
     }
 }

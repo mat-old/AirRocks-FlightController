@@ -183,7 +183,7 @@ public class MainActivity extends ActionBarActivity {
                     return DiagnosticsFragment.newInstance("1", "2");
                 case (2):
 //                    return ControlFragment.newInstance("1", "2");
-                    return new ControlFragment();
+//                    return new ControlFragment();
 //                case (3):
 //                    return RelayFragment.newInstance("1", "2");
 //                case (10):
@@ -198,7 +198,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
     }
 
